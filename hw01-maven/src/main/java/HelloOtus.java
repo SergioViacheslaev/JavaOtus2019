@@ -1,3 +1,4 @@
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 
@@ -19,6 +20,12 @@ public class HelloOtus {
         list.add(777);
         System.out.println(immutableList);
 
+
+
+        String testString = "";
+        System.out.println(Strings.isNullOrEmpty(testString));
+        testString = null;
+        System.out.println(Strings.isNullOrEmpty(testString));
 
 
 
