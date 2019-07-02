@@ -13,6 +13,8 @@
     <artifactId>hw01-maven</artifactId>
 
 
+
+
     <!--В потомке POM, достаточноу указать только эти параметры, версия подтянется из предка (LAST) -->
     <dependencies>
         <dependency>
@@ -20,6 +22,37 @@
             <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
+
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>HelloOtus</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            <!-- Используем плагин на стадии сборки -->
+            <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 
 
