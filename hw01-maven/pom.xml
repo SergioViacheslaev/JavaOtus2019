@@ -13,8 +13,6 @@
     <artifactId>hw01-maven</artifactId>
 
 
-
-
     <!--В потомке POM, достаточноу указать только эти параметры, версия подтянется из предка (LAST) -->
     <dependencies>
         <dependency>
