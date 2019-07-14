@@ -9,7 +9,10 @@ public class DIYarrayList<E> implements List<E> {
     //empty array instance used for empty instances.
     private static final Object[] EMPTY_ELEMENTDATA = {};
 
-    //Empty
+    /* Empty array, size of 10 elements, used in newCapacity method
+     * We distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when
+     * first element is added.
+     */
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
 
 
@@ -61,9 +64,13 @@ public class DIYarrayList<E> implements List<E> {
         throw new UnsupportedOperationException("Метод не реализован.");
     }
 
+
+    /*
+      Get Iterator for this list
+     */
     @Override
     public Iterator<E> iterator() {
-        return new DIYListIterator<E>(this);
+        return new DIYListIterator<>(this);
     }
 
 
@@ -80,6 +87,10 @@ public class DIYarrayList<E> implements List<E> {
         throw new UnsupportedOperationException("Метод не реализован.");
     }
 
+    /**
+     * @param e - element to add
+     * @return true if element added to list
+     */
     @Override
     public boolean add(E e) {
 
@@ -88,10 +99,12 @@ public class DIYarrayList<E> implements List<E> {
         elementData[size] = e;
         size++;
 
-
         return true;
     }
 
+    /**
+     * Creating copy of elementData array with new size
+     */
     private Object[] grow(int minCapacity) {
         return elementData = Arrays.copyOf(elementData,
                 newCapacity(minCapacity));
@@ -253,23 +266,12 @@ public class DIYarrayList<E> implements List<E> {
         throw new UnsupportedOperationException("Метод не реализован.");
     }
 
- /*   *//**
-     * @param c specified comparator
-     *//*
-    @Override
-    public void sort(Comparator<? super E> c) {
-        Object[] a = this.toArray();
-        Arrays.sort(a, (Comparator) c);
-        ListIterator<E> i = this.listIterator();
-        for (Object e : a) {
-            i.set((E) e);
-        }
-    }*/
 
-    /**
-     * @return string presentation of list
-     * in this format [ firstElem, secondElem, ...]
-     * and [] if list has no elements
+    /*
+      Returns string presentation of all elements in list
+      Example:
+      [elem1,elem2,...]
+      if no elements, than returns []
      */
     @Override
     public String toString() {
@@ -279,7 +281,7 @@ public class DIYarrayList<E> implements List<E> {
         sb.append("[");
         for (int i = 0; i < size; i++) {
 
-            sb.append((E) elementData[i] + ", ");
+            sb.append(elementData[i] + ", ");
         }
 
         sb = new StringBuilder(sb.substring(0, sb.lastIndexOf(",")) + "]");
@@ -289,10 +291,14 @@ public class DIYarrayList<E> implements List<E> {
 
     }
 
+    /**
+     * Iterator class, used to iterate over list.
+     * Collections.class uses object of this class for some methods like:
+     * copy,sort.
+     */
     public class DIYListIterator<E> implements ListIterator<E> {
         int startPos; //Start position-index to iterate
         int cursor;       // index of next element to return
-        int lastElemIndex = -1; // index of last element returned; -1 if no such
         private DIYarrayList<E> list;
 
         DIYListIterator() {
@@ -321,40 +327,38 @@ public class DIYarrayList<E> implements List<E> {
 
         @Override
         public void set(E e) {
-            if (cursor != -1) {
-                list.set(cursor, e);
-            }
+            list.set(cursor, e);
 
         }
 
         @Override
         public boolean hasPrevious() {
-            return false;
+            throw new UnsupportedOperationException("Метод не реализован.");
         }
 
         @Override
         public E previous() {
-            return null;
+            throw new UnsupportedOperationException("Метод не реализован.");
         }
 
         @Override
         public int nextIndex() {
-            return 0;
+            throw new UnsupportedOperationException("Метод не реализован.");
         }
 
         @Override
         public int previousIndex() {
-            return 0;
+            throw new UnsupportedOperationException("Метод не реализован.");
         }
 
         @Override
         public void remove() {
-
+            throw new UnsupportedOperationException("Метод не реализован.");
         }
 
         @Override
-        public void add(E t) {
-
+        public void add(E e) {
+            throw new UnsupportedOperationException("Метод не реализован.");
         }
     }
 
