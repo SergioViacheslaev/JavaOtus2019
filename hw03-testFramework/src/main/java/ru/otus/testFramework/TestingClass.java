@@ -23,12 +23,20 @@ public class TestingClass {
 
     @Test
     public void doTest1() {
-        System.out.println("Test1 is running...");
+        System.out.println("Test doTest1()  is running...");
     }
 
     @Test
     public void doTest2() {
-        System.out.println("Test2 is running...");
+        System.out.println("Test doTest2() is running...");
+    }
+
+
+    //Testing if test methods fails
+    @Test
+    public void doTest3() {
+        System.out.println("Test doTest3() is running...");
+        throw new RuntimeException("Failure!");
     }
 
 

@@ -10,10 +10,14 @@ import org.slf4j.LoggerFactory;
 public class Main {
     public static void main(String[] args) {
 
-
-
         Logger log = LoggerFactory.getLogger(Main.class);
 
-        log.info("Test !");
+        try {
+            MyTestFramework.runTestTasks(TestingClass.class.getName());
+        } catch (Exception e) {
+            log.info("Tests failed !");
+        }
+
+
     }
 }
