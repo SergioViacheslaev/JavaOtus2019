@@ -11,6 +11,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw02-generics</module>
+        <module>hw03-testFramework</module>
     </modules>
 
 
