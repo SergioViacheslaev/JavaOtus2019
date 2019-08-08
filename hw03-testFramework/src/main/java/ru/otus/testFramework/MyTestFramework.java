@@ -7,6 +7,7 @@ import ru.otus.testFramework.annotations.Before;
 import ru.otus.testFramework.annotations.Test;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -56,10 +57,18 @@ public class MyTestFramework {
         int testNumber = 1;
         for (Method testMethod : testMethods) {
 
+            //Get instance of Tests class
+            Object testsClazzObject = null;
+            try {
+                testsClazzObject = testsClazz.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //Running @Before and @Test methods
             try {
                 log.info("Run test #[{}]", testNumber++);
 
-                Object testsClazzObject = testsClazz.getDeclaredConstructor().newInstance();
 
                 for (Method beforeMethod : beforeMethods) {
                     beforeMethod.invoke(testsClazzObject);
@@ -67,21 +76,32 @@ public class MyTestFramework {
 
                 testMethod.invoke(testsClazzObject);
 
-                for (Method afterMethod : afterMethods) {
-                    afterMethod.invoke(testsClazzObject);
-                }
+
             } catch (Exception e) {
                 log.error("Test failure ", e);
                 continue;
+            }
+            //If @Before or @Test fails, anyway @After methods will be executed
+            finally {
+                for (Method afterMethod : afterMethods) {
+                    try {
+                        afterMethod.invoke(testsClazzObject);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             testsPassedCounter++;
         }
 
+        /**
+         * TEST is successfully passed if only: ALL @AFTER @BEFORE @TEST Methods finished whith no exceptions !
+         */
         log.info("Total tests passed: {}", testsPassedCounter);
         log.info("Total tests failed: {}", testMethods.size() - testsPassedCounter);
 
-        return (testMethods.size() == testsPassedCounter) ? true : false;
+        return testMethods.size() == testsPassedCounter;
 
 
     }

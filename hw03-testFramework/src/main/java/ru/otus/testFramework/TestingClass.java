@@ -24,6 +24,7 @@ public class TestingClass {
     @Before(order = 2)
     public void doBefore2() {
         System.out.println("Running before2 @test");
+        throw new RuntimeException("Вылетел метод Before !!");
     }
 
 
