@@ -8,6 +8,8 @@ import ru.otus.testFramework.annotations.Before;
 import ru.otus.testFramework.annotations.Test;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InterfaceAddress;
 import java.util.ArrayList;
@@ -24,6 +26,21 @@ public final class ReflectionHelper {
     private ReflectionHelper() {
     }
 
+
+    //Get instance of specified class
+    static <T> T instantiate(Class<T> type) {
+
+
+        try {
+            final Constructor<T> constructor = type.getDeclaredConstructor();
+            return constructor.newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
 
     //Get Class object
     static Class<?> getClassObject(String testsClassName) {

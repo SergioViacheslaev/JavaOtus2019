@@ -58,12 +58,8 @@ public class MyTestFramework {
         for (Method testMethod : testMethods) {
 
             //Get instance of Tests class
-            Object testsClazzObject = null;
-            try {
-                testsClazzObject = testsClazz.getDeclaredConstructor().newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Object testsClazzObject = ReflectionHelper.instantiate(testsClazz);
+
 
             //Running @Before and @Test methods
             try {
