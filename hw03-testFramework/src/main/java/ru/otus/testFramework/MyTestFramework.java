@@ -66,9 +66,7 @@ public class MyTestFramework {
                 log.info("Run test #[{}]", testNumber++);
 
 
-                for (Method beforeMethod : beforeMethods) {
-                    beforeMethod.invoke(testsClazzObject);
-                }
+                runBeforeMethods(beforeMethods, testsClazzObject);
 
                 testMethod.invoke(testsClazzObject);
 
@@ -79,13 +77,7 @@ public class MyTestFramework {
             }
             //If @Before or @Test fails, anyway @After methods will be executed
             finally {
-                for (Method afterMethod : afterMethods) {
-                    try {
-                        afterMethod.invoke(testsClazzObject);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                runAfterMethods(afterMethods, testsClazzObject);
             }
 
             testsPassedCounter++;
@@ -100,6 +92,26 @@ public class MyTestFramework {
         return testMethods.size() == testsPassedCounter;
 
 
+    }
+
+    private static void runAfterMethods(List<Method> afterMethods, Object testsClazzObject) {
+        for (Method afterMethod : afterMethods) {
+            try {
+                afterMethod.invoke(testsClazzObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void runBeforeMethods(List<Method> beforeMethods, Object testsClazzObject) {
+        for (Method beforeMethod : beforeMethods) {
+            try {
+                beforeMethod.invoke(testsClazzObject);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
