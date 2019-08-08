@@ -58,34 +58,6 @@ public final class ReflectionHelper {
     }
 
 
-    //Get AnnotationBefore
-    static Before getAnnotationBefore(Method method) {
-        Annotation[] annotations = method.getDeclaredAnnotations();
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Before) {
-                return (Before) annotation;
-            }
-        }
-
-        log.error("No annotations Before in method {} !", method.getName());
-        return null;
-    }
-
-
-    //Get AnnotationAfter
-    static After getAnnotationAfter(Method method) {
-        Annotation[] annotations = method.getDeclaredAnnotations();
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof After) {
-                return (After) annotation;
-            }
-        }
-
-        log.error("No annotations After in method {} !", method.getName());
-        return null;
-    }
-
-
     //Get list of all methods whith specified AnnotationClass from Methods Array
     static List<Method> getAnnotatedMethodsList(Class<? extends Annotation> annotationClassName, Method[] methods) {
         List<Method> annotatedMethodsList = new ArrayList<>();

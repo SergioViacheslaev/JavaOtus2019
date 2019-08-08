@@ -109,22 +109,22 @@ public class MyTestFramework {
 
     //Utility method only for sorting beforeMethods and afterMethods lists
     private static void sortMethodListByOrderAnnotation(List<Method> beforeMethods, List<Method> afterMethods) {
-        beforeMethods.sort((o1, o2) -> {
-            int order1 = ReflectionHelper.getAnnotationBefore(o1).order();
-            int order2 = ReflectionHelper.getAnnotationBefore(o2).order();
 
-            return Integer.compare(order1, order2);
+        beforeMethods.sort(new Comparator<Method>() {
+            @Override
+            public int compare(Method o1, Method o2) {
+                int order1 = o1.getAnnotation(Before.class).order();
+                int order2 = o1.getAnnotation(Before.class).order();
 
-
+                return Integer.compare(order1, order2);
+            }
         });
 
         afterMethods.sort((o1, o2) -> {
-            int order1 = ReflectionHelper.getAnnotationAfter(o1).order();
-            int order2 = ReflectionHelper.getAnnotationAfter(o2).order();
+            int order1 = o1.getAnnotation(After.class).order();
+            int order2 = o1.getAnnotation(After.class).order();
 
             return Integer.compare(order1, order2);
-
-
         });
     }
 
