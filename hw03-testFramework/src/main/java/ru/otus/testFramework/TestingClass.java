@@ -8,18 +8,41 @@ import ru.otus.testFramework.annotations.Test;
 /**
  * Simple class for testing annotated methods.
  */
-
 public class TestingClass {
 
-    @Before
-    public void doBefore() {
-        System.out.println("Running before @test");
+    @Before(order = 1)
+    public void doBefore1() {
+        System.out.println("Running before1 @test");
     }
 
-    @After
-    public void doAfter() {
-        System.out.println("Running after @test");
+    @Before(order = 3)
+    public void simpleBeforeMethod() {
+        System.out.println("Running before3 @test");
     }
+
+
+    @Before(order = 2)
+    public void doBefore2() {
+        System.out.println("Running before2 @test");
+    }
+
+
+    @After(order = 3)
+    public void doAfter1() {
+        System.out.println("Running after3 @test");
+    }
+
+    @After(order = 2)
+    public void doAfter2() {
+        System.out.println("Running after2 @test");
+    }
+
+    @After(order = 1)
+    public void simpleAfterMethod() {
+        System.out.println("Running after1 @test");
+    }
+
+
 
     @Test
     public void doTest1() {
@@ -36,9 +59,8 @@ public class TestingClass {
     @Test
     public void doTest3() {
         System.out.println("Test doTest3() is running...");
-        throw new RuntimeException("Failure!");
+        // throw new RuntimeException("Failure!");
     }
-
 
 
 }

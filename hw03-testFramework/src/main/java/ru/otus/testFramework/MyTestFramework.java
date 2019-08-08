@@ -8,8 +8,7 @@ import ru.otus.testFramework.annotations.Test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class MyTestFramework {
@@ -25,33 +24,17 @@ public class MyTestFramework {
     }
 
     //Search and run annotated methods from class file
-    public static boolean runTests(String testsClassName) throws Exception {
-        Class<?> testsClazz = Class.forName(testsClassName);
+    public static boolean runTests(String testsClassName) {
+        Class<?> testsClazz = ReflectionHelper.getClassObject(testsClassName);
+        Method[] methods = ReflectionHelper.getAllDeclaredMethods(testsClassName);
 
-        //Get all methods from file
-        Method[] methods = testsClazz.getDeclaredMethods();
+        List<Method> beforeMethods = ReflectionHelper.getAnnotatedMethodsList(Before.class, methods);
+        List<Method> afterMethods = ReflectionHelper.getAnnotatedMethodsList(After.class, methods);
+        List<Method> testMethods = ReflectionHelper.getAnnotatedMethodsList(Test.class, methods);
 
-        List<Method> beforeMethods = new ArrayList<>();
-        List<Method> afterMethods = new ArrayList<>();
-        List<Method> testMethods = new ArrayList<>();
 
-        //For each method check annotations and add to specified list above
-        for (Method method : methods) {
-            Annotation[] annotations = method.getDeclaredAnnotations();
-
-            for (Annotation annotation : annotations) {
-                if (annotation instanceof Before) {
-                    beforeMethods.add(method);
-                    break;
-                } else if (annotation instanceof After) {
-                    afterMethods.add(method);
-                    break;
-                } else if (annotation instanceof Test) {
-                    testMethods.add(method);
-                    break;
-                }
-            }
-        }
+        //Sort lists only annotated with @before,@after by parameter order
+        sortMethodListByOrderAnnotation(beforeMethods, afterMethods);
 
 
         log.info("Annotated @Test methods found: ");
@@ -101,6 +84,28 @@ public class MyTestFramework {
         return (testMethods.size() == testsPassedCounter) ? true : false;
 
 
+    }
+
+
+    //Utility method only for sorting beforeMethods and afterMethods lists
+    private static void sortMethodListByOrderAnnotation(List<Method> beforeMethods, List<Method> afterMethods) {
+        beforeMethods.sort((o1, o2) -> {
+            int order1 = ReflectionHelper.getAnnotationBefore(o1).order();
+            int order2 = ReflectionHelper.getAnnotationBefore(o2).order();
+
+            return Integer.compare(order1, order2);
+
+
+        });
+
+        afterMethods.sort((o1, o2) -> {
+            int order1 = ReflectionHelper.getAnnotationAfter(o1).order();
+            int order2 = ReflectionHelper.getAnnotationAfter(o2).order();
+
+            return Integer.compare(order1, order2);
+
+
+        });
     }
 
 

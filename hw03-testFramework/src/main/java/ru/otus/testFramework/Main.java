@@ -16,6 +16,7 @@ public class Main {
             MyTestFramework.runTestTasks(TestingClass.class.getName());
         } catch (Exception e) {
             log.info("Tests failed !");
+            e.printStackTrace();
         }
 
 
