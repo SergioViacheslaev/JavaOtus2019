@@ -12,7 +12,7 @@ import java.util.Random;
 public class TestLogging implements MyClassInterface {
 
 
-    @Log
+    //@Log
     public void calculation(int param) {
         System.out.printf("Binary presentation of number '%d' is %s%n", param, Integer.toBinaryString(param));
 
@@ -41,7 +41,7 @@ public class TestLogging implements MyClassInterface {
         System.out.println("Hello World !");
     }
 
-    @Log
+   // @Log
     @Override
     public void printHello(int param) {
         System.out.println("Перегруженный метод printHello");
