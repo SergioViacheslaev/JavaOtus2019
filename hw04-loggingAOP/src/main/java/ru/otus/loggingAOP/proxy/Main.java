@@ -8,6 +8,8 @@ public class Main {
        MyClassInterface testLogging = ProxyHandler.createMyClass();
 
        testLogging.printHello();
+       testLogging.printHello(12345,"ABCDEF");
+       testLogging.printHello(9999);
        testLogging.calculation(10);
        testLogging.processTransaction(236_484_393,2100.500d,874_786_853);
 

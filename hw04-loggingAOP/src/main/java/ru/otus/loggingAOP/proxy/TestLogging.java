@@ -27,11 +27,23 @@ public class TestLogging implements MyClassInterface {
     }
 
 
-    //@Log
+
+    //Для проверки ниже идут перегруженный метод printHello
+
+
     public void printHello() {
+        System.out.println("Привет мир Java !");
+    }
+
+    @Log
+    public void printHello(int param1, String param2) {
         System.out.println("Hello World !");
     }
 
-
+    @Log
+    @Override
+    public void printHello(int param) {
+        System.out.println("Перегруженный метод printHello");
+    }
 }
 

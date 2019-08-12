@@ -12,5 +12,9 @@ public interface MyClassInterface {
 
     void processTransaction(int accountFrom, double debet, int accountTo);
 
+    void printHello(int param, String param2);
+
+    void printHello(int param);
+
     void printHello();
 }

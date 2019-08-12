@@ -2,7 +2,9 @@ package ru.otus.loggingAOP.proxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,23 +12,24 @@ import java.util.List;
  */
 public class ReflectionHelper {
 
-    //Get list of all methods whith specified AnnotationClass from MyClassInterface object
-    public static List<Method> getAnnotatedMethodsList(Class<? extends Annotation> annotationClass, Class<?> myClass) {
-        List<Method> annotatedMethodsList = new ArrayList<>();
+    //Получаем список сигнатур методов помеченных @Log
+    public static List<String> getAnnotatedMethodFullNamesList(Class<? extends Annotation> annotationClass, Class<?> myClass) {
+        List<String> annotatedMethodsFullNameList = new ArrayList<>();
 
         Method[] methods = myClass.getMethods();
 
         for (Method method : methods) {
             if (method.isAnnotationPresent(annotationClass)) {
-                annotatedMethodsList.add(method);
+                Parameter[] parameters = method.getParameters();
+                annotatedMethodsFullNameList.add(method.getName() + Arrays.toString(parameters));
             }
         }
 
-        if (annotatedMethodsList.isEmpty()) {
+        if (annotatedMethodsFullNameList.isEmpty()) {
             System.out.println("No annotiated @Log methods found !");
             return null;
         }
 
-        return annotatedMethodsList;
+        return annotatedMethodsFullNameList;
     }
 }

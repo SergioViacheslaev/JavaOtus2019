@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 class ProxyHandler {
@@ -19,27 +18,22 @@ class ProxyHandler {
 
     static class DemoInvocationHandler implements InvocationHandler {
         private final MyClassInterface myClass;
-        private List<Method> loggedMethods;
+        private List<String> loggedMethodFullNames;
 
         //В констукторе получаем сразу весь список @Log методов
         DemoInvocationHandler(MyClassInterface myClass) {
             this.myClass = myClass;
-            loggedMethods = ReflectionHelper.getAnnotatedMethodsList(Log.class, myClass.getClass());
+            loggedMethodFullNames = ReflectionHelper.getAnnotatedMethodFullNamesList(Log.class, myClass.getClass());
 
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-            /**Проверяем есть ли в списке логированных методов, такой method
-             * Через contains(method) - не находит !
-             * Сделал через стримы, сравнение по имени
-             */
-            boolean isLoggedMethod = loggedMethods.stream().anyMatch(loggedMethod -> loggedMethod.getName().equals(method.getName()));
 
-            //Логируем все методы помеченные @Log
-            if (isLoggedMethod) {
-
+            //Формируем сигнатуру вызванного метода и проверяем есть ли она в списке
+            String invokedMethodFullName = method.getName() + Arrays.toString(method.getParameters());
+            if (loggedMethodFullNames.contains(invokedMethodFullName)) {
                 System.out.printf("executed method: %s, param: %s%n", method.getName(), Arrays.toString(args));
 
             }
