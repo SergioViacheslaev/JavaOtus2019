@@ -31,11 +31,12 @@ public class TestLogging implements MyClassInterface {
     //Для проверки ниже идут перегруженный метод printHello
 
 
+   // @Log
     public void printHello() {
         System.out.println("Привет мир Java !");
     }
 
-    @Log
+  //  @Log
     public void printHello(int param1, String param2) {
         System.out.println("Hello World !");
     }

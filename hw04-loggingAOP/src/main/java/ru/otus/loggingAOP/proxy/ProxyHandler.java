@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 class ProxyHandler {
 
@@ -18,12 +18,12 @@ class ProxyHandler {
 
     static class DemoInvocationHandler implements InvocationHandler {
         private final MyClassInterface myClass;
-        private List<String> loggedMethodFullNames;
+        private Set<String> annotatedMethodsFullNameSet;
 
-        //В констукторе получаем сразу весь список @Log методов
+        //В констукторе получаем сразу все множество @Log методов
         DemoInvocationHandler(MyClassInterface myClass) {
             this.myClass = myClass;
-            loggedMethodFullNames = ReflectionHelper.getAnnotatedMethodFullNamesList(Log.class, myClass.getClass());
+            annotatedMethodsFullNameSet = ReflectionHelper.getAnnotatedMethodFullNamesSet(Log.class, myClass.getClass());
 
         }
 
@@ -31,9 +31,9 @@ class ProxyHandler {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
 
-            //Формируем сигнатуру вызванного метода и проверяем есть ли она в списке
+            //Формируем сигнатуру вызванного метода и проверяем есть ли она в сете
             String invokedMethodFullName = method.getName() + Arrays.toString(method.getParameters());
-            if (loggedMethodFullNames.contains(invokedMethodFullName)) {
+            if (annotatedMethodsFullNameSet.contains(invokedMethodFullName)) {
                 System.out.printf("executed method: %s, param: %s%n", method.getName(), Arrays.toString(args));
 
             }
