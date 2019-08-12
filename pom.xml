@@ -13,6 +13,7 @@
         <module>hw02-generics</module>
         <module>hw03-testFramework</module>
         <module>hw04-loggingAOP</module>
+        <module>hw05-GC</module>
     </modules>
 
 
