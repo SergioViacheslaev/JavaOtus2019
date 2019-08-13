@@ -25,7 +25,7 @@ public class ReflectionHelper {
 
         if (annotatedMethodsFullNameSet.isEmpty()) {
             System.out.println("No annotiated @Log methods found !");
-            return new HashSet<>();
+            return Collections.emptySet();
         }
 
         return annotatedMethodsFullNameSet;
