@@ -53,8 +53,10 @@ generated: 5561 Time spent: 325 seconds
  
 
 График производительности по количеству сгенерированных паролей до OutOfMemoryError.
+![График1](https://user-images.githubusercontent.com/49530516/62938153-1df93380-bdd7-11e9-964b-4fc6409e1122.jpg)
 
 График по общему времени простоя приложения в фазе Stop the World
+![График2](https://user-images.githubusercontent.com/49530516/62938195-31a49a00-bdd7-11e9-8aea-30b1d546448e.jpg)
 
 
 **Вывод:** В моем случае - наибольший Throughput показало приложение с
