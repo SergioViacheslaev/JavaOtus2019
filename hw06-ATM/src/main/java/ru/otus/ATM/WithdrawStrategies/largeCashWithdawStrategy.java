@@ -5,9 +5,9 @@ import ru.otus.ATM.FaceValue;
 import ru.otus.ATM.bankomats.ATM;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-/**
+/**Стратегия выдачи наличных крупными купюрами
+ *
  * @author Sergei Viacheslaev
  */
 public class largeCashWithdawStrategy implements CashWithdrawStrategy {
@@ -18,13 +18,6 @@ public class largeCashWithdawStrategy implements CashWithdrawStrategy {
         this.atm = atm;
         sortedCassettes = new TreeMap<>(Comparator.reverseOrder());
         sortedCassettes.putAll(atm.getCassettesStorage());
-
-    /*    sortedCassettes = atm.getCassettesStorage().entrySet().stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (e1, e2) -> e2, LinkedHashMap::new));*/
-
-
     }
 
     @Override
@@ -41,7 +34,6 @@ public class largeCashWithdawStrategy implements CashWithdrawStrategy {
 
         return buildCashMap(cashAmount);
     }
-
 
     private Map<FaceValue, Integer> buildCashMap(int cashAmount) {
         Map<FaceValue, Integer> cashMap = new HashMap<>();
@@ -73,51 +65,4 @@ public class largeCashWithdawStrategy implements CashWithdrawStrategy {
         return cashMap;
 
     }
-
-
-
-
-
-    /*    @Override
-    public Cash withdrawCash(int withdrawAmount) {
-        if (withdrawAmount >  ) {
-            System.out.println("В банкомате недостаточно средств !");
-            return;
-        }
-
-        Map<FaceValue, Integer> withdrawnBanknotes = new TreeMap<>();
-
-        int sum = withdrawAmount;
-
-
-        for (BankomatSber.Cassette cassette : cassetesStorage.values()) {
-            //Временно сохраняем изначальное кол-во банкнот
-            cassette.savebanknotesAmount();
-
-            FaceValue faceValue = cassette.getCassetteFaceValue();
-
-            while (sum > 0 && faceValue.getIntValue() <= sum && cassette.hasBanknotes()) {
-                Integer num = withdrawnBanknotes.getOrDefault(faceValue, 0);
-                withdrawnBanknotes.put(faceValue, num + 1);
-                sum -= faceValue.getIntValue();
-                cassette.decrementAmount();
-            }
-            if (sum == 0) break;
-
-        }
-
-
-        //В случае невозможности выдачи
-        if (sum > 0) {
-            //Восстановливаем состояние кол-ва банкнот
-            restorebanknotesAmount();
-            System.out.printf("Сумма %d не может быть выдана !%n", withdrawAmount);
-            return;
-        }
-
-
-        System.out.printf("Успешно выдано %d денежных средств, купюрами: %n", withdrawAmount);
-        withdrawnBanknotes.forEach((k, v) -> System.out.printf("Номинал %s Количество %d%n", k, v));
-    }*/
-
 }

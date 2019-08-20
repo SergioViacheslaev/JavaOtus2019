@@ -16,6 +16,10 @@ public class BankomatSber extends ATM implements AtmStatus {
 
     @Override
     public void receiveCash(FaceValue faceValue, int cashAmount) {
+        if (faceValue == null || cashAmount <= 0) {
+            System.out.println("Банкомат не принял деньги, проверьте данные !");
+            return;
+        }
         Cassette cassette = getCassettesStorage().get(faceValue.getIntValue());
         cassette.setBanknotesAmount(cassette.getBanknotesAmount() + cashAmount);
 

@@ -16,6 +16,7 @@ public class Main {
         bankomatSber.setCashWithdrawStrategy(new largeCashWithdawStrategy(bankomatSber));
 
 
+
         bankomatSber.receiveCash(FaceValue.ONE_THOUSAND,100);
         bankomatSber.receiveCash(FaceValue.FIVE_THOUSAND,10);
         bankomatSber.receiveCash(FaceValue.THREE_THOUSAND,10);
@@ -32,6 +33,7 @@ public class Main {
         bankomatSber.giveCash(2655);
 
         bankomatSber.showCurrentAtmCashBalance();
+
 
 
     }

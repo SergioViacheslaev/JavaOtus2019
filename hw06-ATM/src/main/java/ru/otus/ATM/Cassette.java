@@ -14,7 +14,6 @@ public class Cassette {
         this.banknotesAmount = banknotesAmount;
     }
 
-
     public void setBanknotesAmount(int banknotesAmount) {
         this.banknotesAmount = banknotesAmount;
     }
@@ -53,38 +52,4 @@ public class Cassette {
         return "Номинал кассеты " + cassetteFacevalue + " Количество банкнот " + banknotesAmount;
     }
 
-
-/*   public int getBanknotesAmount() {
-        return banknotesAmount;
-    }
-
-    public FaceValue getCassetteFaceValue() {
-        return cassetteFaceValue;
-    }
-
-    public void setBanknotesAmount(int banknotesAmount) {
-        this.banknotesAmount = banknotesAmount;
-    }
-
-    //Количество денег в кассете
-    public int currentMoneyAmount() {
-        return banknotesAmount * cassetteFaceValue.getIntValue();
-    }
-
-    //Проверка остатка
-    boolean hasBanknotes() {
-        return getBanknotesAmount() > 0;
-    }
-
-    //Уменьшение остатка
-    public void decrementAmount() {
-        if (banknotesAmount > 0) {
-            banknotesAmount--;
-        }
-    }
-
-    //Временное сохранение кол-ва банкнот
-    public void savebanknotesAmount() {
-        temp_banknotesAmount = banknotesAmount;
-    }*/
 }
