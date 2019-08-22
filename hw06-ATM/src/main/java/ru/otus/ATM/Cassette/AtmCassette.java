@@ -1,12 +1,13 @@
 package ru.otus.ATM.Cassette;
 
+import ru.otus.ATM.Cassette.Exceptions.CassetteOutOfAmountException;
 import ru.otus.ATM.FaceValue;
 
 
 /**
  * @author Sergei Viacheslaev
  */
-public class AtmCassette {
+public final class AtmCassette {
     private final int CASSETTE_MAX_CAPACITY = 1000; //вместимость кассеты (MAX кол-во банкот)
     private final FaceValue CASSETTE_FACEVALUE;
 
@@ -14,9 +15,15 @@ public class AtmCassette {
     private int savedBanknotesAmount;
 
 
-    public AtmCassette(FaceValue cassetteFacevalue, int banknotesAmount) {
-        this.CASSETTE_FACEVALUE = cassetteFacevalue;
+    public AtmCassette(FaceValue cassetteFacevalue, int banknotesAmount) throws CassetteOutOfAmountException {
+        if (banknotesAmount < 0 || banknotesAmount > CASSETTE_MAX_CAPACITY) {
+
+            throw new CassetteOutOfAmountException("Неверно задано кол-во банкнот при создании кассеты");
+
+        }
         this.cassetteBanknotesAmount = banknotesAmount;
+        this.CASSETTE_FACEVALUE = cassetteFacevalue;
+
     }
 
     @Override

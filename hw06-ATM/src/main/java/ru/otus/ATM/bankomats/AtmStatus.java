@@ -1,4 +1,4 @@
-package ru.otus.ATM;
+package ru.otus.ATM.bankomats;
 
 import java.util.List;
 

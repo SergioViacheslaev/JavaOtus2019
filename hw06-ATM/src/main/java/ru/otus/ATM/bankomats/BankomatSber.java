@@ -1,11 +1,12 @@
 package ru.otus.ATM.bankomats;
 
 import ru.otus.ATM.*;
-import ru.otus.ATM.Cassette.AtmCassette;
-import ru.otus.ATM.Cassette.CassetteIsFullException;
-import ru.otus.ATM.Cassette.CassetteOutOfAmountException;
+import ru.otus.ATM.Cassette.Exceptions.CassetteIsFullException;
+import ru.otus.ATM.Cassette.Exceptions.CassetteOutOfAmountException;
 import ru.otus.ATM.Cassette.CassettesStorage;
-;import java.util.Map;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Sergei Viacheslaev
@@ -26,7 +27,12 @@ public class BankomatSber extends ATM {
 
     @Override
     public Map<FaceValue, Integer> giveCash(int cashAmount) {
-        return super.giveCash(cashAmount);
+        try {
+            return CASSETTES_STORAGE.giveBanknotes(cashAmount);
+        } catch (CassetteOutOfAmountException e) {
+            e.printStackTrace();
+            return Collections.emptyMap();
+        }
     }
 
     @Override
@@ -41,30 +47,8 @@ public class BankomatSber extends ATM {
 
     @Override
     public int getAtmCashBalance() {
-        return CASSETTES_STORAGE.getCassetteStorage().values().stream().mapToInt(AtmCassette::getCassetteCashBalance).sum();
+        return CASSETTES_STORAGE.getCassetesStorageBalance();
     }
-
-
-    /* @Override
-    public void printCassetteStorage() {
-        getCASSETTE_STORAGE().values().forEach(System.out::println);
-    }
-
-    @Override
-    public void showCurrentAtmCashBalance() {
-        System.out.printf("Текущий баланс наличных денег в банкомате: %d%n", getAtmCashBalance());
-    }
-
-    @Override
-    public int getAtmCashBalance() {
-        return calculateAtmCashBalance();
-    }
-
-
-
-    private int calculateAtmCashBalance() {
-        return getCassettesStorage().values().stream().mapToInt(AtmCassette::getCassetteCashBalance).sum();
-    }*/
 
 
 }
