@@ -7,11 +7,15 @@ import java.util.Map;
 /**
  * @author Sergei Viacheslaev
  */
-public abstract class ATM implements AtmStatus {
+public interface ATM {
+    void receiveCash(FaceValue faceValue, int banknotesAmount);
 
-    public abstract void receiveCash(FaceValue faceValue, int banknotesAmount);
+    Map<FaceValue, Integer> giveCash(int cashAmount);
 
-    public abstract Map<FaceValue, Integer> giveCash(int cashAmount);
+    void printCassetteStorage();
 
+    void showCurrentAtmCashBalance();
+
+    int getAtmCashBalance();
 
 }

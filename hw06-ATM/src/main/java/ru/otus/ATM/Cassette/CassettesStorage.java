@@ -46,8 +46,6 @@ public class CassettesStorage implements Cassette {
             return Collections.emptyMap();
 
         }
-
-
         return buildCashMap(cashAmount);
     }
 

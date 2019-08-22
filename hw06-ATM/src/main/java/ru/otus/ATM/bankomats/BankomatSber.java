@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author Sergei Viacheslaev
  */
-public class BankomatSber extends ATM {
+public class BankomatSber implements ATM {
     private final CassettesStorage CASSETTES_STORAGE = new CassettesStorage();
 
 

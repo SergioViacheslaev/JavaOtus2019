@@ -28,13 +28,11 @@ public class Main {
         bankomatSber.printCassetteStorage();
 
 
-
-
         bankomatSber.giveCash(2530);
         bankomatSber.showCurrentAtmCashBalance();
 
         //Проверка переполнения (максимальный лимит банкнот внутри каждой кассеты = 1000)
-        bankomatSber.receiveCash(FaceValue.ONE_HUNDRED,990);
+        bankomatSber.receiveCash(FaceValue.ONE_HUNDRED, 990);
 
     }
 }
