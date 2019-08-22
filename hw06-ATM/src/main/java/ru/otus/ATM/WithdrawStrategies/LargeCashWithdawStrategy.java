@@ -1,6 +1,6 @@
 package ru.otus.ATM.WithdrawStrategies;
 
-import ru.otus.ATM.Cassette;
+import ru.otus.ATM.Cassette.AtmCassette;
 import ru.otus.ATM.FaceValue;
 import ru.otus.ATM.bankomats.ATM;
 
@@ -10,14 +10,14 @@ import java.util.*;
  *
  * @author Sergei Viacheslaev
  */
-public class largeCashWithdawStrategy implements CashWithdrawStrategy {
+public class LargeCashWithdawStrategy implements CashWithdrawStrategy {
     private ATM atm;
-    private Map<Integer, Cassette> sortedCassettes;
+    private Map<Integer, AtmCassette> sortedCassettes;
 
-    public largeCashWithdawStrategy(ATM atm) {
+    public LargeCashWithdawStrategy(ATM atm) {
         this.atm = atm;
         sortedCassettes = new TreeMap<>(Comparator.reverseOrder());
-        sortedCassettes.putAll(atm.getCassettesStorage());
+       // sortedCassettes.putAll(atm.getCassettesStorage());
     }
 
     @Override
@@ -40,8 +40,8 @@ public class largeCashWithdawStrategy implements CashWithdrawStrategy {
 
         int sum = cashAmount;
 
-        for (Cassette cassette : sortedCassettes.values()) {
-            FaceValue faceValue = cassette.getCassetteFacevalue();
+        for (AtmCassette cassette : sortedCassettes.values()) {
+            FaceValue faceValue = cassette.getCASSETTE_FACEVALUE();
             cassette.saveBanknotesAmount();
 
             while (sum > 0 && faceValue.getIntValue() <= sum && cassette.hasBanknotes()) {
@@ -54,7 +54,7 @@ public class largeCashWithdawStrategy implements CashWithdrawStrategy {
         }
 
         if (sum > 0) {
-            sortedCassettes.values().forEach(Cassette::restoreBaknotesAmount);
+            sortedCassettes.values().forEach(AtmCassette::restoreBaknotesAmount);
             System.out.printf("Сумма %d не может быть выдана !%n", cashAmount);
             return Collections.emptyMap();
         }

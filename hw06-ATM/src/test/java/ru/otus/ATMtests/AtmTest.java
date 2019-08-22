@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.ATM.FaceValue;
-import ru.otus.ATM.WithdrawStrategies.largeCashWithdawStrategy;
+import ru.otus.ATM.WithdrawStrategies.LargeCashWithdawStrategy;
 import ru.otus.ATM.bankomats.ATM;
 import ru.otus.ATM.bankomats.BankomatSber;
 
@@ -20,7 +20,7 @@ class AtmTest {
     @BeforeEach
     void init() {
         atm = new BankomatSber();
-        atm.setCashWithdrawStrategy(new largeCashWithdawStrategy(atm));
+        atm.setCashWithdrawStrategy(new LargeCashWithdawStrategy(atm));
         atm.receiveCash(FaceValue.ONE_THOUSAND, 100);
         atm.receiveCash(FaceValue.FIVE_THOUSAND, 10);
         atm.receiveCash(FaceValue.THREE_THOUSAND, 10);
