@@ -1,4 +1,4 @@
-package ru.otus.ATM.Cassette.Exceptions;
+package ru.otus.ATM.Cassette.exceptions;
 
 /**
  * @author Sergei Viacheslaev

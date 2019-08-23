@@ -1,8 +1,8 @@
 package ru.otus.ATM.bankomats;
 
 import ru.otus.ATM.*;
-import ru.otus.ATM.Cassette.Exceptions.CassetteIsFullException;
-import ru.otus.ATM.Cassette.Exceptions.CassetteOutOfAmountException;
+import ru.otus.ATM.Cassette.exceptions.CassetteIsFullException;
+import ru.otus.ATM.Cassette.exceptions.CassetteOutOfAmountException;
 import ru.otus.ATM.Cassette.CassettesStorage;
 
 import java.util.Collections;

@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.ATM.Cassette.CassettesStorage;
-import ru.otus.ATM.Cassette.Exceptions.CassetteIsFullException;
-import ru.otus.ATM.Cassette.Exceptions.CassetteOutOfAmountException;
+import ru.otus.ATM.Cassette.exceptions.CassetteIsFullException;
+import ru.otus.ATM.Cassette.exceptions.CassetteOutOfAmountException;
 import ru.otus.ATM.FaceValue;
 
 /**
