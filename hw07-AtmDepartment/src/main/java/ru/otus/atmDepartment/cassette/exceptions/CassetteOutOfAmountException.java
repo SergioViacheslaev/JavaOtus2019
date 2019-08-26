@@ -1,4 +1,4 @@
-package ru.otus.AtmDepartment.Cassette.exceptions;
+package ru.otus.atmDepartment.cassette.exceptions;
 
 /**
  * @author Sergei Viacheslaev

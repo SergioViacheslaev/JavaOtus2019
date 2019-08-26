@@ -1,13 +1,15 @@
-package ru.otus.AtmDepartment.Cassette;
+package ru.otus.atmDepartment.cassette;
 
 
-import ru.otus.AtmDepartment.Cassette.exceptions.CassetteOutOfAmountException;
-import ru.otus.AtmDepartment.FaceValue;
+import ru.otus.atmDepartment.cassette.exceptions.CassetteOutOfAmountException;
+import ru.otus.atmDepartment.FaceValue;
+
+import java.io.Serializable;
 
 /**
  * @author Sergei Viacheslaev
  */
-public final class AtmCassette {
+public final class AtmCassette implements Serializable {
     private final int CASSETTE_MAX_CAPACITY = 1000; //вместимость кассеты (MAX кол-во банкот)
     private final FaceValue CASSETTE_FACEVALUE;
 

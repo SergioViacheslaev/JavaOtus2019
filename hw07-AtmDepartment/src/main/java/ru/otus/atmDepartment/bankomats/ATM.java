@@ -1,8 +1,10 @@
-package ru.otus.AtmDepartment.bankomats;
+package ru.otus.atmDepartment.bankomats;
 
 
-import ru.otus.AtmDepartment.Cassette.CassettesStorage;
-import ru.otus.AtmDepartment.FaceValue;
+import ru.otus.atmDepartment.atmStates.AtmStartState;
+import ru.otus.atmDepartment.cassette.CassettesStorage;
+import ru.otus.atmDepartment.FaceValue;
+import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
 
 import java.util.Map;
 
@@ -25,5 +27,9 @@ public interface ATM {
     void setWithdrawStrategy(WithdrawStrategy withdrawStrategy);
 
     CassettesStorage getCassettesStorage();
+
+    void setAtmStartState();
+
+    void restoreAtmToStartState();
 
 }

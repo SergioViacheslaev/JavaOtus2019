@@ -1,10 +1,11 @@
-package ru.otus.AtmDepartment.Cassette;
+package ru.otus.atmDepartment.cassette;
 
 
-import ru.otus.AtmDepartment.Cassette.exceptions.CassetteIsFullException;
-import ru.otus.AtmDepartment.Cassette.exceptions.CassetteOutOfAmountException;
-import ru.otus.AtmDepartment.FaceValue;
+import ru.otus.atmDepartment.cassette.exceptions.CassetteIsFullException;
+import ru.otus.atmDepartment.cassette.exceptions.CassetteOutOfAmountException;
+import ru.otus.atmDepartment.FaceValue;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -12,7 +13,7 @@ import java.util.*;
  *
  * @author Sergei Viacheslaev
  */
-public class CassettesStorage implements Cassette {
+public class CassettesStorage implements Cassette, Serializable {
     private final Map<Integer, AtmCassette> CASSETTE_STORAGE = new TreeMap<>(); // номинал/кассета
 
     public CassettesStorage() {

@@ -1,9 +1,9 @@
-package ru.otus.AtmDepartment.bankomats;
+package ru.otus.atmDepartment.withdrawStrategies;
 
-import ru.otus.AtmDepartment.Cassette.AtmCassette;
-import ru.otus.AtmDepartment.Cassette.CassettesStorage;
-import ru.otus.AtmDepartment.Cassette.exceptions.CassetteOutOfAmountException;
-import ru.otus.AtmDepartment.FaceValue;
+import ru.otus.atmDepartment.cassette.AtmCassette;
+import ru.otus.atmDepartment.cassette.CassettesStorage;
+import ru.otus.atmDepartment.cassette.exceptions.CassetteOutOfAmountException;
+import ru.otus.atmDepartment.FaceValue;
 
 import java.util.*;
 

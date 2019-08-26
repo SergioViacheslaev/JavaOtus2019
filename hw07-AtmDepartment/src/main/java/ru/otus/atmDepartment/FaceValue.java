@@ -1,4 +1,4 @@
-package ru.otus.AtmDepartment;
+package ru.otus.atmDepartment;
 
 /**
  * Номинал банкноты
