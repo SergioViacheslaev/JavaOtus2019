@@ -1,14 +1,14 @@
 package ru.otus.atmDepartment.atmStates;
 
 import ru.otus.atmDepartment.bankomats.ATM;
-import ru.otus.atmDepartment.cassette.CassettesStorage;
-import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-/**
+/**Начальное состояние банкомата,
+ * хранится в массиве байт
+ *
  * @author Sergei Viacheslaev
  */
 public class AtmStartState {

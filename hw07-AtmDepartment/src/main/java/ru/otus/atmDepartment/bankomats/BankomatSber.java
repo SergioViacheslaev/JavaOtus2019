@@ -38,11 +38,13 @@ public class BankomatSber implements ATM, Serializable {
 
     }
 
+    //Назначать текущее состояние- начальным
     @Override
     public void setAtmStartState() {
         atmStartState = new AtmStartState(this);
     }
 
+    //Восстановить состояние к начальному
     @Override
     public void restoreAtmToStartState() {
         byte[] buffer = atmStartState.getAtmStartState();
@@ -76,7 +78,7 @@ public class BankomatSber implements ATM, Serializable {
     public void receiveCash(FaceValue faceValue, int banknotesAmount) {
         try {
             cassettes_storage.receiveBanknotes(faceValue, banknotesAmount);
-            System.out.printf("Банкомат успешно принял сумму %d%n", banknotesAmount * faceValue.getIntValue());
+            System.out.printf("Банкомат %s успешно принял сумму %d%n", atmID, banknotesAmount * faceValue.getIntValue());
         } catch (CassetteIsFullException | CassetteOutOfAmountException e) {
             e.printStackTrace();
         }
