@@ -1,6 +1,7 @@
 package ru.otus.AtmDepartment.bankomats;
 
 
+import ru.otus.AtmDepartment.Cassette.CassettesStorage;
 import ru.otus.AtmDepartment.FaceValue;
 
 import java.util.Map;
@@ -18,5 +19,11 @@ public interface ATM {
     void showCurrentAtmCashBalance();
 
     int getAtmCashBalance();
+
+    String getAtmID();
+
+    void setWithdrawStrategy(WithdrawStrategy withdrawStrategy);
+
+    CassettesStorage getCassettesStorage();
 
 }

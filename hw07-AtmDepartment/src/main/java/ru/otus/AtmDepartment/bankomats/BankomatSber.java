@@ -15,9 +15,27 @@ import java.util.Map;
 public class BankomatSber implements ATM {
     private final CassettesStorage CASSETTES_STORAGE = new CassettesStorage();
     private String atmID;
+    private WithdrawStrategy withdrawStrategy;
 
-    public BankomatSber(String atmID) {
+
+    public BankomatSber(String atmID, WithdrawStrategy withdrawStrategy) {
         this.atmID = atmID;
+        this.withdrawStrategy = withdrawStrategy;
+    }
+
+    @Override
+    public String getAtmID() {
+        return atmID;
+    }
+
+    @Override
+    public void setWithdrawStrategy(WithdrawStrategy withdrawStrategy) {
+        this.withdrawStrategy = withdrawStrategy;
+    }
+
+    @Override
+    public CassettesStorage getCassettesStorage() {
+        return CASSETTES_STORAGE;
     }
 
     @Override
@@ -32,13 +50,16 @@ public class BankomatSber implements ATM {
 
     @Override
     public Map<FaceValue, Integer> giveCash(int cashAmount) {
+
+
         try {
-            return CASSETTES_STORAGE.giveBanknotes(cashAmount);
+            return withdrawStrategy.withdrawCash(CASSETTES_STORAGE, cashAmount);
         } catch (CassetteOutOfAmountException e) {
             e.printStackTrace();
             return Collections.emptyMap();
         }
-    }
+
+     }
 
     @Override
     public void printCassetteStorage() {
@@ -47,7 +68,7 @@ public class BankomatSber implements ATM {
 
     @Override
     public void showCurrentAtmCashBalance() {
-        System.out.printf("Текущий баланс наличных денег в банкомате: %d%n", getAtmCashBalance());
+        System.out.printf("Текущий баланс наличных денег в банкомате %s: %d%n", atmID, getAtmCashBalance());
     }
 
     @Override
@@ -59,4 +80,6 @@ public class BankomatSber implements ATM {
     public String toString() {
         return atmID;
     }
+
+
 }

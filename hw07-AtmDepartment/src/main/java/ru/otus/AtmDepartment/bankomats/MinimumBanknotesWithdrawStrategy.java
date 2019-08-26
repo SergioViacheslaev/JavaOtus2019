@@ -1,0 +1,60 @@
+package ru.otus.AtmDepartment.bankomats;
+
+import ru.otus.AtmDepartment.Cassette.AtmCassette;
+import ru.otus.AtmDepartment.Cassette.CassettesStorage;
+import ru.otus.AtmDepartment.Cassette.exceptions.CassetteOutOfAmountException;
+import ru.otus.AtmDepartment.FaceValue;
+
+import java.util.*;
+
+/**
+ * @author Sergei Viacheslaev
+ */
+public class MinimumBanknotesWithdrawStrategy implements WithdrawStrategy {
+    private CassettesStorage cassettesStorage;
+
+    @Override
+    public Map<FaceValue, Integer> withdrawCash(CassettesStorage cassettesStorage, int cashAmount) throws CassetteOutOfAmountException {
+        if (cashAmount > cassettesStorage.getCassetesStorageBalance()) {
+            throw new CassetteOutOfAmountException("В банкомате недостаточно средств для выдачи !");
+        } else if (cashAmount <= 0) {
+            System.out.println("Проверьте введенную сумму !");
+            return Collections.emptyMap();
+
+        }
+
+        this.cassettesStorage = cassettesStorage;
+        return buildCashMap(cashAmount);
+    }
+
+    private Map<FaceValue, Integer> buildCashMap(int cashAmount) {
+        Map<Integer, AtmCassette> sortedCassettes = new TreeMap<>(Comparator.reverseOrder());
+        Map<FaceValue, Integer> cashMap = new HashMap<>();
+        sortedCassettes.putAll(cassettesStorage.getCassetteStorage());
+        int sum = cashAmount;
+
+        for (AtmCassette cassette : sortedCassettes.values()) {
+            FaceValue faceValue = cassette.getCASSETTE_FACEVALUE();
+            cassette.saveBanknotesAmount();
+
+            while (sum > 0 && faceValue.getIntValue() <= sum && cassette.hasBanknotes()) {
+                Integer num = cashMap.getOrDefault(faceValue, 0);
+                cashMap.put(faceValue, num + 1);
+                sum -= faceValue.getIntValue();
+                cassette.decrementBanknotesAmount();
+            }
+            if (sum == 0) break;
+        }
+
+        if (sum > 0) {
+            sortedCassettes.values().forEach(AtmCassette::restoreBaknotesAmount);
+            System.out.printf("Сумма %d не может быть выдана !%n", cashAmount);
+            return Collections.emptyMap();
+        }
+
+        System.out.printf("Успешно выдано %d денежных средств, купюрами: %n", cashAmount);
+        cashMap.forEach((faceValue, amount) -> System.out.printf("Номинал %s Количество %d%n", faceValue, amount));
+
+        return cashMap;
+    }
+}

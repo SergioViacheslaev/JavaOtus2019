@@ -18,6 +18,21 @@ public class Main {
 
         sberAtmDepartment.getAtmList().forEach(System.out::println);
 
+        ATM bankomat3 = sberAtmDepartment.getAtm("SberATM#3");
+
+        bankomat3.showCurrentAtmCashBalance();
+        bankomat3.receiveCash(FaceValue.ONE_THOUSAND,100);
+        bankomat3.printCassetteStorage();
+        bankomat3.showCurrentAtmCashBalance();
+        bankomat3.giveCash(5900);
+        bankomat3.showCurrentAtmCashBalance();
+
+
+        ATM bankomat5 = sberAtmDepartment.getAtm("SberATM#5");
+        bankomat5.showCurrentAtmCashBalance();
+
+
+
 
 
 /*

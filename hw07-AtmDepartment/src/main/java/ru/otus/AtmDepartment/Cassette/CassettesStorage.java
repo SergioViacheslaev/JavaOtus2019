@@ -38,17 +38,6 @@ public class CassettesStorage implements Cassette {
         cassette.setCassetteBanknotesAmount(cassette.getCassetteBanknotesAmount() + banknotesAmount);
     }
 
-    @Override
-    public Map<FaceValue, Integer> giveBanknotes(int cashAmount) throws CassetteOutOfAmountException {
-        if (cashAmount > getCassetesStorageBalance()) {
-            throw new CassetteOutOfAmountException("В банкомате недостаточно средств для выдачи !");
-        } else if (cashAmount <= 0) {
-            System.out.println("Проверьте введенную сумму !");
-            return Collections.emptyMap();
-
-        }
-        return buildCashMap(cashAmount);
-    }
 
     public Map<Integer, AtmCassette> getCassetteStorage() {
         return CASSETTE_STORAGE;
@@ -58,36 +47,7 @@ public class CassettesStorage implements Cassette {
         return CASSETTE_STORAGE.values().stream().mapToInt(AtmCassette::getCassetteCashBalance).sum();
     }
 
-    private Map<FaceValue, Integer> buildCashMap(int cashAmount) {
-        Map<Integer, AtmCassette> sortedCassettes = new TreeMap<>(Comparator.reverseOrder());
-        Map<FaceValue, Integer> cashMap = new HashMap<>();
-        sortedCassettes.putAll(CASSETTE_STORAGE);
-        int sum = cashAmount;
 
-        for (AtmCassette cassette : sortedCassettes.values()) {
-            FaceValue faceValue = cassette.getCASSETTE_FACEVALUE();
-            cassette.saveBanknotesAmount();
-
-            while (sum > 0 && faceValue.getIntValue() <= sum && cassette.hasBanknotes()) {
-                Integer num = cashMap.getOrDefault(faceValue, 0);
-                cashMap.put(faceValue, num + 1);
-                sum -= faceValue.getIntValue();
-                cassette.decrementBanknotesAmount();
-            }
-            if (sum == 0) break;
-        }
-
-        if (sum > 0) {
-            sortedCassettes.values().forEach(AtmCassette::restoreBaknotesAmount);
-            System.out.printf("Сумма %d не может быть выдана !%n", cashAmount);
-            return Collections.emptyMap();
-        }
-
-        System.out.printf("Успешно выдано %d денежных средств, купюрами: %n", cashAmount);
-        cashMap.forEach((faceValue, amount) -> System.out.printf("Номинал %s Количество %d%n", faceValue, amount));
-
-        return cashMap;
-    }
 
     private void initializeCassettesStorage(FaceValue... faceValues) throws CassetteOutOfAmountException {
         for (FaceValue faceValue : faceValues) {

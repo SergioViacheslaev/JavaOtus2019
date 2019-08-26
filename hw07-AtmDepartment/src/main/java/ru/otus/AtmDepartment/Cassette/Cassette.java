@@ -14,6 +14,6 @@ public interface Cassette {
     void receiveBanknotes(FaceValue faceValue, int banknotesAmount) throws CassetteIsFullException,
             CassetteOutOfAmountException;
 
-    Map<FaceValue, Integer> giveBanknotes(int cashAmount) throws CassetteOutOfAmountException;
+   // Map<FaceValue, Integer> giveBanknotes(int cashAmount) throws CassetteOutOfAmountException;
 
 }
