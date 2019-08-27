@@ -1,12 +1,12 @@
 package ru.otus.atmDepartment.atmStates;
 
 import ru.otus.atmDepartment.bankomats.ATM;
-
 import java.io.*;
 
 /**
  * Начальное состояние банкомата,
  * Хранится в массиве.
+ * Возвращается в виде объекта.
  *
  * @author Sergei Viacheslaev
  */

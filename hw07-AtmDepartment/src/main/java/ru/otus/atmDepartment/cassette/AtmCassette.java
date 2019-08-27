@@ -1,9 +1,7 @@
 package ru.otus.atmDepartment.cassette;
 
-
 import ru.otus.atmDepartment.exceptions.CassetteOutOfAmountException;
 import ru.otus.atmDepartment.FaceValue;
-
 import java.io.Serializable;
 
 

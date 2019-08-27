@@ -9,8 +9,6 @@ import ru.otus.atmDepartment.exceptions.CassetteOutOfAmountException;
 import ru.otus.atmDepartment.withdrawStrategies.MinimumBanknotesWithdrawStrategy;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
 
-
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
@@ -52,8 +50,6 @@ public class BankomatSber implements ATM, Serializable {
         BankomatSber savedStartState = (BankomatSber) atmStartState.getSavedStartState();
         cassettes_storage = savedStartState.cassettes_storage;
         withdrawStrategy = savedStartState.withdrawStrategy;
-
-
     }
 
 
@@ -89,8 +85,6 @@ public class BankomatSber implements ATM, Serializable {
 
     @Override
     public Map<FaceValue, Integer> giveCash(int cashAmount) {
-
-
         try {
             return withdrawStrategy.withdrawCash(cassettes_storage, cashAmount);
         } catch (CassetteOutOfAmountException e) {

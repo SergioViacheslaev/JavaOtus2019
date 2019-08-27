@@ -4,7 +4,6 @@ package ru.otus.atmDepartment.bankomats;
 import ru.otus.atmDepartment.cassette.CassettesStorage;
 import ru.otus.atmDepartment.FaceValue;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
-
 import java.util.Map;
 
 /**
