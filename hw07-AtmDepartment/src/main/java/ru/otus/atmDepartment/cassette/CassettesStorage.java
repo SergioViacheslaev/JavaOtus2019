@@ -1,8 +1,8 @@
 package ru.otus.atmDepartment.cassette;
 
 
-import ru.otus.atmDepartment.cassette.exceptions.CassetteIsFullException;
-import ru.otus.atmDepartment.cassette.exceptions.CassetteOutOfAmountException;
+import ru.otus.atmDepartment.exceptions.CassetteIsFullException;
+import ru.otus.atmDepartment.exceptions.CassetteOutOfAmountException;
 import ru.otus.atmDepartment.FaceValue;
 
 import java.io.Serializable;
@@ -13,7 +13,7 @@ import java.util.*;
  *
  * @author Sergei Viacheslaev
  */
-public class CassettesStorage implements Cassette, Serializable {
+public class CassettesStorage implements Cassette, Serializable  {
     private final Map<Integer, AtmCassette> CASSETTE_STORAGE = new TreeMap<>(); // номинал/кассета
 
     public CassettesStorage() {
@@ -22,6 +22,11 @@ public class CassettesStorage implements Cassette, Serializable {
         } catch (CassetteOutOfAmountException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public CassettesStorage clone() throws CloneNotSupportedException {
+        return (CassettesStorage) super.clone();
     }
 
     @Override
@@ -47,7 +52,6 @@ public class CassettesStorage implements Cassette, Serializable {
     public int getCassetesStorageBalance() {
         return CASSETTE_STORAGE.values().stream().mapToInt(AtmCassette::getCassetteCashBalance).sum();
     }
-
 
 
     private void initializeCassettesStorage(FaceValue... faceValues) throws CassetteOutOfAmountException {

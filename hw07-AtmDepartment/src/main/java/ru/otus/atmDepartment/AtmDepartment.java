@@ -4,6 +4,7 @@ import ru.otus.atmDepartment.bankomats.ATM;
 import ru.otus.atmDepartment.bankomats.BankomatSber;
 import ru.otus.atmDepartment.withdrawStrategies.MinimumBanknotesWithdrawStrategy;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
+import ru.otus.atmDepartment.exceptions.NoSuchAtmException;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -33,15 +34,19 @@ public class AtmDepartment {
         return atmList;
     }
 
-    public ATM getAtm(String atmID) {
-        for (ATM atm : atmList) {
-            if (atm.getAtmID().equalsIgnoreCase(atmID)) {
-                return atm;
-            }
 
+    public ATM getAtm(String atmID) {
+        ATM atmObj = null;
+        try {
+            atmObj = atmList.stream().filter(atm -> atm.getAtmID().equalsIgnoreCase(atmID))
+                    .findFirst().orElseThrow(() -> new NoSuchAtmException(atmID));
+        } catch (NoSuchAtmException e) {
+            e.printStackTrace();
         }
-        return null;
+        return atmObj;
+
     }
+
 
     public int getAtmsTotalCashAmount() {
         return atmList.stream().mapToInt(ATM::getAtmCashBalance).sum();
@@ -64,6 +69,7 @@ public class AtmDepartment {
 
     public void restoreAllAtmsToStartState() {
         atmList.forEach(ATM::restoreAtmToStartState);
+        System.out.println("Все банкоматы восстановлены в начальное состояние.");
     }
 
 

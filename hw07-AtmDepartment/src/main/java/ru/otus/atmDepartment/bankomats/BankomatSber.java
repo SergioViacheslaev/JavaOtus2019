@@ -3,15 +3,14 @@ package ru.otus.atmDepartment.bankomats;
 
 import ru.otus.atmDepartment.atmStates.AtmStartState;
 import ru.otus.atmDepartment.cassette.CassettesStorage;
-import ru.otus.atmDepartment.cassette.exceptions.CassetteIsFullException;
-import ru.otus.atmDepartment.cassette.exceptions.CassetteOutOfAmountException;
 import ru.otus.atmDepartment.FaceValue;
+import ru.otus.atmDepartment.exceptions.CassetteIsFullException;
+import ru.otus.atmDepartment.exceptions.CassetteOutOfAmountException;
 import ru.otus.atmDepartment.withdrawStrategies.MinimumBanknotesWithdrawStrategy;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
@@ -21,14 +20,15 @@ import java.util.Map;
  */
 public class BankomatSber implements ATM, Serializable {
     private CassettesStorage cassettes_storage = new CassettesStorage();
-    private transient final String atmID;
     private WithdrawStrategy withdrawStrategy;
+    private transient String atmID;
     private transient AtmStartState atmStartState;
+
 
     public BankomatSber(String atmID) {
         this.atmID = atmID;
         this.withdrawStrategy = new MinimumBanknotesWithdrawStrategy();
-        this.atmStartState = new AtmStartState(this);
+        setAtmStartState();
     }
 
     public BankomatSber(String atmID, WithdrawStrategy withdrawStrategy) {
@@ -38,30 +38,33 @@ public class BankomatSber implements ATM, Serializable {
 
     }
 
-    //Назначать текущее состояние- начальным
+
+    //Установить текущее состояние- начальным
     @Override
     public void setAtmStartState() {
         atmStartState = new AtmStartState(this);
+
     }
 
     //Восстановить состояние к начальному
     @Override
     public void restoreAtmToStartState() {
-        byte[] buffer = atmStartState.getAtmStartState();
-        try (ByteArrayInputStream readBuffer = new ByteArrayInputStream(buffer);
-             ObjectInputStream inputStream = new ObjectInputStream(readBuffer);) {
-            BankomatSber sberStartState = (BankomatSber) inputStream.readObject();
-            cassettes_storage = sberStartState.cassettes_storage;
-            withdrawStrategy = sberStartState.withdrawStrategy;
+        BankomatSber savedStartState = (BankomatSber) atmStartState.getSavedStartState();
+        cassettes_storage = savedStartState.cassettes_storage;
+        withdrawStrategy = savedStartState.withdrawStrategy;
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+
     }
+
 
     @Override
     public String getAtmID() {
         return atmID;
+    }
+
+    @Override
+    public WithdrawStrategy getWithdrawStrategy() {
+        return withdrawStrategy;
     }
 
     @Override

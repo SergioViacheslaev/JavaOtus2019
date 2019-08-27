@@ -2,7 +2,7 @@ package ru.otus.atmDepartment.withdrawStrategies;
 
 import ru.otus.atmDepartment.cassette.AtmCassette;
 import ru.otus.atmDepartment.cassette.CassettesStorage;
-import ru.otus.atmDepartment.cassette.exceptions.CassetteOutOfAmountException;
+import ru.otus.atmDepartment.exceptions.CassetteOutOfAmountException;
 import ru.otus.atmDepartment.FaceValue;
 
 import java.util.*;
