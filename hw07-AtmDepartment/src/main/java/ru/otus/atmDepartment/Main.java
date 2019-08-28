@@ -2,6 +2,7 @@ package ru.otus.atmDepartment;
 
 
 import ru.otus.atmDepartment.bankomats.ATM;
+import ru.otus.atmDepartment.exceptions.NoSuchAtmException;
 
 
 /**
@@ -12,31 +13,37 @@ public class Main {
     public static void main(String[] args) {
 
 
-        AtmDepartment sberAtmDepartment = new AtmDepartment();
-        sberAtmDepartment.getAtmList().forEach(System.out::println);
-        sberAtmDepartment.showAtmsTotalCashAmount();
+        try {
+            AtmDepartment sberAtmDepartment = new AtmDepartment();
+            sberAtmDepartment.getAtmList().forEach(System.out::println);
+            sberAtmDepartment.showAtmsTotalCashAmount();
 
 
-        ATM atm1 = sberAtmDepartment.getAtm("sberatm#1");
+            ATM atm1 = sberAtmDepartment.getAtm("sberatm#1");
 
-        atm1.giveCash(300_000);
 
-        sberAtmDepartment.showAtmsTotalCashAmount();
-        sberAtmDepartment.restoreAllAtmsToStartState();
-        sberAtmDepartment.showAtmsTotalCashAmount();
+            atm1.giveCash(300_000);
 
-        atm1.receiveCash(FaceValue.ONE_THOUSAND, 77);
-        sberAtmDepartment.showAtmsTotalCashAmount();
+            sberAtmDepartment.showAtmsTotalCashAmount();
+            sberAtmDepartment.restoreAllAtmsToStartState();
+            sberAtmDepartment.showAtmsTotalCashAmount();
 
-        sberAtmDepartment.restoreAllAtmsToStartState();
-        sberAtmDepartment.showAtmsTotalCashAmount();
+            atm1.receiveCash(FaceValue.ONE_THOUSAND, 77);
+            sberAtmDepartment.showAtmsTotalCashAmount();
 
-        ATM atm3 = sberAtmDepartment.getAtm("sberatm#3");
-        atm3.giveCash(245_000);
+            sberAtmDepartment.restoreAllAtmsToStartState();
+            sberAtmDepartment.showAtmsTotalCashAmount();
 
-        sberAtmDepartment.showAtmsTotalCashAmount();
-        sberAtmDepartment.restoreAllAtmsToStartState();
-        sberAtmDepartment.showAtmsTotalCashAmount();
+            ATM atm3 = sberAtmDepartment.getAtm("sberatm#3");
+
+            atm3.giveCash(245_000);
+
+            sberAtmDepartment.showAtmsTotalCashAmount();
+            sberAtmDepartment.restoreAllAtmsToStartState();
+            sberAtmDepartment.showAtmsTotalCashAmount();
+        } catch (NoSuchAtmException e) {
+            e.printStackTrace();
+        }
 
 
     }

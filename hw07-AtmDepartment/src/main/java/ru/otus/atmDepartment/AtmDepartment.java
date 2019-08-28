@@ -41,15 +41,10 @@ public class AtmDepartment {
         return atmList;
     }
 
-    public ATM getAtm(String atmID) {
-        ATM atmObj = null;
-        try {
-            atmObj = atmList.stream().filter(atm -> atm.getAtmID().equalsIgnoreCase(atmID))
+    public ATM getAtm(String atmID) throws NoSuchAtmException {
+
+       return atmList.stream().filter(atm -> atm.getAtmID().equalsIgnoreCase(atmID))
                     .findFirst().orElseThrow(() -> new NoSuchAtmException(atmID));
-        } catch (NoSuchAtmException e) {
-            e.printStackTrace();
-        }
-        return atmObj;
 
     }
 
