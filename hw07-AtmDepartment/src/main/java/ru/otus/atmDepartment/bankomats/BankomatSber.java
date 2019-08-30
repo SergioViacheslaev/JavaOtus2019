@@ -6,6 +6,7 @@ import ru.otus.atmDepartment.cassette.CassettesStorage;
 import ru.otus.atmDepartment.FaceValue;
 import ru.otus.atmDepartment.exceptions.CassetteIsFullException;
 import ru.otus.atmDepartment.exceptions.CassetteOutOfAmountException;
+import ru.otus.atmDepartment.visitors.Visitor;
 import ru.otus.atmDepartment.withdrawStrategies.MinimumBanknotesWithdrawStrategy;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
 
@@ -36,6 +37,10 @@ public class BankomatSber implements ATM, Serializable {
 
     }
 
+    @Override
+    public void acceptVisitor(Visitor visitor) {
+        visitor.visit(this);
+    }
 
     //Установить текущее состояние- начальным
     @Override

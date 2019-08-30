@@ -1,10 +1,10 @@
 package ru.otus.atmDepartment.visitors;
 
-import ru.otus.atmDepartment.AtmDepartment;
+import ru.otus.atmDepartment.bankomats.ATM;
 
 /**
  * @author Sergei Viacheslaev
  */
 public interface Visitor {
-    void visit(AtmDepartment atmDepartment);
+    void visit(ATM atm);
 }

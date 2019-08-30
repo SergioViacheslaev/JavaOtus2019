@@ -3,13 +3,15 @@ package ru.otus.atmDepartment.bankomats;
 
 import ru.otus.atmDepartment.cassette.CassettesStorage;
 import ru.otus.atmDepartment.FaceValue;
+import ru.otus.atmDepartment.visitors.Visitor;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
+
 import java.util.Map;
 
 /**
  * @author Sergei Viacheslaev
  */
-public interface ATM  {
+public interface ATM {
     void receiveCash(FaceValue faceValue, int banknotesAmount);
 
     Map<FaceValue, Integer> giveCash(int cashAmount);
@@ -31,5 +33,7 @@ public interface ATM  {
     void setAtmStartState();
 
     void restoreAtmToStartState();
+
+    void acceptVisitor(Visitor visitor);
 
 }

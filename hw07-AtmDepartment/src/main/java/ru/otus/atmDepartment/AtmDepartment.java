@@ -6,12 +6,12 @@ import ru.otus.atmDepartment.visitors.TotalAtmsCashBalanceVisitor;
 import ru.otus.atmDepartment.visitors.Visitor;
 import ru.otus.atmDepartment.withdrawStrategies.MinimumBanknotesWithdrawStrategy;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
-import ru.otus.atmDepartment.exceptions.NoSuchAtmException;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Sergei Viacheslaev
@@ -20,7 +20,7 @@ public class AtmDepartment {
     private List<ATM> atmList = new ArrayList<>();
     private final int DEFAULT_ATM_NUMBER = 5;
     private final WithdrawStrategy DEFAULT_WITHDRAW_STRATEGY = new MinimumBanknotesWithdrawStrategy();
-    private int totalAtmsCashAmount;
+    private Visitor ATMS_CASHBALANCE_VISITOR = new TotalAtmsCashBalanceVisitor();
 
     public AtmDepartment() {
         for (int i = 0; i < DEFAULT_ATM_NUMBER; i++) {
@@ -29,9 +29,6 @@ public class AtmDepartment {
         }
     }
 
-    public void setTotalAtmsCashAmount(int totalAtmsCashAmount) {
-        this.totalAtmsCashAmount = totalAtmsCashAmount;
-    }
 
     public void addAtm(ATM atm) {
         atmList.add(atm);
@@ -41,17 +38,17 @@ public class AtmDepartment {
         return atmList;
     }
 
-    public ATM getAtm(String atmID) throws NoSuchAtmException {
+    public Optional<ATM> getAtm(String atmID) {
+        return atmList.stream().filter(atm -> atm.getAtmID().equalsIgnoreCase(atmID)).findFirst();
 
-       return atmList.stream().filter(atm -> atm.getAtmID().equalsIgnoreCase(atmID))
-                    .findFirst().orElseThrow(() -> new NoSuchAtmException(atmID));
 
     }
 
 
     public int getAtmsTotalCashAmount() {
-        acceptVisitor(new TotalAtmsCashBalanceVisitor());
-        return totalAtmsCashAmount;
+        atmList.forEach(atm -> atm.acceptVisitor(ATMS_CASHBALANCE_VISITOR));
+
+        return ((TotalAtmsCashBalanceVisitor) ATMS_CASHBALANCE_VISITOR).getTotalAtmsCashBalance();
     }
 
     public void showAtmsTotalCashAmount() {
@@ -71,11 +68,7 @@ public class AtmDepartment {
 
     public void restoreAllAtmsToStartState() {
         atmList.forEach(ATM::restoreAtmToStartState);
-        System.out.println("Все банкоматы восстановлены в начальное состояние.");
-    }
-
-    public void acceptVisitor(Visitor visitor) {
-        visitor.visit(this);
+        System.err.println("Все банкоматы восстановлены в начальное состояние.");
     }
 
 

@@ -2,7 +2,9 @@ package ru.otus.atmDepartment;
 
 
 import ru.otus.atmDepartment.bankomats.ATM;
-import ru.otus.atmDepartment.exceptions.NoSuchAtmException;
+
+import java.sql.SQLOutput;
+import java.util.Optional;
 
 
 /**
@@ -13,37 +15,36 @@ public class Main {
     public static void main(String[] args) {
 
 
-        try {
-            AtmDepartment sberAtmDepartment = new AtmDepartment();
-            sberAtmDepartment.getAtmList().forEach(System.out::println);
-            sberAtmDepartment.showAtmsTotalCashAmount();
+        AtmDepartment sberAtmDepartment = new AtmDepartment();
+        sberAtmDepartment.getAtmList().forEach(System.out::println);
+        sberAtmDepartment.showAtmsTotalCashAmount();
 
 
-            ATM atm1 = sberAtmDepartment.getAtm("sberatm#1");
+        Optional<ATM> optionalAtm1 = sberAtmDepartment.getAtm("sberatm#1");
+        optionalAtm1.ifPresentOrElse(atm -> atm.giveCash(155_000), () -> System.out.println("Нет такого банкомата !"));
 
 
-            atm1.giveCash(300_000);
+        ATM atm1 =  optionalAtm1.orElseThrow(()->new RuntimeException("Такого банкомата не существует !"));
 
-            sberAtmDepartment.showAtmsTotalCashAmount();
-            sberAtmDepartment.restoreAllAtmsToStartState();
-            sberAtmDepartment.showAtmsTotalCashAmount();
 
-            atm1.receiveCash(FaceValue.ONE_THOUSAND, 77);
-            sberAtmDepartment.showAtmsTotalCashAmount();
 
-            sberAtmDepartment.restoreAllAtmsToStartState();
-            sberAtmDepartment.showAtmsTotalCashAmount();
+        sberAtmDepartment.showAtmsTotalCashAmount();
+        sberAtmDepartment.restoreAllAtmsToStartState();
+        sberAtmDepartment.showAtmsTotalCashAmount();
 
-            ATM atm3 = sberAtmDepartment.getAtm("sberatm#3");
+        atm1.receiveCash(FaceValue.ONE_THOUSAND, 77);
+        sberAtmDepartment.showAtmsTotalCashAmount();
 
-            atm3.giveCash(245_000);
+        sberAtmDepartment.restoreAllAtmsToStartState();
+        sberAtmDepartment.showAtmsTotalCashAmount();
 
-            sberAtmDepartment.showAtmsTotalCashAmount();
-            sberAtmDepartment.restoreAllAtmsToStartState();
-            sberAtmDepartment.showAtmsTotalCashAmount();
-        } catch (NoSuchAtmException e) {
-            e.printStackTrace();
-        }
+        Optional<ATM> optionalAtm3 = sberAtmDepartment.getAtm("sberatm#3");
+
+        optionalAtm3.ifPresentOrElse(atm -> atm.giveCash(240_000), () -> System.out.println("Нет такого банкомата !"));
+
+        sberAtmDepartment.showAtmsTotalCashAmount();
+        sberAtmDepartment.restoreAllAtmsToStartState();
+        sberAtmDepartment.showAtmsTotalCashAmount();
 
 
     }
