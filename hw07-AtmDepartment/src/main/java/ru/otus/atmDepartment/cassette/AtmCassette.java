@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * @author Sergei Viacheslaev
  */
-public final class AtmCassette implements Serializable,Cloneable {
+public final class AtmCassette implements Serializable {
     private final int CASSETTE_MAX_CAPACITY = 1000; //вместимость кассеты (MAX кол-во банкот)
     private final FaceValue CASSETTE_FACEVALUE;
 
@@ -27,10 +27,7 @@ public final class AtmCassette implements Serializable,Cloneable {
 
     }
 
-    @Override
-    public AtmCassette clone() throws CloneNotSupportedException {
-        return (AtmCassette) super.clone();
-    }
+
 
     @Override
     public String toString() {

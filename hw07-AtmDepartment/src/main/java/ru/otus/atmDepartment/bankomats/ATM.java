@@ -5,7 +5,6 @@ import ru.otus.atmDepartment.cassette.CassettesStorage;
 import ru.otus.atmDepartment.FaceValue;
 import ru.otus.atmDepartment.visitors.Visitor;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
-
 import java.util.Map;
 
 /**
@@ -36,7 +35,6 @@ public interface ATM {
 
     void acceptVisitor(Visitor visitor);
 
-    void setCassettes_storage(CassettesStorage cassettes_storage);
 
 
 }

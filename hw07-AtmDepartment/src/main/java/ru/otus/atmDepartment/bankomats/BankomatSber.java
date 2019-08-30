@@ -9,7 +9,6 @@ import ru.otus.atmDepartment.exceptions.CassetteOutOfAmountException;
 import ru.otus.atmDepartment.visitors.Visitor;
 import ru.otus.atmDepartment.withdrawStrategies.MinimumBanknotesWithdrawStrategy;
 import ru.otus.atmDepartment.withdrawStrategies.WithdrawStrategy;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
@@ -17,7 +16,7 @@ import java.util.Map;
 /**
  * @author Sergei Viacheslaev
  */
-public class BankomatSber implements ATM, Serializable, Cloneable {
+public class BankomatSber implements ATM, Serializable  {
     private CassettesStorage cassettes_storage = new CassettesStorage();
     private WithdrawStrategy withdrawStrategy;
     private String atmID;
@@ -35,11 +34,6 @@ public class BankomatSber implements ATM, Serializable, Cloneable {
         this.withdrawStrategy = withdrawStrategy;
         setAtmStartState();
 
-    }
-
-    @Override
-    public ATM clone() throws CloneNotSupportedException {
-        return (ATM) super.clone();
     }
 
     @Override
@@ -127,7 +121,5 @@ public class BankomatSber implements ATM, Serializable, Cloneable {
         return atmID;
     }
 
-    public void setCassettes_storage(CassettesStorage cassettes_storage) {
-        this.cassettes_storage = cassettes_storage;
-    }
+
 }

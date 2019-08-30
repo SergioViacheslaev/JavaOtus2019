@@ -2,6 +2,7 @@ package ru.otus.atmDepartment;
 
 
 import ru.otus.atmDepartment.bankomats.ATM;
+
 import java.util.Optional;
 
 
@@ -22,8 +23,7 @@ public class Main {
         optionalAtm1.ifPresentOrElse(atm -> atm.giveCash(155_000), () -> System.out.println("Нет такого банкомата !"));
 
 
-        ATM atm1 =  optionalAtm1.orElseThrow(()->new RuntimeException("Такого банкомата не существует !"));
-
+        ATM atm1 = optionalAtm1.orElseThrow(() -> new RuntimeException("Такого банкомата не существует !"));
 
 
         sberAtmDepartment.showAtmsTotalCashAmount();

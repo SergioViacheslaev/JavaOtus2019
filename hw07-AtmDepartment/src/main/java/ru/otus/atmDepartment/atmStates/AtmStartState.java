@@ -2,8 +2,6 @@ package ru.otus.atmDepartment.atmStates;
 
 
 import ru.otus.atmDepartment.bankomats.ATM;
-
-
 import java.io.*;
 import java.util.Optional;
 

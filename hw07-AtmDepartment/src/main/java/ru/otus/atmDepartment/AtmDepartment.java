@@ -20,7 +20,7 @@ public class AtmDepartment {
     private List<ATM> atmList = new ArrayList<>();
     private final int DEFAULT_ATM_NUMBER = 5;
     private final WithdrawStrategy DEFAULT_WITHDRAW_STRATEGY = new MinimumBanknotesWithdrawStrategy();
-    private Visitor ATMS_CASHBALANCE_VISITOR = new TotalAtmsCashBalanceVisitor();
+    private final Visitor ATMS_CASHBALANCE_VISITOR = new TotalAtmsCashBalanceVisitor();
 
     public AtmDepartment() {
         for (int i = 0; i < DEFAULT_ATM_NUMBER; i++) {
@@ -43,7 +43,6 @@ public class AtmDepartment {
 
 
     }
-
 
     public int getAtmsTotalCashAmount() {
         atmList.forEach(atm -> atm.acceptVisitor(ATMS_CASHBALANCE_VISITOR));
