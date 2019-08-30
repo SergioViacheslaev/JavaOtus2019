@@ -36,4 +36,7 @@ public interface ATM {
 
     void acceptVisitor(Visitor visitor);
 
+    void setCassettes_storage(CassettesStorage cassettes_storage);
+
+
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 /**
  * @author Sergei Viacheslaev
  */
-public interface WithdrawStrategy extends Serializable {
+public interface WithdrawStrategy extends Cloneable {
     Map<FaceValue, Integer> withdrawCash(CassettesStorage cassettesStorage, int cashAmount) throws CassetteOutOfAmountException;
+
 }

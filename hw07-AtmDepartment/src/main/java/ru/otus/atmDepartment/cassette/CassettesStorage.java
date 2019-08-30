@@ -13,8 +13,8 @@ import java.util.*;
  *
  * @author Sergei Viacheslaev
  */
-public class CassettesStorage implements Cassette, Serializable  {
-    private final Map<Integer, AtmCassette> CASSETTE_STORAGE = new TreeMap<>(); // номинал/кассета
+public class CassettesStorage implements Cassette, Serializable, Cloneable  {
+    private  Map<Integer, AtmCassette> CASSETTE_STORAGE = new TreeMap<>(); // номинал/кассета
 
     public CassettesStorage() {
         try {
@@ -23,6 +23,8 @@ public class CassettesStorage implements Cassette, Serializable  {
             e.printStackTrace();
         }
     }
+
+
 
     @Override
     public CassettesStorage clone() throws CloneNotSupportedException {
@@ -59,5 +61,9 @@ public class CassettesStorage implements Cassette, Serializable  {
             CASSETTE_STORAGE.put(faceValue.getIntValue(), new AtmCassette(faceValue, 50));
         }
 
+    }
+
+    public void setCASSETTE_STORAGE(Map<Integer, AtmCassette> CASSETTE_STORAGE) {
+        this.CASSETTE_STORAGE = CASSETTE_STORAGE;
     }
 }

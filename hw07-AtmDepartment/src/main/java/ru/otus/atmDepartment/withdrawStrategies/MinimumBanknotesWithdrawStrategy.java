@@ -5,13 +5,19 @@ import ru.otus.atmDepartment.cassette.CassettesStorage;
 import ru.otus.atmDepartment.exceptions.CassetteOutOfAmountException;
 import ru.otus.atmDepartment.FaceValue;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * @author Sergei Viacheslaev
  */
-public class MinimumBanknotesWithdrawStrategy implements WithdrawStrategy {
+public class MinimumBanknotesWithdrawStrategy implements WithdrawStrategy, Serializable {
     private CassettesStorage cassettesStorage;
+
+    @Override
+    public WithdrawStrategy clone() throws CloneNotSupportedException {
+        return (WithdrawStrategy) super.clone();
+    }
 
     @Override
     public Map<FaceValue, Integer> withdrawCash(CassettesStorage cassettesStorage, int cashAmount) throws CassetteOutOfAmountException {

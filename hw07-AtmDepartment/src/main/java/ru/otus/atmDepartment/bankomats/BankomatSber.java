@@ -17,11 +17,11 @@ import java.util.Map;
 /**
  * @author Sergei Viacheslaev
  */
-public class BankomatSber implements ATM, Serializable {
+public class BankomatSber implements ATM, Serializable, Cloneable {
     private CassettesStorage cassettes_storage = new CassettesStorage();
     private WithdrawStrategy withdrawStrategy;
-    private transient String atmID;
-    private transient AtmStartState atmStartState;
+    private String atmID;
+    private AtmStartState atmStartState;
 
 
     public BankomatSber(String atmID) {
@@ -35,6 +35,11 @@ public class BankomatSber implements ATM, Serializable {
         this.withdrawStrategy = withdrawStrategy;
         setAtmStartState();
 
+    }
+
+    @Override
+    public ATM clone() throws CloneNotSupportedException {
+        return (ATM) super.clone();
     }
 
     @Override
@@ -52,9 +57,12 @@ public class BankomatSber implements ATM, Serializable {
     //Восстановить состояние к начальному
     @Override
     public void restoreAtmToStartState() {
+
         BankomatSber savedStartState = (BankomatSber) atmStartState.getSavedStartState();
+
         cassettes_storage = savedStartState.cassettes_storage;
         withdrawStrategy = savedStartState.withdrawStrategy;
+
     }
 
 
@@ -119,5 +127,7 @@ public class BankomatSber implements ATM, Serializable {
         return atmID;
     }
 
-
+    public void setCassettes_storage(CassettesStorage cassettes_storage) {
+        this.cassettes_storage = cassettes_storage;
+    }
 }
