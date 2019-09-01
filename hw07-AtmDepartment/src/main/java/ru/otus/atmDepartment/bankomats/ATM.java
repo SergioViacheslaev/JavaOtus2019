@@ -33,8 +33,7 @@ public interface ATM {
 
     void restoreAtmToStartState();
 
-    void acceptVisitor(Visitor visitor);
-
+    <T> T accept(Visitor<T> visitor);
 
 
 }

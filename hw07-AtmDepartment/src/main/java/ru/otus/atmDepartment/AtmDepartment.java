@@ -45,9 +45,12 @@ public class AtmDepartment {
     }
 
     public int getAtmsTotalCashAmount() {
-        atmList.forEach(atm -> atm.acceptVisitor(ATMS_CASHBALANCE_VISITOR));
+        int atmsTotalBalance = 0;
+        for (ATM atm : atmList) {
+            atmsTotalBalance += atm.accept(new TotalAtmsCashBalanceVisitor());
+        }
 
-        return ((TotalAtmsCashBalanceVisitor) ATMS_CASHBALANCE_VISITOR).getTotalAtmsCashBalance();
+        return atmsTotalBalance;
     }
 
     public void showAtmsTotalCashAmount() {

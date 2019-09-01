@@ -36,9 +36,10 @@ public class BankomatSber implements ATM, Serializable  {
 
     }
 
+
     @Override
-    public void acceptVisitor(Visitor visitor) {
-        visitor.visit(this);
+    public <T> T accept(Visitor<T> visitor) {
+        return visitor.visit(this);
     }
 
     //Установить текущее состояние- начальным
