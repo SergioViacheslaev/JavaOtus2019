@@ -15,6 +15,7 @@
         <module>hw04-loggingAOP</module>
         <module>hw05-GC</module>
         <module>hw06-ATM</module>
+        <module>hw07-AtmDepartment</module>
     </modules>
 
 
