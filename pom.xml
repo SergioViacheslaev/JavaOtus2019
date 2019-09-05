@@ -16,6 +16,7 @@
         <module>hw05-GC</module>
         <module>hw06-ATM</module>
         <module>hw07-AtmDepartment</module>
+        <module>hw08-JsonObjectWriter</module>
     </modules>
 
 
@@ -77,6 +78,9 @@
             </dependency>
             <!--endregion-->
 
+            <!--region JSON,GSON-->
+
+            <!--endregion-->
 
 
         </dependencies>
