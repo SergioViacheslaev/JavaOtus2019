@@ -1,13 +1,12 @@
 package ru.otus.hw08Json.testObjects;
 
-import java.net.Inet4Address;
 import java.util.*;
 
 /**
  * @author Sergei Viacheslaev
  */
 public class PetHouse {
-    private int house_number;
+    private int houseNumber;
     private String address;
     private Cat cat;
     private Dog dog;
@@ -28,7 +27,7 @@ public class PetHouse {
 
 
     public PetHouse() {
-        house_number = 101;
+        houseNumber = 101;
         address = "Животная, дом 20";
         cat = new Cat("Kitty", 5);
         dog = new Dog("Goofy", 3);
@@ -62,7 +61,7 @@ public class PetHouse {
 
         PetHouse petHouse = (PetHouse) o;
 
-        if (house_number != petHouse.house_number) return false;
+        if (houseNumber != petHouse.houseNumber) return false;
         if (speed != petHouse.speed) return false;
         if (size != petHouse.size) return false;
         if (Float.compare(petHouse.height, height) != 0) return false;
@@ -84,7 +83,7 @@ public class PetHouse {
     public int hashCode() {
         int result;
         long temp;
-        result = house_number;
+        result = houseNumber;
         result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (cat != null ? cat.hashCode() : 0);
         result = 31 * result + (dog != null ? dog.hashCode() : 0);
@@ -105,7 +104,7 @@ public class PetHouse {
     @Override
     public String toString() {
         return "PetHouse{" +
-                "house_number=" + house_number +
+                "houseNumber=" + houseNumber +
                 ", address='" + address + '\'' +
                 ", cat=" + cat +
                 ", dog=" + dog +
