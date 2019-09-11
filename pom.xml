@@ -18,6 +18,7 @@
         <module>hw06-ATM</module>
         <module>hw07-AtmDepartment</module>
         <module>hw08-JsonObjectWriter</module>
+        <module>hw09-Jdbc</module>
     </modules>
 
 
