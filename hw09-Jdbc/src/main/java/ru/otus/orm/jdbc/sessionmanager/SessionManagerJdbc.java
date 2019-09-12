@@ -1,5 +1,7 @@
-package ru.otus.orm.api.sessionmanager;
+package ru.otus.orm.jdbc.sessionmanager;
 
+
+import ru.otus.orm.api.sessionmanager.SessionManager;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

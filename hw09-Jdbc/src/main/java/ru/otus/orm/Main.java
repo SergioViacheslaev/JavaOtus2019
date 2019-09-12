@@ -2,12 +2,11 @@ package ru.otus.orm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.orm.api.DBTablePrinter;
 import ru.otus.orm.api.dao.UserDao;
-import ru.otus.orm.api.dao.UserDaoJdbc;
+import ru.otus.orm.jdbc.dao.UserDaoJdbc;
 import ru.otus.orm.api.service.DBServiceUser;
 import ru.otus.orm.api.service.DbServiceUserImpl;
-import ru.otus.orm.api.sessionmanager.SessionManagerJdbc;
+import ru.otus.orm.jdbc.sessionmanager.SessionManagerJdbc;
 import ru.otus.orm.h2.DataSourceH2;
 import ru.otus.orm.model.Account;
 import ru.otus.orm.model.User;
@@ -77,7 +76,10 @@ public class Main {
         sessionManager.commitSession();
         sessionManager.close();
 
-        selectAllRecords(dataSource,"account");
+        selectAllRecords(dataSource, "account");
+
+
+       // Account accountFromDB = dbServiceUser.getUser(1);
 
 
     }
@@ -137,15 +139,13 @@ public class Main {
 
             try (ResultSet rs = pst.executeQuery()) {
 
-
                 System.out.printf("-----Database %s, table '%s'-----%n", dataBaseName, tableName);
 
-                DBTablePrinter.printTable(connection,tableName);
-                /*ResultSetMetaData metaData = rs.getMetaData();
+                ResultSetMetaData metaData = rs.getMetaData();
                 int columnCount = metaData.getColumnCount();
                 for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-                    System.out.printf("%s\t\t",metaData.getColumnName(columnIndex));
-                    if(columnIndex==columnCount) System.out.println();
+                    System.out.printf("%s\t\t", metaData.getColumnName(columnIndex));
+                    if (columnIndex == columnCount) System.out.println();
                 }
                 while (rs.next()) {
                     for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
@@ -153,7 +153,7 @@ public class Main {
                         System.out.printf("%s\t\t", object == null ? "NULL" : object.toString());
                     }
                     System.out.printf("%n");
-                }*/
+                }
         /*       while (rs.next()) {
 
 
