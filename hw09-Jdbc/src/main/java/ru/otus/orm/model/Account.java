@@ -4,11 +4,11 @@ package ru.otus.orm.model;
  * @author Sergei Viacheslaev
  */
 public class Account {
-  private long no;
-  private String type;
-  private Number rest;
+    private long no;
+    private String type;
+    private double rest;
 
-    public Account(String type, Number rest) {
+    public Account(String type, double rest) {
         this.type = type;
         this.rest = rest;
     }
@@ -29,11 +29,11 @@ public class Account {
         this.type = type;
     }
 
-    public Number getRest() {
+    public double getRest() {
         return rest;
     }
 
-    public void setRest(Number rest) {
+    public void setRest(double rest) {
         this.rest = rest;
     }
 

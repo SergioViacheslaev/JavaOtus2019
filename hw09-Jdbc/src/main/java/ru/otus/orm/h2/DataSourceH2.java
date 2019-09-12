@@ -24,9 +24,6 @@ public class DataSourceH2 implements DataSource {
         return connection;
     }
 
-    public void closeConnection() {
-
-    }
 
     @Override
     public Connection getConnection(String username, String password) {

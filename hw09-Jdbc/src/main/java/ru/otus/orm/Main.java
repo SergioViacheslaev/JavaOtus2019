@@ -2,16 +2,20 @@ package ru.otus.orm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.orm.api.DBTablePrinter;
 import ru.otus.orm.api.dao.UserDao;
 import ru.otus.orm.api.dao.UserDaoJdbc;
 import ru.otus.orm.api.service.DBServiceUser;
 import ru.otus.orm.api.service.DbServiceUserImpl;
 import ru.otus.orm.api.sessionmanager.SessionManagerJdbc;
 import ru.otus.orm.h2.DataSourceH2;
+import ru.otus.orm.model.Account;
 import ru.otus.orm.model.User;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -23,12 +27,11 @@ public class Main {
     private static Logger logger = LoggerFactory.getLogger(Main.class);
 
 
-
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSourceH2();
         createTable(dataSource, USER_TABLE);
         User user1 = new User("Sergei.V", 32);
-        User user2 = new User("Alex", 15);
+        User user2 = new User(3, "Alex", 15);
         System.out.println(user2);
 
 
@@ -56,8 +59,26 @@ public class Main {
                 () -> logger.info("user was not created")
         );
 
+
+        selectAllRecords(dataSource, "user");
+
         //Работет с Account
-        createTable(dataSource,ACCOUNT_TABLE);
+        createTable(dataSource, ACCOUNT_TABLE);
+        Account accoun1 = new Account("credit", 123.45d);
+
+        //Сохраняем аккаунт в базу
+
+        sessionManager.beginSession();
+        DbExecutor<Account> accountDbExecutor = new DbExecutor<>();
+        accountDbExecutor.insertRecord(sessionManager.getConnection(), "insert into account(type,rest) values (?,?)",
+                new ArrayList<String>(
+                        Arrays.asList(accoun1.getType(), String.valueOf(accoun1.getRest()))));
+
+        sessionManager.commitSession();
+        sessionManager.close();
+
+        selectAllRecords(dataSource,"account");
+
 
     }
 
@@ -106,16 +127,40 @@ public class Main {
         }
     }
 
-    private static void selectAllRecords(DataSource dataSource) throws SQLException {
+    private static void selectAllRecords(DataSource dataSource, String tableName) throws SQLException {
+        String selectAllQuery = "select * from |tableNameSupplier|".replace("|tableNameSupplier|", tableName);
+        String dataBaseName = dataSource.getConnection().getMetaData().getDatabaseProductName();
+
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement pst = connection.prepareStatement("select * from user")) {
+             PreparedStatement pst = connection.prepareStatement(selectAllQuery)) {
+
 
             try (ResultSet rs = pst.executeQuery()) {
+
+
+                System.out.printf("-----Database %s, table '%s'-----%n", dataBaseName, tableName);
+
+                DBTablePrinter.printTable(connection,tableName);
+                /*ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                    System.out.printf("%s\t\t",metaData.getColumnName(columnIndex));
+                    if(columnIndex==columnCount) System.out.println();
+                }
                 while (rs.next()) {
+                    for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                        Object object = rs.getObject(columnIndex);
+                        System.out.printf("%s\t\t", object == null ? "NULL" : object.toString());
+                    }
+                    System.out.printf("%n");
+                }*/
+        /*       while (rs.next()) {
+
+
                     System.out.printf("Id: %d%n", rs.getInt(1));
                     System.out.printf("name: %s%n", rs.getString("name"));
-                    System.out.printf("name: %d%n", rs.getInt("age"));
-                }
+                    System.out.printf("age: %d%n", rs.getInt("age"));
+                }*/
 
             }
         }
