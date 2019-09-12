@@ -3,7 +3,7 @@ package ru.otus.orm.jdbc.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.orm.DbExecutor;
+import ru.otus.orm.jdbc.dbexecutor.DbExecutor;
 import ru.otus.orm.api.dao.UserDao;
 import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.sessionmanager.SessionManagerJdbc;

@@ -1,11 +1,14 @@
 package ru.otus.orm.model;
 
+import ru.otus.orm.annotations.Id;
+
 /**
  * Entity - User
  *
  * @author Sergei Viacheslaev
  */
 public class User {
+    @Id
     private long id;
     private String name;
     private int age;

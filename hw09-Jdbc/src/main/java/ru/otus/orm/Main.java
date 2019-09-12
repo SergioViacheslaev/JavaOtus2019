@@ -2,20 +2,14 @@ package ru.otus.orm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.orm.api.dao.UserDao;
-import ru.otus.orm.jdbc.dao.UserDaoJdbc;
-import ru.otus.orm.api.service.DBServiceUser;
-import ru.otus.orm.api.service.DbServiceUserImpl;
+import ru.otus.orm.api.sessionmanager.SessionManager;
+import ru.otus.orm.jdbc.dbexecutor.DbExecutor;
 import ru.otus.orm.jdbc.sessionmanager.SessionManagerJdbc;
 import ru.otus.orm.h2.DataSourceH2;
-import ru.otus.orm.model.Account;
 import ru.otus.orm.model.User;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * @author Sergei Viacheslaev
@@ -30,12 +24,23 @@ public class Main {
         DataSource dataSource = new DataSourceH2();
         createTable(dataSource, USER_TABLE);
         User user1 = new User("Sergei.V", 32);
+
+        SessionManager sessionManager = new SessionManagerJdbc(dataSource);
+        DbExecutor<User> dbExecutor = new DbExecutor<>(sessionManager);
+
+        dbExecutor.create(user1);
+
+        selectAllRecords(dataSource,"user");
+
+
+   /*     createTable(dataSource, USER_TABLE);
+        User user1 = new User("Sergei.V", 32);
         User user2 = new User(3, "Alex", 15);
         System.out.println(user2);
 
 
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
-        DbExecutor<User> dbExecutor = new DbExecutor<>();
+        dbexecutor<User> dbExecutor = new dbexecutor<>();
         UserDao userDao = new UserDaoJdbc(sessionManager, dbExecutor);
         DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
 
@@ -68,7 +73,7 @@ public class Main {
         //Сохраняем аккаунт в базу
 
         sessionManager.beginSession();
-        DbExecutor<Account> accountDbExecutor = new DbExecutor<>();
+        dbexecutor<Account> accountDbExecutor = new dbexecutor<>();
         accountDbExecutor.insertRecord(sessionManager.getConnection(), "insert into account(type,rest) values (?,?)",
                 new ArrayList<String>(
                         Arrays.asList(accoun1.getType(), String.valueOf(accoun1.getRest()))));
@@ -77,9 +82,9 @@ public class Main {
         sessionManager.close();
 
         selectAllRecords(dataSource, "account");
+*/
 
-
-       // Account accountFromDB = dbServiceUser.getUser(1);
+        // Account accountFromDB = dbServiceUser.getUser(1);
 
 
     }
