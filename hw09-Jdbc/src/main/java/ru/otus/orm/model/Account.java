@@ -1,9 +1,12 @@
 package ru.otus.orm.model;
 
+import ru.otus.orm.annotations.Id;
+
 /**
  * @author Sergei Viacheslaev
  */
 public class Account {
+    @Id
     private long no;
     private String type;
     private double rest;

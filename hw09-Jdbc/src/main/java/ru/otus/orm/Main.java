@@ -6,6 +6,7 @@ import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.DbExecutor;
 import ru.otus.orm.jdbc.sessionmanager.SessionManagerJdbc;
 import ru.otus.orm.h2.DataSourceH2;
+import ru.otus.orm.model.Account;
 import ru.otus.orm.model.User;
 
 import javax.sql.DataSource;
@@ -15,14 +16,14 @@ import java.sql.*;
  * @author Sergei Viacheslaev
  */
 public class Main {
-    private final static String USER_TABLE = "create table user(id bigint(20) NOT NULL auto_increment, name varchar(255), age int(3));";
-    private final static String ACCOUNT_TABLE = "create table account(id bigint(20) NOT NULL auto_increment, type varchar(255), rest NUMBER);";
+    private final static String TABLE_USER = "create table user(id bigint(20) NOT NULL auto_increment, name varchar(255), age int(3));";
+    private final static String TABLE_ACCOUNT = "create table account(id bigint(20) NOT NULL auto_increment, type varchar(255), rest NUMBER);";
     private static Logger logger = LoggerFactory.getLogger(Main.class);
 
 
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSourceH2();
-        createTable(dataSource, USER_TABLE);
+        createTable(dataSource, TABLE_USER);
         User user1 = new User("Sergei.V", 32);
 
         SessionManager sessionManager = new SessionManagerJdbc(dataSource);
@@ -30,10 +31,19 @@ public class Main {
 
         dbExecutor.create(user1);
 
-        selectAllRecords(dataSource,"user");
+        selectAllRecords(dataSource, "user");
+
+        //Testing Account
+        createTable(dataSource,TABLE_ACCOUNT);
+        Account acc1 = new Account("credit", 123.45);
+        DbExecutor<Account> accountDbExecutor = new DbExecutor<>(sessionManager);
+        accountDbExecutor.create(acc1);
+
+        selectAllRecords(dataSource, "account");
 
 
-   /*     createTable(dataSource, USER_TABLE);
+
+   /*     createTable(dataSource, TABLE_USER);
         User user1 = new User("Sergei.V", 32);
         User user2 = new User(3, "Alex", 15);
         System.out.println(user2);
@@ -67,7 +77,7 @@ public class Main {
         selectAllRecords(dataSource, "user");
 
         //Работет с Account
-        createTable(dataSource, ACCOUNT_TABLE);
+        createTable(dataSource, TABLE_ACCOUNT);
         Account accoun1 = new Account("credit", 123.45d);
 
         //Сохраняем аккаунт в базу

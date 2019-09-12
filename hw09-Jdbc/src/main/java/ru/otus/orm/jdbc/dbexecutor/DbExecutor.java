@@ -8,10 +8,7 @@ import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
 
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -32,22 +29,21 @@ public class DbExecutor<T> {
 
 
         sessionManager.beginSession();
-        //todo:сформировать sql запрос
-        String sqlInsertRecord = "insert into user(name,age) values (?,?)";
-        try {
-            insertRecord(sessionManager.getConnection(), sqlInsertRecord, new ArrayList<>(
-                    Arrays.asList("Alex", String.valueOf(32))));
+        String sqlInsertRecord = generateSqlInsertString(object);
+        List<String> columnValues = generateColumnValues(object);
 
+        try {
+            insertRecord(sessionManager.getConnection(), sqlInsertRecord, columnValues);
             sessionManager.commitSession();
         } catch (SQLException e) {
-            System.out.println("Не удалось сохранить объект в базу");
+            logger.error("Объект '{}' успешно сохранен в базу !", object.getClass().getSimpleName());
             e.printStackTrace();
 
         } finally {
             sessionManager.close();
         }
 
-        System.out.println("Объект такой то успешно сохранен в базу !");
+        logger.info("Объект '{}' успешно сохранен в базу !", object.getClass().getSimpleName());
 
 
     }
@@ -81,11 +77,43 @@ public class DbExecutor<T> {
     }
 
     //Check object has @Id annotation
-    private boolean objectHasIdAnnotation(Object object) {
+    private boolean objectHasIdAnnotation(T object) {
         for (Field field : object.getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(Id.class)) return true;
         }
 
         return false;
     }
+
+
+    private List<String> generateColumnValues(T object) {
+        List<String> tableParams = new ArrayList<>();
+        try {
+            for (Field field : object.getClass().getDeclaredFields()) {
+                if (!field.isAnnotationPresent(Id.class)) {
+                    field.setAccessible(true);
+                    tableParams.add(field.get(object).toString());
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return tableParams.isEmpty() ? Collections.emptyList() : tableParams;
+
+    }
+
+    private String generateSqlInsertString(T object) {
+        String tableName = object.getClass().getSimpleName();
+        List<String> columnNames = new ArrayList<>();
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if (!field.isAnnotationPresent(Id.class)) {
+                columnNames.add(field.getName());
+            }
+        }
+        String sqlInsertRecord = String.format("insert into %s(%s,%s) values (?,?)",
+                tableName, columnNames.get(0), columnNames.get(1));
+        return sqlInsertRecord;
+    }
+
+
 }
