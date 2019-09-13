@@ -11,6 +11,9 @@ public class Account {
     private String type;
     private double rest;
 
+    public Account() {
+    }
+
     public Account(String type, double rest) {
         this.type = type;
         this.rest = rest;

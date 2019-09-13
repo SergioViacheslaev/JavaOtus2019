@@ -17,7 +17,7 @@ import java.sql.*;
  */
 public class Main {
     private final static String TABLE_USER = "create table user(id bigint(20) NOT NULL auto_increment, name varchar(255), age int(3));";
-    private final static String TABLE_ACCOUNT = "create table account(no bigint(20) NOT NULL auto_increment, type varchar(255), rest NUMBER);";
+    private final static String TABLE_ACCOUNT = "create table account(no bigint(20) NOT NULL auto_increment, type varchar(255), rest Double);";
     private static Logger logger = LoggerFactory.getLogger(Main.class);
 
 
@@ -26,81 +26,34 @@ public class Main {
         SessionManager sessionManager = new SessionManagerJdbc(dataSource);
 
         createTable(dataSource, TABLE_USER);
-        User user1 = new User("Sergei.V", 32);
-
         DbExecutor<User> userDbExecutor = new DbExecutor<>(sessionManager);
 
-        userDbExecutor.create(user1);
+        userDbExecutor.create(new User("Tom", 32));
+        userDbExecutor.create(new User("Jerry", 16));
         selectAllRecords(dataSource, "user");
 
-        userDbExecutor.update(new User(1, "Foobar", 99));
+        userDbExecutor.update(new User(2, "Snoopy", 99));
         selectAllRecords(dataSource, "user");
 
         //Testing Account
         createTable(dataSource, TABLE_ACCOUNT);
-        Account acc1 = new Account("credit", 123.45);
         DbExecutor<Account> accDbExecutor = new DbExecutor<>(sessionManager);
 
-        accDbExecutor.create(acc1);
+        accDbExecutor.create(new Account("debit", 123.5));
+        accDbExecutor.create(new Account("credit", 2000.123));
+        accDbExecutor.create(new Account("beneficent", 500_000));
         selectAllRecords(dataSource, "account");
 
-        accDbExecutor.update(new Account(2, "debit", 1000.99d));
+        accDbExecutor.update(new Account(3, "account_closed", 0.0));
         selectAllRecords(dataSource, "account");
 
 
+        //Загружаем объекты
+        Account accCredit = accDbExecutor.load(1, Account.class);
+        System.out.println(accCredit);
 
-   /*     createTable(dataSource, TABLE_USER);
-        User user1 = new User("Sergei.V", 32);
-        User user2 = new User(3, "Alex", 15);
+        User user2 = userDbExecutor.load(2,User.class);
         System.out.println(user2);
-
-
-        SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
-        dbexecutor<User> dbExecutor = new dbexecutor<>();
-        UserDao userDao = new UserDaoJdbc(sessionManager, dbExecutor);
-        DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
-
-        long id = dbServiceUser.saveUser(user1);
-        long id2 = dbServiceUser.saveUser(user2);
-
-        Optional<User> user_1 = dbServiceUser.getUser(id);
-        Optional<User> user_2 = dbServiceUser.getUser(id2);
-
-        System.out.println(user_1);
-        user_1.ifPresentOrElse(
-                crUser -> logger.info("created user, name:{}", crUser.getName()),
-                () -> logger.info("user was not created")
-        );
-
-
-        System.out.println(user_2);
-        user_2.ifPresentOrElse(
-                crUser -> logger.info("created user, name:{}", crUser.getName()),
-                () -> logger.info("user was not created")
-        );
-
-
-        selectAllRecords(dataSource, "user");
-
-        //Работет с Account
-        createTable(dataSource, TABLE_ACCOUNT);
-        Account accoun1 = new Account("credit", 123.45d);
-
-        //Сохраняем аккаунт в базу
-
-        sessionManager.beginSession();
-        dbexecutor<Account> accountDbExecutor = new dbexecutor<>();
-        accountDbExecutor.updateRecord(sessionManager.getConnection(), "insert into account(type,rest) values (?,?)",
-                new ArrayList<String>(
-                        Arrays.asList(accoun1.getType(), String.valueOf(accoun1.getRest()))));
-
-        sessionManager.commitSession();
-        sessionManager.close();
-
-        selectAllRecords(dataSource, "account");
-*/
-
-        // Account accountFromDB = dbServiceUser.getUser(1);
 
 
     }
@@ -151,12 +104,11 @@ public class Main {
     }
 
     private static void selectAllRecords(DataSource dataSource, String tableName) throws SQLException {
-        String selectAllQuery = "select * from |tableNameSupplier|".replace("|tableNameSupplier|", tableName);
+        String selectAllQuery = String.format("select * from %s", tableName);
         String dataBaseName = dataSource.getConnection().getMetaData().getDatabaseProductName();
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pst = connection.prepareStatement(selectAllQuery)) {
-
 
             try (ResultSet rs = pst.executeQuery()) {
 
@@ -175,13 +127,6 @@ public class Main {
                     }
                     System.out.printf("%n");
                 }
-        /*       while (rs.next()) {
-
-
-                    System.out.printf("Id: %d%n", rs.getInt(1));
-                    System.out.printf("name: %s%n", rs.getString("name"));
-                    System.out.printf("age: %d%n", rs.getInt("age"));
-                }*/
 
             }
         }

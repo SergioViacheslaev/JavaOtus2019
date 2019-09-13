@@ -7,6 +7,7 @@ import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
@@ -64,6 +65,53 @@ public class DbExecutor<T> {
         logger.info("Объект '{}' успешно обновлен в базе !", objectData.getClass().getSimpleName());
 
     }
+
+    public T load(long id, Class<T> clazz) {
+        //Проверяем, что с таким ID есть запись в базе
+        if (!dbHasId(id, clazz)) throw new DbExecutorException("No such Object found in database !");
+
+        String tableName = clazz.getSimpleName();
+        String idName = null;
+
+        //Ищим поле, аннотированное @Id
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(Id.class)) {
+                idName = field.getName();
+                break;
+            }
+        }
+
+        String selectSQL = String.format("SELECT * FROM %s WHERE %s = ?", tableName, idName);
+        sessionManager.beginSession();
+        Optional<T> optionalInstance = Optional.empty();
+        try {
+            T instance = clazz.getDeclaredConstructor().newInstance();
+            optionalInstance = selectRecord(sessionManager.getConnection(), selectSQL, id, resultSet -> {
+                try {
+                    if (resultSet.next()) {
+                        for (Field field : clazz.getDeclaredFields()) {
+
+                            field.setAccessible(true);
+                            field.set(instance, resultSet.getObject(field.getName()));
+                            field.setAccessible(false);
+                        }
+
+
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+                return instance;
+
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return optionalInstance.orElseThrow(() -> new DbExecutorException("Object is not loaded !"));
+
+    }
+
 
     public long insertRecord(Connection connection, String sql, List<String> params) throws SQLException {
 
@@ -219,6 +267,38 @@ public class DbExecutor<T> {
 
         return false;
 
+    }
+
+    private boolean dbHasId(long id, Class clazz) {
+        String tableName = clazz.getSimpleName();
+        String idName = null;
+
+        //Ищим поле, аннотированное @Id
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(Id.class)) {
+                idName = field.getName();
+                break;
+            }
+        }
+
+        String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idName, tableName, idName, id);
+
+        sessionManager.beginSession();
+        try (Connection connection = sessionManager.getConnection();
+             PreparedStatement pst = connection.prepareStatement(selectSQL);
+             ResultSet rs = pst.executeQuery()) {
+            if (rs.next()) {
+                logger.info("Object '{}' with id={}  found in DB", tableName, id);
+                return true;
+            } else {
+                logger.info("Object '{}' with id={} not found in DB !", tableName, id);
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 
