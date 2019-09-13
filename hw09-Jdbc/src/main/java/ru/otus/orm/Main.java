@@ -25,6 +25,7 @@ public class Main {
         DataSource dataSource = new DataSourceH2();
         SessionManager sessionManager = new SessionManagerJdbc(dataSource);
 
+        //Table User
         createTable(dataSource, TABLE_USER);
         DbExecutor<User> userDbExecutor = new DbExecutor<>(sessionManager);
 
@@ -35,7 +36,7 @@ public class Main {
         userDbExecutor.update(new User(2, "Snoopy", 99));
         selectAllRecords(dataSource, "user");
 
-        //Testing Account
+        //Table Account
         createTable(dataSource, TABLE_ACCOUNT);
         DbExecutor<Account> accDbExecutor = new DbExecutor<>(sessionManager);
 
@@ -48,13 +49,12 @@ public class Main {
         selectAllRecords(dataSource, "account");
 
 
-        //Загружаем объекты
+        //Загружаем объекты из базы, по ID
         Account accCredit = accDbExecutor.load(1, Account.class);
         System.out.println(accCredit);
 
-        User user2 = userDbExecutor.load(2,User.class);
+        User user2 = userDbExecutor.load(2, User.class);
         System.out.println(user2);
-
 
     }
 
@@ -62,45 +62,10 @@ public class Main {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pst = connection.prepareStatement(sqlCommand)) {
             pst.executeUpdate();
-
-
         }
         String tableName = sqlCommand.substring(sqlCommand.indexOf("table") + 6, sqlCommand.indexOf("("));
         logger.info("Table '{}' created.", tableName);
 
-
-    }
-
-    private static void insertRecordInUserTable(DataSource dataSource, String name, int age) throws SQLException {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement pst = connection.prepareStatement("insert into user(name, age) values (?, ?)")) {
-            Savepoint savePoint = connection.setSavepoint("startSavepoint");
-            pst.setString(1, name);
-            pst.setInt(2, age);
-            try {
-                int rowCount = pst.executeUpdate(); //Блокирующий вызов
-                connection.commit();
-                logger.info("inserted rowCount: {}", rowCount);
-            } catch (SQLException ex) {
-                connection.rollback(savePoint);
-                System.out.println(ex.getMessage());
-            }
-        }
-    }
-
-    private static void selectRecordUserTable(DataSource dataSource, long id) throws SQLException {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement pst = connection.prepareStatement("select name from user where id  = ?")) {
-            pst.setLong(1, id);
-            try (ResultSet rs = pst.executeQuery()) {
-                StringBuilder outString = new StringBuilder();
-                outString.append("name: ");
-                while (rs.next()) {
-                    outString.append(rs.getString("name"));
-                }
-                logger.info(outString.toString());
-            }
-        }
     }
 
     private static void selectAllRecords(DataSource dataSource, String tableName) throws SQLException {

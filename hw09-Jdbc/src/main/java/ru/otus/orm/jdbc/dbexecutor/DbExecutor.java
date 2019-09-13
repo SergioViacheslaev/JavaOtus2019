@@ -7,13 +7,13 @@ import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
 
-/**
- * @author sergey
+/**Modified by Sergei.V on 14.09.2019
+ *
+ * @author Sergey Petrelevich
  * created on 03.02.19.
  */
 public class DbExecutor<T> {
@@ -95,8 +95,6 @@ public class DbExecutor<T> {
                             field.set(instance, resultSet.getObject(field.getName()));
                             field.setAccessible(false);
                         }
-
-
                     }
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
@@ -112,8 +110,7 @@ public class DbExecutor<T> {
 
     }
 
-
-    public long insertRecord(Connection connection, String sql, List<String> params) throws SQLException {
+    private long insertRecord(Connection connection, String sql, List<String> params) throws SQLException {
 
         Savepoint savePoint = connection.setSavepoint("savePointName");
         try (PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -136,6 +133,14 @@ public class DbExecutor<T> {
 
     }
 
+    public Optional<T> selectRecord(Connection connection, String sql, long id, Function<ResultSet, T> rsHandler) throws SQLException {
+        try (PreparedStatement pst = connection.prepareStatement(sql)) {
+            pst.setLong(1, id);
+            try (ResultSet rs = pst.executeQuery()) {
+                return Optional.ofNullable(rsHandler.apply(rs));
+            }
+        }
+    }
 
     private void updateRecord(Connection connection, String sql, List<String> params) throws SQLException {
 
@@ -154,26 +159,6 @@ public class DbExecutor<T> {
 
     }
 
-
-    public Optional<T> selectRecord(Connection connection, String sql, long id, Function<ResultSet, T> rsHandler) throws SQLException {
-        try (PreparedStatement pst = connection.prepareStatement(sql)) {
-            pst.setLong(1, id);
-            try (ResultSet rs = pst.executeQuery()) {
-                return Optional.ofNullable(rsHandler.apply(rs));
-            }
-        }
-    }
-
-    //Check object has @Id annotation
-    private boolean objectHasIdAnnotation(T object) {
-        for (Field field : object.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(Id.class)) return true;
-        }
-
-        return false;
-    }
-
-
     private List<String> generateInsertColumnValues(T object) {
         List<String> tableParams = new ArrayList<>();
         try {
@@ -189,7 +174,6 @@ public class DbExecutor<T> {
         return tableParams.isEmpty() ? Collections.emptyList() : tableParams;
 
     }
-
 
     private String generateSqlInsertString(T object) {
         String tableName = object.getClass().getSimpleName();
@@ -269,11 +253,18 @@ public class DbExecutor<T> {
 
     }
 
+    private boolean objectHasIdAnnotation(T object) {
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(Id.class)) return true;
+        }
+
+        return false;
+    }
+
     private boolean dbHasId(long id, Class clazz) {
         String tableName = clazz.getSimpleName();
         String idName = null;
 
-        //Ищим поле, аннотированное @Id
         for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(Id.class)) {
                 idName = field.getName();
