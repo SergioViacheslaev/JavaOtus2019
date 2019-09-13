@@ -16,6 +16,12 @@ public class Account {
         this.rest = rest;
     }
 
+    public Account(long no, String type, double rest) {
+        this.no = no;
+        this.type = type;
+        this.rest = rest;
+    }
+
     public long getNo() {
         return no;
     }

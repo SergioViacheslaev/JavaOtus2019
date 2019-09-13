@@ -17,28 +17,34 @@ import java.sql.*;
  */
 public class Main {
     private final static String TABLE_USER = "create table user(id bigint(20) NOT NULL auto_increment, name varchar(255), age int(3));";
-    private final static String TABLE_ACCOUNT = "create table account(id bigint(20) NOT NULL auto_increment, type varchar(255), rest NUMBER);";
+    private final static String TABLE_ACCOUNT = "create table account(no bigint(20) NOT NULL auto_increment, type varchar(255), rest NUMBER);";
     private static Logger logger = LoggerFactory.getLogger(Main.class);
 
 
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSourceH2();
+        SessionManager sessionManager = new SessionManagerJdbc(dataSource);
+
         createTable(dataSource, TABLE_USER);
         User user1 = new User("Sergei.V", 32);
 
-        SessionManager sessionManager = new SessionManagerJdbc(dataSource);
-        DbExecutor<User> dbExecutor = new DbExecutor<>(sessionManager);
+        DbExecutor<User> userDbExecutor = new DbExecutor<>(sessionManager);
 
-        dbExecutor.create(user1);
+        userDbExecutor.create(user1);
+        selectAllRecords(dataSource, "user");
 
+        userDbExecutor.update(new User(1, "Foobar", 99));
         selectAllRecords(dataSource, "user");
 
         //Testing Account
-        createTable(dataSource,TABLE_ACCOUNT);
+        createTable(dataSource, TABLE_ACCOUNT);
         Account acc1 = new Account("credit", 123.45);
-        DbExecutor<Account> accountDbExecutor = new DbExecutor<>(sessionManager);
-        accountDbExecutor.create(acc1);
+        DbExecutor<Account> accDbExecutor = new DbExecutor<>(sessionManager);
 
+        accDbExecutor.create(acc1);
+        selectAllRecords(dataSource, "account");
+
+        accDbExecutor.update(new Account(2, "debit", 1000.99d));
         selectAllRecords(dataSource, "account");
 
 
@@ -84,7 +90,7 @@ public class Main {
 
         sessionManager.beginSession();
         dbexecutor<Account> accountDbExecutor = new dbexecutor<>();
-        accountDbExecutor.insertRecord(sessionManager.getConnection(), "insert into account(type,rest) values (?,?)",
+        accountDbExecutor.updateRecord(sessionManager.getConnection(), "insert into account(type,rest) values (?,?)",
                 new ArrayList<String>(
                         Arrays.asList(accoun1.getType(), String.valueOf(accoun1.getRest()))));
 
