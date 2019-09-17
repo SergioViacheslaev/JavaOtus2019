@@ -2,6 +2,7 @@ package ru.otus.orm.reflection;
 
 import ru.otus.orm.annotations.Id;
 import ru.otus.orm.jdbc.dbexecutor.SqlCommand;
+import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -29,6 +30,8 @@ public class ReflectionHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if(Objects.isNull(idFieldName)) throw new DbExecutorException("Object has no 'Id' annotation !");
 
         return Arrays.asList(idFieldName, idValue);
     }
@@ -69,6 +72,8 @@ public class ReflectionHelper {
         }
 
 
+        if(Objects.isNull(idColumnName)) throw new DbExecutorException("Object has no 'Id' annotation !");
+
         switch (sqlCommand) {
             case INSERT:
                 sqlString = String.format("insert into %s(%s,%s) values (?,?)",
@@ -83,4 +88,6 @@ public class ReflectionHelper {
         return Collections.singletonMap(sqlString, columnValues);
 
     }
+
+
 }

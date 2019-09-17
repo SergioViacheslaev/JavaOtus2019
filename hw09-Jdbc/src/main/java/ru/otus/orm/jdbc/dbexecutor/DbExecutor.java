@@ -28,13 +28,12 @@ public class DbExecutor<T> {
     }
 
     public void create(T objectData) {
-        if (!objectHasIdAnnotation(objectData)) throw new DbExecutorException("Object has no 'Id' annotation !");
-        sessionManager.beginSession();
 
         Map<String, List<String>> sqlParams = ReflectionHelper.getSqlParams(SqlCommand.INSERT, objectData);
         String sqlInsertRecord = sqlParams.keySet().iterator().next();
         List<String> columnValues = sqlParams.get(sqlInsertRecord);
 
+        sessionManager.beginSession();
         try {
             insertRecord(sessionManager.getConnection(), sqlInsertRecord, columnValues);
             sessionManager.commitSession();
@@ -49,15 +48,13 @@ public class DbExecutor<T> {
     }
 
     public void update(T objectData) {
-        if (!objectHasIdAnnotation(objectData)) throw new DbExecutorException("Object has no 'Id' annotation !");
         if (!dbHasObject(objectData)) throw new DbExecutorException("No object with such ID in database !");
-
-        sessionManager.beginSession();
 
         Map<String, List<String>> sqlParams = ReflectionHelper.getSqlParams(SqlCommand.UPDATE, objectData);
         String sqlUpdateString = sqlParams.keySet().iterator().next();
         List<String> columnValues = sqlParams.get(sqlUpdateString);
 
+        sessionManager.beginSession();
         try {
             updateRecord(sessionManager.getConnection(), sqlUpdateString, columnValues);
             sessionManager.commitSession();
@@ -101,6 +98,8 @@ public class DbExecutor<T> {
             });
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            sessionManager.close();
         }
 
         return optionalInstance.orElseThrow(() -> new DbExecutorException("Object is not loaded !"));
@@ -158,57 +157,35 @@ public class DbExecutor<T> {
 
 
     private boolean dbHasObject(T object) {
-
         String tableName = object.getClass().getSimpleName();
         List<String> idFieldParams = ReflectionHelper.getIdFieldParams(object);
         String idFieldName = idFieldParams.get(0);
         String idValue = idFieldParams.get(1);
-
-
         String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idFieldName, tableName, idFieldName, idValue);
 
-        sessionManager.beginSession();
-        try (Connection connection = sessionManager.getConnection();
-             PreparedStatement pst = connection.prepareStatement(selectSQL);
-             ResultSet rs = pst.executeQuery()) {
-            if (rs.next()) {
-                logger.info("Object '{}' with id={}  found in DB", tableName, idValue);
-                return true;
-            } else {
-                logger.info("Object '{}' with id={} not found in DB !", tableName, idValue);
-                return false;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        return isObjectFound(selectSQL, tableName, idValue);
 
-        return false;
-
-    }
-
-    private boolean objectHasIdAnnotation(T object) {
-        for (Field field : object.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(Id.class)) return true;
-        }
-
-        return false;
     }
 
     private boolean dbHasId(long id, Class clazz) {
         String tableName = clazz.getSimpleName();
         String idName = ReflectionHelper.getIdFieldName(clazz);
-
         String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idName, tableName, idName, id);
 
+        return isObjectFound(selectSQL, tableName, String.valueOf(id));
+
+    }
+
+    private boolean isObjectFound(String sqlSelectQuery, String objectName, String idValue) {
         sessionManager.beginSession();
         try (Connection connection = sessionManager.getConnection();
-             PreparedStatement pst = connection.prepareStatement(selectSQL);
+             PreparedStatement pst = connection.prepareStatement(sqlSelectQuery);
              ResultSet rs = pst.executeQuery()) {
             if (rs.next()) {
-                logger.info("Object '{}' with id={}  found in DB", tableName, id);
+                logger.info("Object '{}' with id={}  found in DB", objectName, idValue);
                 return true;
             } else {
-                logger.info("Object '{}' with id={} not found in DB !", tableName, id);
+                logger.info("Object '{}' with id={} not found in DB !", objectName, idValue);
                 return false;
             }
         } catch (SQLException e) {
