@@ -2,7 +2,6 @@ package ru.otus.orm.jdbc.dbexecutor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.orm.annotations.Id;
 import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
 import ru.otus.orm.reflection.ReflectionHelper;
@@ -33,15 +32,11 @@ public class DbExecutor<T> {
         String sqlInsertRecord = sqlParams.keySet().iterator().next();
         List<String> columnValues = sqlParams.get(sqlInsertRecord);
 
-        sessionManager.beginSession();
         try {
-            insertRecord(sessionManager.getConnection(), sqlInsertRecord, columnValues);
-            sessionManager.commitSession();
+            insertRecord(sqlInsertRecord, columnValues);
         } catch (SQLException e) {
             logger.error("Объект '{}' не сохранен в базе !", objectData.getClass().getSimpleName());
             e.printStackTrace();
-        } finally {
-            sessionManager.close();
         }
 
         logger.info("Объект '{}' успешно сохранен в базе !", objectData.getClass().getSimpleName());
@@ -54,15 +49,11 @@ public class DbExecutor<T> {
         String sqlUpdateString = sqlParams.keySet().iterator().next();
         List<String> columnValues = sqlParams.get(sqlUpdateString);
 
-        sessionManager.beginSession();
         try {
-            updateRecord(sessionManager.getConnection(), sqlUpdateString, columnValues);
-            sessionManager.commitSession();
+            updateRecord(sqlUpdateString, columnValues);
         } catch (SQLException e) {
             logger.error("Объект '{}' не обновлен в базе !", objectData.getClass().getSimpleName());
             e.printStackTrace();
-        } finally {
-            sessionManager.close();
         }
 
         logger.info("Объект '{}' успешно обновлен в базе !", objectData.getClass().getSimpleName());
@@ -106,14 +97,16 @@ public class DbExecutor<T> {
 
     }
 
-    private long insertRecord(Connection connection, String sql, List<String> params) throws SQLException {
+    private long insertRecord(String sql, List<String> params) throws SQLException {
 
-        Savepoint savePoint = connection.setSavepoint("savePointName");
-        try (PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        sessionManager.beginSession();
+        try (Connection connection = sessionManager.getConnection();
+             PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             for (int idx = 0; idx < params.size(); idx++) {
                 pst.setString(idx + 1, params.get(idx));
             }
             pst.executeUpdate();
+            sessionManager.commitSession();
             try (ResultSet rs = pst.getGeneratedKeys()) {
 
                 rs.next();
@@ -121,7 +114,7 @@ public class DbExecutor<T> {
 
             }
         } catch (SQLException ex) {
-            connection.rollback(savePoint);
+            sessionManager.rollbackSession();
             logger.error(ex.getMessage(), ex);
             throw ex;
         }
@@ -129,7 +122,7 @@ public class DbExecutor<T> {
 
     }
 
-    public Optional<T> selectRecord(Connection connection, String sql, long id, Function<ResultSet, T> rsHandler) throws SQLException {
+    private Optional<T> selectRecord(Connection connection, String sql, long id, Function<ResultSet, T> rsHandler) throws SQLException {
         try (PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.setLong(1, id);
             try (ResultSet rs = pst.executeQuery()) {
@@ -138,17 +131,18 @@ public class DbExecutor<T> {
         }
     }
 
-    private void updateRecord(Connection connection, String sql, List<String> params) throws SQLException {
-
-        Savepoint savePoint = connection.setSavepoint("savePointName");
-        try (PreparedStatement pst = connection.prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
+    private void updateRecord(String sql, List<String> params) throws SQLException {
+        sessionManager.beginSession();
+        try (Connection connection = sessionManager.getConnection();
+             PreparedStatement pst = connection.prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
             for (int idx = 0; idx < params.size(); idx++) {
                 pst.setString(idx + 1, params.get(idx));
             }
             pst.executeUpdate();
+            sessionManager.commitSession();
 
         } catch (SQLException ex) {
-            connection.rollback(savePoint);
+            sessionManager.rollbackSession();
             logger.error(ex.getMessage(), ex);
             throw ex;
         }
