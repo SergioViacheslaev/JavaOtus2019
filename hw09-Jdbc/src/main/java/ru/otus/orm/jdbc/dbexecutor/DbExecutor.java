@@ -5,13 +5,15 @@ import org.slf4j.LoggerFactory;
 import ru.otus.orm.annotations.Id;
 import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
+import ru.otus.orm.reflection.ReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
 
-/**Modified by Sergei.V on 14.09.2019
+/**
+ * Modified by Sergei.V on 14.09.2019
  *
  * @author Sergey Petrelevich
  * created on 03.02.19.
@@ -216,23 +218,12 @@ public class DbExecutor<T> {
     private boolean dbHasObject(T object) {
 
         String tableName = object.getClass().getSimpleName();
-        String id = null;
-        String idValue = null;
+        List<String> idFieldParams = ReflectionHelper.getIdFieldParams(object);
+        String idFieldName = idFieldParams.get(0);
+        String idValue = idFieldParams.get(1);
 
-        //Ищим поле, аннотированное @Id
-        try {
-            for (Field field : object.getClass().getDeclaredFields()) {
-                if (field.isAnnotationPresent(Id.class)) {
-                    id = field.getName();
-                    field.setAccessible(true);
-                    idValue = field.get(object).toString();
-                    break;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", id, tableName, id, idValue);
+
+        String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idFieldName, tableName, idFieldName, idValue);
 
         sessionManager.beginSession();
         try (Connection connection = sessionManager.getConnection();
