@@ -30,8 +30,10 @@ public class DbExecutor<T> {
     public void create(T objectData) {
         if (!objectHasIdAnnotation(objectData)) throw new DbExecutorException("Object has no 'Id' annotation !");
         sessionManager.beginSession();
-        String sqlInsertRecord = generateSqlInsertString(objectData);
-        List<String> columnValues = generateInsertColumnValues(objectData);
+
+        Map<String, List<String>> sqlParams = ReflectionHelper.getSqlParams(SqlCommand.INSERT, objectData);
+        String sqlInsertRecord = sqlParams.keySet().iterator().next();
+        List<String> columnValues = sqlParams.get(sqlInsertRecord);
 
         try {
             insertRecord(sessionManager.getConnection(), sqlInsertRecord, columnValues);
@@ -48,12 +50,14 @@ public class DbExecutor<T> {
 
     public void update(T objectData) {
         if (!objectHasIdAnnotation(objectData)) throw new DbExecutorException("Object has no 'Id' annotation !");
-        // Находим по ID в базе, если нет кидаем exception
         if (!dbHasObject(objectData)) throw new DbExecutorException("No object with such ID in database !");
 
         sessionManager.beginSession();
-        String sqlUpdateString = generateSqlUpdateString(objectData);
-        List<String> columnValues = generateInsertColumnValues(objectData);
+
+        Map<String, List<String>> sqlParams = ReflectionHelper.getSqlParams(SqlCommand.UPDATE, objectData);
+        String sqlUpdateString = sqlParams.keySet().iterator().next();
+        List<String> columnValues = sqlParams.get(sqlUpdateString);
+
         try {
             updateRecord(sessionManager.getConnection(), sqlUpdateString, columnValues);
             sessionManager.commitSession();
@@ -69,21 +73,12 @@ public class DbExecutor<T> {
     }
 
     public T load(long id, Class<T> clazz) {
-        //Проверяем, что с таким ID есть запись в базе
         if (!dbHasId(id, clazz)) throw new DbExecutorException("No such Object found in database !");
 
         String tableName = clazz.getSimpleName();
-        String idName = null;
-
-        //Ищим поле, аннотированное @Id
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Id.class)) {
-                idName = field.getName();
-                break;
-            }
-        }
-
+        String idName = ReflectionHelper.getIdFieldName(clazz);
         String selectSQL = String.format("SELECT * FROM %s WHERE %s = ?", tableName, idName);
+
         sessionManager.beginSession();
         Optional<T> optionalInstance = Optional.empty();
         try {
@@ -161,59 +156,6 @@ public class DbExecutor<T> {
 
     }
 
-    private List<String> generateInsertColumnValues(T object) {
-        List<String> tableParams = new ArrayList<>();
-        try {
-            for (Field field : object.getClass().getDeclaredFields()) {
-                if (!field.isAnnotationPresent(Id.class)) {
-                    field.setAccessible(true);
-                    tableParams.add(field.get(object).toString());
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return tableParams.isEmpty() ? Collections.emptyList() : tableParams;
-
-    }
-
-    private String generateSqlInsertString(T object) {
-        String tableName = object.getClass().getSimpleName();
-        List<String> columnNames = new ArrayList<>();
-        for (Field field : object.getClass().getDeclaredFields()) {
-            if (!field.isAnnotationPresent(Id.class)) {
-                columnNames.add(field.getName());
-            }
-        }
-        String sqlInsertRecord = String.format("insert into %s(%s,%s) values (?,?)",
-                tableName, columnNames.get(0), columnNames.get(1));
-        return sqlInsertRecord;
-    }
-
-    private String generateSqlUpdateString(T object) {
-        String tableName = object.getClass().getSimpleName();
-        String idValue = null;
-        String idColumnName = null;
-        List<String> columnNames = new ArrayList<>();
-        try {
-
-            for (Field field : object.getClass().getDeclaredFields()) {
-                if (!field.isAnnotationPresent(Id.class)) {
-                    columnNames.add(field.getName());
-                } else {
-                    field.setAccessible(true);
-                    idColumnName = field.getName();
-                    idValue = field.get(object).toString();
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        String sqlUpdateRecord = String.format("update %s set %s = ?, %s = ? where %s=%s ",
-                tableName, columnNames.get(0), columnNames.get(1), idColumnName, idValue);
-        return sqlUpdateRecord;
-
-    }
 
     private boolean dbHasObject(T object) {
 
@@ -254,14 +196,7 @@ public class DbExecutor<T> {
 
     private boolean dbHasId(long id, Class clazz) {
         String tableName = clazz.getSimpleName();
-        String idName = null;
-
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Id.class)) {
-                idName = field.getName();
-                break;
-            }
-        }
+        String idName = ReflectionHelper.getIdFieldName(clazz);
 
         String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idName, tableName, idName, id);
 
