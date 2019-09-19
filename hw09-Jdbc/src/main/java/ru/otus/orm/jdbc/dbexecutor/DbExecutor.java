@@ -2,10 +2,12 @@ package ru.otus.orm.jdbc.dbexecutor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.orm.annotations.Id;
 import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
 import ru.otus.orm.reflection.ReflectionHelper;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
@@ -21,36 +23,46 @@ public class DbExecutor<T> {
     private static Logger logger = LoggerFactory.getLogger(DbExecutor.class);
     private SessionManager sessionManager;
 
+    //Object metadata
+    private String tableName;
+    private String idFieldName;
+    private Field idField;
+    private List<String> columnNames = new ArrayList<>();
+    private List<Field> notIdFields = new ArrayList<>();
+    private boolean isObjectMetadataSaved = false;
+
+    private Constructor<T> constructor;
+
 
     public DbExecutor(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
     public void create(T objectData) {
+        if (!isObjectMetadataSaved) {
+            saveObjectMetadata(objectData);
+        }
 
-        Map<String, List<String>> sqlParams = ReflectionHelper.getSqlParams(SqlCommand.INSERT, objectData);
-        String sqlInsertRecord = sqlParams.keySet().iterator().next();
-        List<String> columnValues = sqlParams.get(sqlInsertRecord);
+        String sqlInsert = String.format("insert into %s(%s,%s) values (?,?)", tableName, columnNames.get(0), columnNames.get(1));
 
         try {
-            insertRecord(sqlInsertRecord, columnValues);
+            insertRecord(sqlInsert, getColumnValues(notIdFields, objectData));
         } catch (SQLException e) {
-            logger.error("Объект '{}' не сохранен в базе !", objectData.getClass().getSimpleName());
+            logger.error("Объект '{}' не сохранен в базе !", tableName);
             e.printStackTrace();
         }
 
-        logger.info("Объект '{}' успешно сохранен в базе !", objectData.getClass().getSimpleName());
+        logger.info("Объект '{}' успешно сохранен в базе !", tableName);
     }
 
     public void update(T objectData) {
-        if (!dbHasObject(objectData)) throw new DbExecutorException("No object with such ID in database !");
+        int idValue = getObjectIdfromDatabase(objectData);
 
-        Map<String, List<String>> sqlParams = ReflectionHelper.getSqlParams(SqlCommand.UPDATE, objectData);
-        String sqlUpdateString = sqlParams.keySet().iterator().next();
-        List<String> columnValues = sqlParams.get(sqlUpdateString);
+        String sqlUpdate = String.format("update %s set %s = ?, %s = ? where %s=%d ",
+                tableName, columnNames.get(0), columnNames.get(1), idFieldName, idValue);
 
         try {
-            updateRecord(sqlUpdateString, columnValues);
+            updateRecord(sqlUpdate, getColumnValues(notIdFields, objectData));
         } catch (SQLException e) {
             logger.error("Объект '{}' не обновлен в базе !", objectData.getClass().getSimpleName());
             e.printStackTrace();
@@ -61,7 +73,6 @@ public class DbExecutor<T> {
     }
 
     public T load(long id, Class<T> clazz) {
-        if (!dbHasId(id, clazz)) throw new DbExecutorException("No such Object found in database !");
 
         String tableName = clazz.getSimpleName();
         String idName = ReflectionHelper.getIdFieldName(clazz);
@@ -97,13 +108,13 @@ public class DbExecutor<T> {
 
     }
 
-    private long insertRecord(String sql, List<String> params) throws SQLException {
+    private long insertRecord(String sql, List<Object> params) throws SQLException {
 
         sessionManager.beginSession();
         try (Connection connection = sessionManager.getConnection();
              PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             for (int idx = 0; idx < params.size(); idx++) {
-                pst.setString(idx + 1, params.get(idx));
+                pst.setObject(idx + 1, params.get(idx));
             }
             pst.executeUpdate();
             sessionManager.commitSession();
@@ -131,12 +142,12 @@ public class DbExecutor<T> {
         }
     }
 
-    private void updateRecord(String sql, List<String> params) throws SQLException {
+    private void updateRecord(String sql, List<Object> params) throws SQLException {
         sessionManager.beginSession();
         try (Connection connection = sessionManager.getConnection();
              PreparedStatement pst = connection.prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
             for (int idx = 0; idx < params.size(); idx++) {
-                pst.setString(idx + 1, params.get(idx));
+                pst.setObject(idx + 1, params.get(idx));
             }
             pst.executeUpdate();
             sessionManager.commitSession();
@@ -149,14 +160,16 @@ public class DbExecutor<T> {
 
     }
 
-
+/*
     private boolean dbHasObject(T object) {
-        String tableName = object.getClass().getSimpleName();
-        List<String> idFieldParams = ReflectionHelper.getIdFieldParams(object);
-        String idFieldName = idFieldParams.get(0);
-        String idValue = idFieldParams.get(1);
-        String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idFieldName, tableName, idFieldName, idValue);
+        String idValue = null;
+        try {
+            idValue = String.valueOf(idField.get(object));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
+        String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idFieldName, tableName, idFieldName, idValue);
         return isObjectFound(selectSQL, tableName, idValue);
 
     }
@@ -168,25 +181,65 @@ public class DbExecutor<T> {
 
         return isObjectFound(selectSQL, tableName, String.valueOf(id));
 
-    }
+    }*/
 
-    private boolean isObjectFound(String sqlSelectQuery, String objectName, String idValue) {
+    private int getObjectIdfromDatabase(T object) {
+        String idValue = null;
+        try {
+            idValue = String.valueOf(idField.get(object));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idFieldName, tableName, idFieldName, idValue);
+
         sessionManager.beginSession();
         try (Connection connection = sessionManager.getConnection();
-             PreparedStatement pst = connection.prepareStatement(sqlSelectQuery);
+             PreparedStatement pst = connection.prepareStatement(selectSQL);
              ResultSet rs = pst.executeQuery()) {
             if (rs.next()) {
-                logger.info("Object '{}' with id={}  found in DB", objectName, idValue);
-                return true;
-            } else {
-                logger.info("Object '{}' with id={} not found in DB !", objectName, idValue);
-                return false;
+                logger.info("Object '{}' with id={}  found in DB", tableName, idValue);
+                return rs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return false;
+        logger.info("Object '{}' with id={} not found in DB !", tableName, idValue);
+        throw new DbExecutorException("No object found with such ID in database !");
+
+    }
+
+    private void saveObjectMetadata(T object) {
+        this.tableName = object.getClass().getSimpleName();
+
+        for (Field field : object.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Id.class)) {
+                this.idFieldName = field.getName();
+                this.idField = field;
+            } else {
+                this.notIdFields.add(field);
+                this.columnNames.add(field.getName());
+            }
+        }
+
+        if (Objects.isNull(idFieldName)) throw new DbExecutorException("Object has no 'Id' annotation !");
+
+        this.isObjectMetadataSaved = true;
+    }
+
+    private List<Object> getColumnValues(List<Field> fields, T objectData) {
+        List<Object> columnValues = new ArrayList<>();
+        try {
+            for (Field field : fields) {
+                columnValues.add(field.get(objectData));
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return columnValues;
     }
 
 

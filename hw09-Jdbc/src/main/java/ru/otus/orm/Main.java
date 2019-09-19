@@ -33,6 +33,7 @@ public class Main {
         userDbExecutor.create(new User("Jerry", 16));
         selectAllRecords(dataSource, "user");
 
+
         userDbExecutor.update(new User(2, "Snoopy", 99));
         selectAllRecords(dataSource, "user");
 
@@ -49,12 +50,13 @@ public class Main {
         selectAllRecords(dataSource, "account");
 
 
-        //Загружаем объекты из базы, по ID
+    /*    //Загружаем объекты из базы, по ID
         Account accCredit = accDbExecutor.load(1, Account.class);
         System.out.println(accCredit);
 
         User user2 = userDbExecutor.load(2, User.class);
         System.out.println(user2);
+*/
 
     }
 
