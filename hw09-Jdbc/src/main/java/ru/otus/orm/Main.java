@@ -28,7 +28,6 @@ public class Main {
         //Table User
         createTable(dataSource, TABLE_USER);
         DbExecutor<User> userDbExecutor = new DbExecutor<>(sessionManager);
-
         userDbExecutor.create(new User("Tom", 32));
         userDbExecutor.create(new User("Jerry", 16));
         selectAllRecords(dataSource, "user");
@@ -36,6 +35,7 @@ public class Main {
 
         userDbExecutor.update(new User(2, "Snoopy", 99));
         selectAllRecords(dataSource, "user");
+
 
         //Table Account
         createTable(dataSource, TABLE_ACCOUNT);
@@ -50,13 +50,12 @@ public class Main {
         selectAllRecords(dataSource, "account");
 
 
-    /*    //Загружаем объекты из базы, по ID
-        Account accCredit = accDbExecutor.load(1, Account.class);
+        //Загружаем объекты из базы, по ID
+        Account accCredit = accDbExecutor.load(3, Account.class);
         System.out.println(accCredit);
 
         User user2 = userDbExecutor.load(2, User.class);
         System.out.println(user2);
-*/
 
     }
 
