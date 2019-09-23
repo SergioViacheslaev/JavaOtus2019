@@ -3,16 +3,16 @@ package ru.otus.orm.jdbc.dbexecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.orm.ReflectionHelper;
-import ru.otus.orm.annotations.Id;
 import ru.otus.orm.api.objectmetadata.MetaDataHolder;
 import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
 import ru.otus.orm.objectmetadata.ObjectMetaData;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -25,18 +25,7 @@ public class DbExecutor<T> {
     private static Logger logger = LoggerFactory.getLogger(DbExecutor.class);
     private SessionManager sessionManager;
     private MetaDataHolder metaDataHolder;
-
-    //Object metadata
-    private String tableName;
-    private String idFieldName;
-    private Field idField;
-    private List<String> columnNames = new ArrayList<>();
-    private List<Field> notIdFields = new ArrayList<>();
-    private List<Field> allDeclaredFields = new ArrayList<>();
-    private String sqlSelect;
-    private String sqlInsert;
-    private Constructor<T> entityConstructor;
-    private boolean isObjectMetadataSaved = false;
+    private ObjectMetaData<T> metaData;
 
 
     public DbExecutor(SessionManager sessionManager, MetaDataHolder metaDataHolder) {
@@ -45,7 +34,7 @@ public class DbExecutor<T> {
     }
 
     public void create(T objectData) {
-        ObjectMetaData metaData = metaDataHolder.getObjectMetaData(objectData.getClass());
+        if (Objects.isNull(metaData)) metaData = metaDataHolder.getObjectMetaData(objectData.getClass());
 
         try {
             insertRecord(metaData.getSqlInsert(), ReflectionHelper.getColumnValues(metaData.getNotIdFields(), objectData));
@@ -58,7 +47,8 @@ public class DbExecutor<T> {
     }
 
     public void update(T objectData) {
-        ObjectMetaData metaData = metaDataHolder.getObjectMetaData(objectData.getClass());
+        if (Objects.isNull(metaData)) metaData = metaDataHolder.getObjectMetaData(objectData.getClass());
+
         Integer idValue = getObjectIdfromDatabase(objectData, metaData);
         List<Object> columnValues = ReflectionHelper.getColumnValues(metaData.getNotIdFields(), objectData);
         columnValues.add(idValue);
@@ -76,23 +66,14 @@ public class DbExecutor<T> {
     }
 
     public T load(long id, Class<T> clazz) {
-        //Проверяем и сохраняем конструктор класса только один раз
-        if (Objects.isNull(entityConstructor)) {
-            try {
-                entityConstructor = clazz.getDeclaredConstructor();
-                if (!isObjectMetadataSaved) saveObjectMetadata(entityConstructor.newInstance());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         sessionManager.beginSession();
         Optional<T> optionalInstance = Optional.empty();
         try {
-            T instance = entityConstructor.newInstance();
-            optionalInstance = selectRecord(sessionManager.getConnection(), sqlSelect, id, resultSet -> {
+
+            T instance = metaData.getEntityConstructor().newInstance();
+            optionalInstance = selectRecord(sessionManager.getConnection(), metaData.getSqlSelect(), id, resultSet -> {
                 try {
-                    for (Field field : allDeclaredFields) {
+                    for (Field field : metaData.getAllDeclaredFields()) {
                         field.setAccessible(true);
                         field.set(instance, resultSet.getObject(field.getName()));
                     }
@@ -200,30 +181,5 @@ public class DbExecutor<T> {
         throw new DbExecutorException("No object found with such ID in database !");
 
     }
-
-    //Запускается только один раз, затем используем уже сохраненные данные
-    private void saveObjectMetadata(T object) {
-        this.tableName = object.getClass().getSimpleName();
-        for (Field field : object.getClass().getDeclaredFields()) {
-            field.setAccessible(true);
-            allDeclaredFields.add(field);
-            if (field.isAnnotationPresent(Id.class)) {
-                this.idFieldName = field.getName();
-                this.idField = field;
-            } else {
-                this.notIdFields.add(field);
-                this.columnNames.add(field.getName());
-            }
-        }
-
-        this.sqlSelect = String.format("SELECT * FROM %s WHERE %s = ?", tableName, idFieldName);
-        this.sqlInsert = String.format("insert into %s(%s,%s) values (?,?)", tableName, columnNames.get(0), columnNames.get(1));
-
-        if (Objects.isNull(idFieldName)) throw new DbExecutorException("Object has no 'Id' annotation !");
-
-        this.isObjectMetadataSaved = true;
-        logger.info("'{}' object metadata is saved.", tableName);
-    }
-
 
 }
