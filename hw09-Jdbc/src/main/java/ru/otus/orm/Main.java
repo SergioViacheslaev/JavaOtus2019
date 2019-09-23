@@ -8,6 +8,7 @@ import ru.otus.orm.jdbc.sessionmanager.SessionManagerJdbc;
 import ru.otus.orm.h2.DataSourceH2;
 import ru.otus.orm.model.Account;
 import ru.otus.orm.model.User;
+import ru.otus.orm.objectmetadata.ObjectMetaDataHolder;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -27,12 +28,16 @@ public class Main {
 
         //Table User
         createTable(dataSource, TABLE_USER);
-        DbExecutor<User> userDbExecutor = new DbExecutor<>(sessionManager);
+        DbExecutor<User> userDbExecutor = new DbExecutor<>(sessionManager, new ObjectMetaDataHolder<>(User.class));
         userDbExecutor.create(new User("Tom", 32));
         userDbExecutor.create(new User("Jerry", 16));
         selectAllRecords(dataSource, "user");
 
+        userDbExecutor.update(new User(2, "Snoopy", 99));
+        selectAllRecords(dataSource, "user");
 
+
+/*
         userDbExecutor.update(new User(2, "Snoopy", 99));
         selectAllRecords(dataSource, "user");
 
@@ -55,7 +60,7 @@ public class Main {
         System.out.println(accCredit);
 
         User user2 = userDbExecutor.load(2, User.class);
-        System.out.println(user2);
+        System.out.println(user2);*/
 
     }
 

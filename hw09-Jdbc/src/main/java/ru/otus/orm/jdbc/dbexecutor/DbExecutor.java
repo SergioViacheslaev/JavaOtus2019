@@ -2,9 +2,12 @@ package ru.otus.orm.jdbc.dbexecutor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.orm.ReflectionHelper;
 import ru.otus.orm.annotations.Id;
+import ru.otus.orm.api.objectmetadata.MetaDataHolder;
 import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;
+import ru.otus.orm.objectmetadata.ObjectMetaData;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -21,6 +24,7 @@ import java.util.function.Function;
 public class DbExecutor<T> {
     private static Logger logger = LoggerFactory.getLogger(DbExecutor.class);
     private SessionManager sessionManager;
+    private MetaDataHolder metaDataHolder;
 
     //Object metadata
     private String tableName;
@@ -35,62 +39,39 @@ public class DbExecutor<T> {
     private boolean isObjectMetadataSaved = false;
 
 
-    public DbExecutor(SessionManager sessionManager) {
+    public DbExecutor(SessionManager sessionManager, MetaDataHolder metaDataHolder) {
         this.sessionManager = sessionManager;
+        this.metaDataHolder = metaDataHolder;
     }
 
     public void create(T objectData) {
-        if (!isObjectMetadataSaved) saveObjectMetadata(objectData);
+        ObjectMetaData metaData = metaDataHolder.getObjectMetaData(objectData.getClass());
 
         try {
-            insertRecord(sqlInsert, getColumnValues(objectData));
+            insertRecord(metaData.getSqlInsert(), ReflectionHelper.getColumnValues(metaData.getNotIdFields(), objectData));
         } catch (SQLException e) {
-            logger.error("Объект '{}' не сохранен в базе !", tableName);
+            logger.error("Объект '{}' не сохранен в базе !", metaData.getTableName());
             e.printStackTrace();
         }
 
-        logger.info("Объект '{}' успешно сохранен в базе !", tableName);
+        logger.info("Объект '{}' успешно сохранен в базе !", metaData.getTableName());
     }
 
     public void update(T objectData) {
-        if (!isObjectMetadataSaved) saveObjectMetadata(objectData);
+        ObjectMetaData metaData = metaDataHolder.getObjectMetaData(objectData.getClass());
+        Integer idValue = getObjectIdfromDatabase(objectData, metaData);
+        List<Object> columnValues = ReflectionHelper.getColumnValues(metaData.getNotIdFields(), objectData);
+        columnValues.add(idValue);
 
-        int idValue = getObjectIdfromDatabase(objectData);
-
-        String sqlUpdate = String.format("update %s set %s = ?, %s = ? where %s=%d ",
-                tableName, columnNames.get(0), columnNames.get(1), idFieldName, idValue);
 
         try {
-            updateRecord(sqlUpdate, getColumnValues(objectData));
+            updateRecord(metaData.getSqlUpdate(), columnValues);
         } catch (SQLException e) {
             logger.error("Объект '{}' не обновлен в базе !", objectData.getClass().getSimpleName());
             e.printStackTrace();
         }
 
         logger.info("Объект '{}' успешно обновлен в базе !", objectData.getClass().getSimpleName());
-
-    }
-
-    private long insertRecord(String sql, List<Object> params) throws SQLException {
-
-        sessionManager.beginSession();
-        try (Connection connection = sessionManager.getConnection();
-             PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            for (int idx = 0; idx < params.size(); idx++) {
-                pst.setObject(idx + 1, params.get(idx));
-            }
-            pst.executeUpdate();
-            sessionManager.commitSession();
-            try (ResultSet rs = pst.getGeneratedKeys()) {
-                rs.next();
-                return rs.getInt(1);
-            }
-        } catch (SQLException ex) {
-            sessionManager.rollbackSession();
-            logger.error(ex.getMessage(), ex);
-            throw ex;
-        }
-
 
     }
 
@@ -132,6 +113,29 @@ public class DbExecutor<T> {
 
     }
 
+    private long insertRecord(String sql, List<Object> params) throws SQLException {
+
+        sessionManager.beginSession();
+        try (Connection connection = sessionManager.getConnection();
+             PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            for (int idx = 0; idx < params.size(); idx++) {
+                pst.setObject(idx + 1, params.get(idx));
+            }
+            pst.executeUpdate();
+            sessionManager.commitSession();
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            sessionManager.rollbackSession();
+            logger.error(ex.getMessage(), ex);
+            throw ex;
+        }
+
+
+    }
+
     private Optional<T> selectRecord(Connection connection, String sql, long id, Function<ResultSet, T> rsHandler) throws SQLException {
         try (PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.setLong(1, id);
@@ -165,30 +169,34 @@ public class DbExecutor<T> {
     }
 
 
-    private int getObjectIdfromDatabase(T object) {
+    private int getObjectIdfromDatabase(T object, ObjectMetaData metaData) {
         String idValue = null;
         try {
-            idValue = String.valueOf(idField.get(object));
+            idValue = String.valueOf(metaData.getIdField().get(object));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        String selectSQL = String.format("SELECT %s FROM %s WHERE %s = %s", idFieldName, tableName, idFieldName, idValue);
-
         sessionManager.beginSession();
         //Connection закрывается в try resources
         try (Connection connection = sessionManager.getConnection();
-             PreparedStatement pst = connection.prepareStatement(selectSQL);
-             ResultSet rs = pst.executeQuery()) {
-            if (rs.next()) {
-                logger.info("Object '{}' with id={}  found in DB", tableName, idValue);
-                return rs.getInt(1);
+             PreparedStatement pst = connection.prepareStatement(metaData.getSqlSelect())
+        ) {
+            pst.setString(1, idValue);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    logger.info("Object '{}' with id={}  found in DB", metaData.getTableName(), idValue);
+                    return rs.getInt(1);
+                }
             }
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        logger.info("Object '{}' with id={} not found in DB !", tableName, idValue);
+        logger.info("Object '{}' with id={} not found in DB !", metaData.getTableName(), idValue);
         throw new DbExecutorException("No object found with such ID in database !");
 
     }
@@ -215,19 +223,6 @@ public class DbExecutor<T> {
 
         this.isObjectMetadataSaved = true;
         logger.info("'{}' object metadata is saved.", tableName);
-    }
-
-    private List<Object> getColumnValues(T objectData) {
-        List<Object> columnValues = new ArrayList<>();
-        try {
-            for (Field field : notIdFields) {
-                columnValues.add(field.get(objectData));
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        return columnValues;
     }
 
 
