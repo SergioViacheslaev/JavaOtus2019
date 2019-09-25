@@ -23,68 +23,71 @@ public class ObjectMetaData<T> {
         return tableName;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public String getIdFieldName() {
-        return idFieldName;
-    }
-
-    public Field getIdField() {
-        return idField;
-    }
-
-    public void setIdField(Field idField) {
-        this.idField = idField;
-        this.idFieldName = idField.getName();
-    }
-
     public List<Field> getNotIdFields() {
         return notIdFields;
-    }
-
-    public void setNotIdFields(List<Field> notIdFields) {
-        this.notIdFields = notIdFields;
     }
 
     public String getSqlInsert() {
         return sqlInsert;
     }
 
-    public void setSqlInsert(String sqlInsert) {
-        this.sqlInsert = sqlInsert;
+    public Field getIdField() {
+        return idField;
     }
 
     public String getSqlSelect() {
         return sqlSelect;
     }
 
-    public void setSqlSelect(String sqlSelect) {
-        this.sqlSelect = sqlSelect;
+    public Constructor<T> getEntityConstructor() {
+        return entityConstructor;
     }
 
     public String getSqlUpdate() {
         return sqlUpdate;
     }
 
-    public void setSqlUpdate(String sqlUpdate) {
-        this.sqlUpdate = sqlUpdate;
-    }
-
-    public Constructor<T> getEntityConstructor() {
-        return entityConstructor;
-    }
-
-    public void setEntityConstructor(Constructor<T> entityConstructor) {
-        this.entityConstructor = entityConstructor;
-    }
-
     public List<Field> getAllDeclaredFields() {
         return allDeclaredFields;
     }
 
-    public void setAllDeclaredFields(List<Field> allDeclaredFields) {
+    void setIdField(Field idField) {
+        this.idField = idField;
+    }
+
+    void setIdFieldName(String idFieldName) {
+        this.idFieldName = idFieldName;
+    }
+
+    String getIdFieldName() {
+        return idFieldName;
+    }
+
+    void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    void setNotIdFields(List<Field> notIdFields) {
+        this.notIdFields = notIdFields;
+    }
+
+    void setSqlInsert(String sqlInsert) {
+        this.sqlInsert = sqlInsert;
+    }
+
+    void setSqlSelect(String sqlSelect) {
+        this.sqlSelect = sqlSelect;
+    }
+
+    void setSqlUpdate(String sqlUpdate) {
+        this.sqlUpdate = sqlUpdate;
+    }
+
+    void setEntityConstructor(Constructor<T> entityConstructor) {
+        this.entityConstructor = entityConstructor;
+    }
+
+    void setAllDeclaredFields(List<Field> allDeclaredFields) {
         this.allDeclaredFields = allDeclaredFields;
     }
 }

@@ -6,8 +6,8 @@ import ru.otus.orm.objectmetadata.ObjectMetaData;
  * @author Sergei Viacheslaev
  */
 
-public interface MetaDataHolder<T> {
-    void saveObjectMetadata(Class<T> className);
+public interface MetaDataHolder {
+    void saveObjectMetadata(Class className);
 
-    ObjectMetaData getObjectMetaData(Class<T> className);
+    ObjectMetaData getObjectMetaData(Class className);
 }

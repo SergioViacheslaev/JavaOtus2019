@@ -2,6 +2,7 @@ package ru.otus.orm;
 
 
 import ru.otus.orm.api.sessionmanager.SessionManager;
+import ru.otus.orm.dbutils.DbUtils;
 import ru.otus.orm.jdbc.dbexecutor.DbExecutor;
 import ru.otus.orm.jdbc.sessionmanager.SessionManagerJdbc;
 import ru.otus.orm.h2.DataSourceH2;
@@ -26,7 +27,7 @@ public class Main {
 
         //Table User
         DbUtils.createTable(dataSource, TABLE_USER);
-        DbExecutor<User> userDbExecutor = new DbExecutor<>(sessionManager, new ObjectMetaDataHolder<>(User.class));
+        DbExecutor<User> userDbExecutor = new DbExecutor<>(sessionManager, new ObjectMetaDataHolder(User.class));
         userDbExecutor.create(new User("Tom", 32));
         userDbExecutor.create(new User("Jerry", 16));
         DbUtils.selectAllRecords(dataSource, "user");
@@ -37,7 +38,7 @@ public class Main {
 
         //Table Account
         DbUtils.createTable(dataSource, TABLE_ACCOUNT);
-        DbExecutor<Account> accDbExecutor = new DbExecutor<>(sessionManager, new ObjectMetaDataHolder<>(Account.class));
+        DbExecutor<Account> accDbExecutor = new DbExecutor<>(sessionManager, new ObjectMetaDataHolder(Account.class));
 
         accDbExecutor.create(new Account("debit", 123.5));
         accDbExecutor.create(new Account("credit", 2000.123));

@@ -1,4 +1,4 @@
-package ru.otus.orm;
+package ru.otus.orm.dbutils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ public class DbUtils {
 
     private static Logger logger = LoggerFactory.getLogger(DbUtils.class);
 
-    static void createTable(DataSource dataSource, String sqlCommand) throws SQLException {
+   public static void createTable(DataSource dataSource, String sqlCommand) throws SQLException {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pst = connection.prepareStatement(sqlCommand)) {
             pst.executeUpdate();
@@ -23,7 +23,7 @@ public class DbUtils {
     }
 
 
-    static void selectAllRecords(DataSource dataSource, String tableName) throws SQLException {
+  public   static void selectAllRecords(DataSource dataSource, String tableName) throws SQLException {
         String selectAllQuery = String.format("select * from %s", tableName);
         String dataBaseName = dataSource.getConnection().getMetaData().getDatabaseProductName();
 

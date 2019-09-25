@@ -2,7 +2,7 @@ package ru.otus.orm.jdbc.dbexecutor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.orm.ReflectionHelper;
+import ru.otus.orm.reflection.ReflectionHelper;
 import ru.otus.orm.api.objectmetadata.MetaDataHolder;
 import ru.otus.orm.api.sessionmanager.SessionManager;
 import ru.otus.orm.jdbc.dbexecutor.exceptions.DbExecutorException;

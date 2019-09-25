@@ -12,20 +12,19 @@ import java.util.*;
 /**
  * @author Sergei Viacheslaev
  */
-public class ObjectMetaDataHolder<T> implements MetaDataHolder<T> {
+public class ObjectMetaDataHolder implements MetaDataHolder {
     private static Logger logger = LoggerFactory.getLogger(ObjectMetaDataHolder.class);
 
-    private Map<Class, ObjectMetaData> metaDataMap = new HashMap<>();
+    private ObjectMetaData metaData = new ObjectMetaData();
 
-    public ObjectMetaDataHolder(Class<T> clazz) {
+    public ObjectMetaDataHolder(Class clazz) {
         saveObjectMetadata(clazz);
         logger.info("'{}' metadata is successfully saved.", clazz.getSimpleName());
     }
 
 
     @Override
-    public void saveObjectMetadata(Class<T> clazz) {
-        ObjectMetaData metaData = new ObjectMetaData();
+    public void saveObjectMetadata(Class clazz) {
         List<Field> notIdFields = new ArrayList<>();
         List<Field> allDeclaredFields = new ArrayList<>();
         List<String> columnNames = new ArrayList<>();
@@ -36,6 +35,7 @@ public class ObjectMetaDataHolder<T> implements MetaDataHolder<T> {
             allDeclaredFields.add(field);
             if (field.isAnnotationPresent(Id.class)) {
                 metaData.setIdField(field);
+                metaData.setIdFieldName(field.getName());
             } else {
                 notIdFields.add(field);
                 columnNames.add(field.getName());
@@ -59,11 +59,11 @@ public class ObjectMetaDataHolder<T> implements MetaDataHolder<T> {
         metaData.setSqlUpdate(String.format("update %s set %s = ?, %s = ? where %s= ?", metaData.getTableName(),
                 columnNames.get(0), columnNames.get(1), metaData.getIdFieldName()));
 
-        metaDataMap.put(clazz, metaData);
+
     }
 
     @Override
-    public ObjectMetaData getObjectMetaData(Class<T> className) {
-        return metaDataMap.get(className);
+    public ObjectMetaData getObjectMetaData(Class className) {
+        return metaData;
     }
 }
