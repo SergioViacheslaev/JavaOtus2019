@@ -28,39 +28,36 @@ public class Main {
         UserDao userDao = new UserDaoHibernate(sessionManager);
         DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
 
-        //Create User entity, Address and Phones
+        //Create User entity with Address and Phones
         User user = new User("Sergei", 22);
 
         AddressDataSet address = new AddressDataSet("Galernaya 42");
         user.setAddress(address);
 
         List<PhoneDataSet> phones = new ArrayList<>();
-        phones.add(new PhoneDataSet("+7 12345"));
-        phones.add(new PhoneDataSet("812 777-1-777"));
-        phones.add(new PhoneDataSet("+7 495 911911235"));
-
+        phones.add(new PhoneDataSet("+7 12345", user));
+        phones.add(new PhoneDataSet("812 777-1-777", user));
+        phones.add(new PhoneDataSet("+7 495 911911235", user));
         user.setPhones(phones);
 
 
+        //Save user
         long id = dbServiceUser.saveUser(user);
-        Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
 
-        System.out.println(mayBeCreatedUser.get());
+        /**
+         *  Загружаю объект из базы через load, чтобы сработала ленивая загрузка.
+         *  Также в конфиге включил параметр hibernate.enable_lazy_load_no_trans = true,
+         *  чтобы избежать LazyInitializationException.
+         */
+//        Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
+        Optional<User> mayBeCreatedUser = dbServiceUser.loadUser(id);
 
-/*
-    long id = dbServiceUser.saveUser(new User(0, "Вася"));
-    Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
+        User loadedUser = mayBeCreatedUser.get();
 
-    id = dbServiceUser.saveUser(new User(1L, "А! Нет. Это же совсем не Вася"));
-    Optional<User> mayBeUpdatedUser = dbServiceUser.getUser(id);
+        System.out.println(loadedUser.getPhones());
+        System.out.println(loadedUser);
 
-    outputUserOptional("Created user", mayBeCreatedUser);
-    outputUserOptional("Updated user", mayBeUpdatedUser);*/
+
     }
 
-    private static void outputUserOptional(String header, Optional<User> mayBeUser) {
-        System.out.println("-----------------------------------------------------------");
-        System.out.println(header);
-        mayBeUser.ifPresentOrElse(System.out::println, () -> logger.info("User not found"));
-    }
 }

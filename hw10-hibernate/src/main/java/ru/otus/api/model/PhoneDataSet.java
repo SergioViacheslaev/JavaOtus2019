@@ -13,6 +13,7 @@ public class PhoneDataSet {
     private String number;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
 
@@ -21,6 +22,11 @@ public class PhoneDataSet {
 
     public PhoneDataSet(String number) {
         this.number = number;
+    }
+
+    public PhoneDataSet(String number, User user) {
+        this.number = number;
+        this.user = user;
     }
 
     public String getNumber() {

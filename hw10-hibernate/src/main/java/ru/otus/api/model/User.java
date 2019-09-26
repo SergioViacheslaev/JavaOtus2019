@@ -4,6 +4,7 @@ package ru.otus.api.model;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public class User {
     private AddressDataSet address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PhoneDataSet> phones;
+    private List<PhoneDataSet> phones = new ArrayList<>();
 
     public User() {
     }

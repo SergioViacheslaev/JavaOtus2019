@@ -10,5 +10,7 @@ public interface UserDao {
 
   long saveUser(User user);
 
+  Optional<User> loadUser(long id);
+
   SessionManager getSessionManager();
 }
