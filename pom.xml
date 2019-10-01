@@ -19,6 +19,7 @@
         <module>hw07-AtmDepartment</module>
         <module>hw08-JsonObjectWriter</module>
         <module>hw09-Jdbc</module>
+        <module>hw10-hibernate</module>
     </modules>
 
 
