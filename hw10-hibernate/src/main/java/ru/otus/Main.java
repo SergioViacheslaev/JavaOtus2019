@@ -44,13 +44,9 @@ public class Main {
         //Save user
         long id = dbServiceUser.saveUser(user);
 
-        /**
-         *  Загружаю объект из базы через load, чтобы сработала ленивая загрузка.
-         *  Также в конфиге включил параметр hibernate.enable_lazy_load_no_trans = true,
-         *  чтобы избежать LazyInitializationException.
-         */
-//        Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
-        Optional<User> mayBeCreatedUser = dbServiceUser.loadUser(id);
+
+//        Optional<User> mayBeCreatedUser = dbServiceUser.loadUser(id);
+        Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
 
         User loadedUser = mayBeCreatedUser.get();
 

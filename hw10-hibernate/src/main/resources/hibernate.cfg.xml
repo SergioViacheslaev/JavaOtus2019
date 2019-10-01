@@ -17,7 +17,7 @@
 
         <property name="hibernate.hbm2ddl.auto">create</property>
 
-        <property name="hibernate.enable_lazy_load_no_trans">true</property>
+        <property name="hibernate.enable_lazy_load_no_trans">false</property>
         <!--    hibernate.enable_lazy_load_no_trans (e.g. true or false (default value))-->
         <!--    Initialize Lazy Proxies or Collections outside a given Transactional Persistence Context.-->
         <!--    Although enabling this configuration can make LazyInitializationException go away,-->
