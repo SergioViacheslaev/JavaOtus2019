@@ -20,6 +20,7 @@
         <module>hw08-JsonObjectWriter</module>
         <module>hw09-Jdbc</module>
         <module>hw10-hibernate</module>
+        <module>hw11-Cache</module>
     </modules>
 
 
@@ -47,9 +48,9 @@
         <!--region Logging - slf4j -->
         <slf4j-api.version>1.7.26</slf4j-api.version>
         <slf4j-log4j12.version>1.7.26</slf4j-log4j12.version>
+        <logback-classic.version>1.2.3</logback-classic.version>
         <!--endregion-->
 
-        <!--endregion-->
 
         <!--region Plugins-->
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -72,6 +73,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>${slf4j-log4j12.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback-classic.version}</version>
             </dependency>
             <!--endregion-->
 
