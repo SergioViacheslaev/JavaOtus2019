@@ -1,4 +1,4 @@
-package ru.otus.cachehw.api.service;
+package ru.otus.cachehw.api.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,20 +53,5 @@ public class DbServiceUserImpl implements DBServiceUser {
         }
     }
 
-    @Override
-    public Optional<User> loadUser(long id) {
-        try (SessionManager sessionManager = userDao.getSessionManager()) {
-            sessionManager.beginSession();
-            try {
-                Optional<User> userOptional = userDao.loadUser(id);
 
-//                logger.info("loaded user: {}", userOptional.orElse(null));
-                return userOptional;
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                sessionManager.rollbackSession();
-            }
-            return Optional.empty();
-        }
-    }
 }

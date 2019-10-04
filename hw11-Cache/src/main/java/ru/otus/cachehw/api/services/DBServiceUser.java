@@ -1,4 +1,4 @@
-package ru.otus.cachehw.api.service;
+package ru.otus.cachehw.api.services;
 
 import ru.otus.cachehw.api.model.User;
 import java.util.Optional;
@@ -9,6 +9,5 @@ public interface DBServiceUser {
 
   Optional<User> getUser(long id);
 
-  Optional<User> loadUser(long id);
 
 }

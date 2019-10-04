@@ -7,8 +7,8 @@ import ru.otus.cachehw.api.dao.UserDao;
 import ru.otus.cachehw.api.model.AddressDataSet;
 import ru.otus.cachehw.api.model.PhoneDataSet;
 import ru.otus.cachehw.api.model.User;
-import ru.otus.cachehw.api.service.DBServiceUser;
-import ru.otus.cachehw.api.service.DbServiceUserImpl;
+import ru.otus.cachehw.api.services.DBServiceCachedUser;
+import ru.otus.cachehw.cache.impl.MyCache;
 import ru.otus.cachehw.hibernate.HibernateUtils;
 import ru.otus.cachehw.hibernate.dao.UserDaoHibernate;
 import ru.otus.cachehw.hibernate.sessionmanager.SessionManagerHibernate;
@@ -26,11 +26,16 @@ public class Main {
 
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
         UserDao userDao = new UserDaoHibernate(sessionManager);
-        DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
 
-        //Create User entity with Address and Phones
+        //Initializing Cache with two sample listeners
+        MyCache<String, User> cacheUser = new MyCache<>();
+        cacheUser.addListener((key, value, action) -> logger.info("Listener #1, key:{}, value:{}, action: {}", key, value, action));
+        cacheUser.addListener((key, value, action) -> logger.info("Listener #2, key:{}, value:{}, action: {}", key, value, action));
+
+        DBServiceCachedUser dbServiceCachedUser = new DBServiceCachedUser(userDao, cacheUser);
+
+        //Creating User
         User user = new User("Sergei", 22);
-
         AddressDataSet address = new AddressDataSet("Galernaya 42");
         user.setAddress(address);
 
@@ -40,16 +45,27 @@ public class Main {
         phones.add(new PhoneDataSet("+7 495 911911235", user));
         user.setPhones(phones);
 
-
         //Save user
-        long id = dbServiceUser.saveUser(user);
+        long id = dbServiceCachedUser.saveUser(user);
 
-        Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
+        Optional<User> userFromCache = dbServiceCachedUser.getUser(id);
 
-        User loadedUser = mayBeCreatedUser.get();
+        User cachedUser = userFromCache.get();
 
-        System.out.println(loadedUser.getPhones());
-        System.out.println(loadedUser);
+        System.out.println(cachedUser.getPhones());
+        System.out.println(cachedUser);
+
+        System.out.println("-----------After GC-----------");
+        System.gc();
+
+        //User is loaded and also cached
+        Optional<User> mayBeCreatedUser = dbServiceCachedUser.getUser(id);
+        User loadedFromDBuser = mayBeCreatedUser.get();
+        System.out.println(loadedFromDBuser);
+
+        System.out.println("------Will get user from Cache-----");
+        Optional<User> optionalUser = dbServiceCachedUser.getUser(1L);
+        System.out.println(optionalUser.get());
 
 
     }
