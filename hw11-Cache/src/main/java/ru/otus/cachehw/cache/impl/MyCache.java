@@ -5,10 +5,7 @@ import ru.otus.cachehw.cache.interfaces.HwListener;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 
 public class MyCache<K, V> implements HwCache<K, V> {
@@ -24,22 +21,41 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public void put(K key, V value) {
         cleanUp();
         cache.put(key, value);
-        listeners.forEach((listener -> listener.get().notify(key, value, "Entity is cached.")));
+        listeners.forEach(weakRefListener -> {
+            HwListener<K, V> listener = weakRefListener.get();
+            if (listener != null) {
+                listener.notify(key, value, "Entity is cached.");
+            }
+        });
     }
 
     @Override
     public void remove(K key) {
         cleanUp();
         V oldValue = cache.remove(key);
-        listeners.forEach((listener -> listener.get().notify(key, oldValue, "Entity is removed from cache.")));
+        listeners.forEach(weakRefListener -> {
+            HwListener<K, V> listener = weakRefListener.get();
+            if (listener != null) {
+                listener.notify(key, oldValue, "Entity is removed from cache.");
+            }
+        });
     }
 
     @Override
-    public V get(K key) {
+    public Optional<V> get(K key) {
         cleanUp();
         V value = cache.get(key);
-        listeners.forEach((listener -> listener.get().notify(key, value, "Entity is loaded from Cache")));
-        return value;
+
+        if (value != null) {
+            listeners.forEach(weakRefListener -> {
+                HwListener<K, V> listener = weakRefListener.get();
+                if (listener != null) {
+                    listener.notify(key, value, "Entity is loaded from cache.");
+                }
+            });
+        }
+
+        return Optional.ofNullable(value);
     }
 
     @Override
@@ -49,13 +65,11 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     @Override
     public void removeListener(HwListener listener) {
-        listeners.remove(listener);
+        if (listener != null) {
+            listeners.remove(listener);
+        }
     }
 
-    @Override
-    public boolean isValueCached(K key) {
-        return cache.containsKey(key);
-    }
 
     //Remove deleted by GC Weakreferences from listeners list.
     private void cleanUp() {

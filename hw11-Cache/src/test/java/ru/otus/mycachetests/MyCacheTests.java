@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import ru.otus.cachehw.api.model.User;
 import ru.otus.cachehw.cache.impl.MyCache;
 
+import java.util.Optional;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.*;
@@ -13,7 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 /**
  * @author Sergei Viacheslaev
  */
-public class MyCacheTests {
+class MyCacheTests {
     private MyCache<String, User> entityCache;
 
     @BeforeEach
@@ -31,8 +32,8 @@ public class MyCacheTests {
 
         int cacheSize = 0;
         for (int id = 0; id < 100; id++) {
-            User userFromCache = entityCache.get(String.valueOf(id));
-            if (userFromCache != null) {
+            Optional<User> userFromCache = entityCache.get(String.valueOf(id));
+            if (userFromCache.isPresent()) {
                 cacheSize++;
             }
         }
@@ -40,7 +41,6 @@ public class MyCacheTests {
         assertThat(cacheSize).isEqualTo(0);
 
     }
-
 
     private void fillEntityCache() {
         for (int id = 0; id < 100; id++) {

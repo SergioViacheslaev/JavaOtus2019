@@ -31,6 +31,7 @@ public class Main {
         MyCache<String, User> cacheUser = new MyCache<>();
         cacheUser.addListener((key, value, action) -> logger.info("Listener #1, key:{}, value:{}, action: {}", key, value, action));
         cacheUser.addListener((key, value, action) -> logger.info("Listener #2, key:{}, value:{}, action: {}", key, value, action));
+        cacheUser.addListener(null);
 
         DBServiceCachedUser dbServiceCachedUser = new DBServiceCachedUser(userDao, cacheUser);
 
@@ -52,20 +53,16 @@ public class Main {
 
         User cachedUser = userFromCache.get();
 
-        System.out.println(cachedUser.getPhones());
-        System.out.println(cachedUser);
-
         System.out.println("-----------After GC-----------");
         System.gc();
 
         //User is loaded and also cached
         Optional<User> mayBeCreatedUser = dbServiceCachedUser.getUser(id);
         User loadedFromDBuser = mayBeCreatedUser.get();
-        System.out.println(loadedFromDBuser);
 
         System.out.println("------Will get user from Cache-----");
-        Optional<User> optionalUser = dbServiceCachedUser.getUser(1L);
-        System.out.println(optionalUser.get());
+        Optional<User> optionalUser1 = dbServiceCachedUser.getUser(1L);
+        Optional<User> optionalUser2 = dbServiceCachedUser.getUser(33L);
 
 
     }
