@@ -32,21 +32,11 @@ public class DBServiceCachedUser extends DbServiceUserImpl {
 
     @Override
     public Optional<User> getUser(long id) {
-        String userID = String.valueOf(id);
-
-        Optional<User> optionalUser = entityCache.get(userID);
-
         //If we get user from DB, then we also save User in cache.
-        if (optionalUser.isEmpty()) {
-
-            return super.getUser(id).map(user -> {
-                entityCache.put(String.valueOf(id), user);
-                return user;
-            });
-
-        } else {
-            return optionalUser;
-        }
+        return entityCache.get(String.valueOf(id)).or(() -> super.getUser(id).map(user -> {
+            entityCache.put(String.valueOf(id), user);
+            return user;
+        }));
     }
 
 }

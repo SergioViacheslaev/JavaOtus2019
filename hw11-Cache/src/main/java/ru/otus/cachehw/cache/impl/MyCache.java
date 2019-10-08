@@ -8,9 +8,12 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 
 
-public class MyCache<K, V> implements HwCache<K, V> {
-    private Map<K, V> cache = new WeakHashMap<>();
+public class MyCache<K, V> implements HwCache<K, V>, HwListener<K, V> {
+    private final static String ENTITY_CACHED = "Entity is cached.";
+    private final static String ENTITY_LOADED = "Entity is loaded from cache.";
+    private final static String ENTITY_REMOVED = "Entity is removed from cache.";
 
+    private Map<K, V> cache = new WeakHashMap<>();
     //List of Weak links to HwListeners objects
     private List<WeakReference<HwListener<K, V>>> listeners = new ArrayList<>();
     //Queue is used to info about deleted by GC WeakReferences, for cleanUp method
@@ -21,24 +24,24 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public void put(K key, V value) {
         cleanUp();
         cache.put(key, value);
-        listeners.forEach(weakRefListener -> {
-            HwListener<K, V> listener = weakRefListener.get();
-            if (listener != null) {
-                listener.notify(key, value, "Entity is cached.");
-            }
-        });
+        notify(key, value, ENTITY_CACHED);
+
+        if (!listeners.isEmpty()) {
+            notifyAllListeners(key, value, ENTITY_CACHED);
+        }
+
     }
 
     @Override
     public void remove(K key) {
         cleanUp();
         V oldValue = cache.remove(key);
-        listeners.forEach(weakRefListener -> {
-            HwListener<K, V> listener = weakRefListener.get();
-            if (listener != null) {
-                listener.notify(key, oldValue, "Entity is removed from cache.");
-            }
-        });
+        notify(key, oldValue, ENTITY_REMOVED);
+
+        if (!listeners.isEmpty()) {
+            notifyAllListeners(key, oldValue, ENTITY_REMOVED);
+        }
+
     }
 
     @Override
@@ -47,14 +50,13 @@ public class MyCache<K, V> implements HwCache<K, V> {
         V value = cache.get(key);
 
         if (value != null) {
-            listeners.forEach(weakRefListener -> {
-                HwListener<K, V> listener = weakRefListener.get();
-                if (listener != null) {
-                    listener.notify(key, value, "Entity is loaded from cache.");
-                }
-            });
-        }
+            notify(key, value, ENTITY_LOADED);
 
+            if (!listeners.isEmpty()) {
+                notifyAllListeners(key, value, ENTITY_LOADED);
+            }
+
+        }
         return Optional.ofNullable(value);
     }
 
@@ -81,5 +83,18 @@ public class MyCache<K, V> implements HwCache<K, V> {
         }
     }
 
-
+    private void notifyAllListeners(K key, V value, String action) {
+        listeners.forEach(weakRefListener -> {
+            HwListener<K, V> listener = weakRefListener.get();
+            if (listener != null) {
+                try {
+                    listener.notify(key, value, action);
+                } catch (Exception e) {
+                    logger.error("Exception at listener", e);
+                }
+            }
+        });
+    }
 }
+
+

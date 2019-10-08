@@ -9,6 +9,7 @@ import ru.otus.cachehw.api.model.PhoneDataSet;
 import ru.otus.cachehw.api.model.User;
 import ru.otus.cachehw.api.services.DBServiceCachedUser;
 import ru.otus.cachehw.cache.impl.MyCache;
+import ru.otus.cachehw.cache.interfaces.HwListener;
 import ru.otus.cachehw.hibernate.HibernateUtils;
 import ru.otus.cachehw.hibernate.dao.UserDaoHibernate;
 import ru.otus.cachehw.hibernate.sessionmanager.SessionManagerHibernate;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class Main {
-    private static Logger logger = LoggerFactory.getLogger(Main.class);
+    private final static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         SessionFactory sessionFactory = HibernateUtils.buildSessionFactory("hibernate.cfg.xml",
@@ -29,12 +30,22 @@ public class Main {
 
         //Initializing Cache with two sample listeners
         MyCache<String, User> cacheUser = new MyCache<>();
-        cacheUser.addListener((key, value, action) -> logger.info("Listener #1, key:{}, value:{}, action: {}", key, value, action));
-        cacheUser.addListener((key, value, action) -> logger.info("Listener #2, key:{}, value:{}, action: {}", key, value, action));
-        cacheUser.addListener(null);
+        cacheUser.addListener(new HwListener() {
+            @Override
+            public void notify(Object key, Object value, String action) {
+                Object object = null;
+                System.out.println(object.toString().length());
+            }
+        });
+        cacheUser.addListener(new HwListener() {
+            @Override
+            public void notify(Object key, Object value, String action) {
+               logger.info("Listener #1, key:{}, value:{}, action: {}", key, value, action);
+            }
+        });
+
 
         DBServiceCachedUser dbServiceCachedUser = new DBServiceCachedUser(userDao, cacheUser);
-
         //Creating User
         User user = new User("Sergei", 22);
         AddressDataSet address = new AddressDataSet("Galernaya 42");
@@ -51,14 +62,11 @@ public class Main {
 
         Optional<User> userFromCache = dbServiceCachedUser.getUser(id);
 
-        User cachedUser = userFromCache.get();
-
         System.out.println("-----------After GC-----------");
         System.gc();
 
         //User is loaded and also cached
         Optional<User> mayBeCreatedUser = dbServiceCachedUser.getUser(id);
-        User loadedFromDBuser = mayBeCreatedUser.get();
 
         System.out.println("------Will get user from Cache-----");
         Optional<User> optionalUser1 = dbServiceCachedUser.getUser(1L);
