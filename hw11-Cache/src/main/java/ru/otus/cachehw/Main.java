@@ -28,22 +28,8 @@ public class Main {
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
         UserDao userDao = new UserDaoHibernate(sessionManager);
 
-        //Initializing Cache with two sample listeners
+        //Initializing Cache
         MyCache<String, User> cacheUser = new MyCache<>();
-        cacheUser.addListener(new HwListener() {
-            @Override
-            public void notify(Object key, Object value, String action) {
-                Object object = null;
-                System.out.println(object.toString().length());
-            }
-        });
-        cacheUser.addListener(new HwListener() {
-            @Override
-            public void notify(Object key, Object value, String action) {
-               logger.info("Listener #1, key:{}, value:{}, action: {}", key, value, action);
-            }
-        });
-
 
         DBServiceCachedUser dbServiceCachedUser = new DBServiceCachedUser(userDao, cacheUser);
         //Creating User

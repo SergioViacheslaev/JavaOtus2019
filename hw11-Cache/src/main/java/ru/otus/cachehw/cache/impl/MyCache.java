@@ -26,9 +26,7 @@ public class MyCache<K, V> implements HwCache<K, V>, HwListener<K, V> {
         cache.put(key, value);
         notify(key, value, ENTITY_CACHED);
 
-        if (!listeners.isEmpty()) {
-            notifyAllListeners(key, value, ENTITY_CACHED);
-        }
+        notifyAllListeners(key, value, ENTITY_CACHED);
 
     }
 
@@ -38,9 +36,7 @@ public class MyCache<K, V> implements HwCache<K, V>, HwListener<K, V> {
         V oldValue = cache.remove(key);
         notify(key, oldValue, ENTITY_REMOVED);
 
-        if (!listeners.isEmpty()) {
-            notifyAllListeners(key, oldValue, ENTITY_REMOVED);
-        }
+        notifyAllListeners(key, oldValue, ENTITY_REMOVED);
 
     }
 
@@ -52,9 +48,7 @@ public class MyCache<K, V> implements HwCache<K, V>, HwListener<K, V> {
         if (value != null) {
             notify(key, value, ENTITY_LOADED);
 
-            if (!listeners.isEmpty()) {
-                notifyAllListeners(key, value, ENTITY_LOADED);
-            }
+            notifyAllListeners(key, value, ENTITY_LOADED);
 
         }
         return Optional.ofNullable(value);
