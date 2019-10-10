@@ -7,6 +7,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import ru.otus.webserver.api.services.UserAthorizeService;
+import ru.otus.webserver.servlets.AdminServlet;
 import ru.otus.webserver.servlets.LoginServlet;
 
 /**
@@ -31,6 +32,7 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
         context.addServlet(new ServletHolder(new LoginServlet(USER_SERVICE)), "/login");
+        context.addServlet(new ServletHolder(new AdminServlet()), "/admin");
 
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, context));
