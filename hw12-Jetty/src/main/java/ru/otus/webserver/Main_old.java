@@ -1,24 +1,24 @@
-package ru.otus.cachehw;
+package ru.otus.webserver;
 
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.cachehw.api.model.AddressDataSet;
-import ru.otus.cachehw.api.model.PhoneDataSet;
-import ru.otus.cachehw.cache.impl.MyCache;
-import ru.otus.cachehw.api.dao.UserDao;
-import ru.otus.cachehw.api.model.User;
-import ru.otus.cachehw.api.services.DBServiceCachedUser;
-import ru.otus.cachehw.hibernate.HibernateUtils;
-import ru.otus.cachehw.hibernate.dao.UserDaoHibernate;
-import ru.otus.cachehw.hibernate.sessionmanager.SessionManagerHibernate;
+import ru.otus.webserver.api.dao.UserDao;
+import ru.otus.webserver.api.model.AddressDataSet;
+import ru.otus.webserver.api.model.PhoneDataSet;
+import ru.otus.webserver.api.model.User;
+import ru.otus.webserver.api.services.DBServiceCachedUser;
+import ru.otus.webserver.cache.impl.MyCache;
+import ru.otus.webserver.hibernate.HibernateUtils;
+import ru.otus.webserver.hibernate.dao.UserDaoHibernate;
+import ru.otus.webserver.hibernate.sessionmanager.SessionManagerHibernate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Main {
-    private final static Logger logger = LoggerFactory.getLogger(Main.class);
+public class Main_old {
+    private final static Logger logger = LoggerFactory.getLogger(Main_old.class);
 
     public static void main(String[] args) {
         SessionFactory sessionFactory = HibernateUtils.buildSessionFactory("hibernate.cfg.xml",

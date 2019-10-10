@@ -1,8 +1,8 @@
-package ru.otus.cachehw.api.services;
+package ru.otus.webserver.api.services;
 
-import ru.otus.cachehw.cache.impl.MyCache;
-import ru.otus.cachehw.api.dao.UserDao;
-import ru.otus.cachehw.api.model.User;
+import ru.otus.webserver.api.dao.UserDao;
+import ru.otus.webserver.api.model.User;
+import ru.otus.webserver.cache.impl.MyCache;
 
 import java.util.Optional;
 
