@@ -32,7 +32,6 @@ public class Main {
     private static final int PORT = 8080;
     private static final String STATIC = "/static";
     private static final UserAuthenticationService USER_AUTHENTICATION_SERVICE = new UserAuthenticationService();
-
     private DBServiceCachedUser dbServiceCachedUser;
 
 
@@ -41,8 +40,6 @@ public class Main {
 
         main.startHibernate();
         main.startJettyServer();
-
-        System.out.println("end");
 
     }
 
@@ -79,6 +76,8 @@ public class Main {
         MyCache<String, User> cacheUser = new MyCache<>();
 
         dbServiceCachedUser = new DBServiceCachedUser(userDao, cacheUser);
+
+
         //Creating User
         User user = new User("Sergei", 22);
         AddressDataSet address = new AddressDataSet("Galernaya 42");

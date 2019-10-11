@@ -9,33 +9,59 @@
 <p>
     <img src="logo.png">
 </p>
-<h1>
+<h3>
     Admin panel
-</h1>
+</h3>
 
 
 <form action="/admin" method="post">
     <p>
-        <input type="submit" value="Показать список пользователей">
+        <input type="submit" name="getUsersList" value="Показать список пользователей">
     </p>
 
 </form>
-<p>${loadedUser}</p>
 
+<#list usersList as user>
+ name:${user.name}  age:${user.age} <br>
+</#list>
 
+<hr>
+<br>
 <form action="/admin" method="post">
+
+    <input type="submit" name="createUser" value="Создать нового пользователя">
+  
     <p>
         <input type="text" name="userName" placeholder="Введите имя" required/>
     </p>
 
     <p>
-        <input type="text" name="userAge" placeholder="Введите возраст" required/>
+        <input type="number" name="userAge" placeholder="Введите возраст" required/>
     </p>
 
-    <input type="submit" value="Создать нового пользователя">
     <input type="reset" value="Очистить">
 
 </form>
+<p>
+        <#list createdUser as createdUser>
+        Created User: name '${createdUser.name}' -  age '${createdUser.age}' <br>
+       </#list>
+       
+</p>
+
+<br>
+<br>
+
+<form action="/admin" method="post">
+  
+    <input type="submit" name="exitAdminPanel" value="Выход">
+    
+
+</form>
+
+
+
+
 
 </body>
 

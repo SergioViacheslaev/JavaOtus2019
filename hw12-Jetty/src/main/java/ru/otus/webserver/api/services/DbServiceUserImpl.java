@@ -6,6 +6,9 @@ import ru.otus.webserver.api.dao.UserDao;
 import ru.otus.webserver.api.model.User;
 import ru.otus.webserver.api.sessionmanager.SessionManager;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class DbServiceUserImpl implements DBServiceUser {
@@ -53,5 +56,16 @@ public class DbServiceUserImpl implements DBServiceUser {
         }
     }
 
-
+    @Override
+    public List<User> getUsersList() {
+        try (SessionManager sessionManager = userDao.getSessionManager()) {
+            sessionManager.beginSession();
+            try {
+                return userDao.getAllUsers();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return Collections.emptyList();
+        }
+    }
 }
