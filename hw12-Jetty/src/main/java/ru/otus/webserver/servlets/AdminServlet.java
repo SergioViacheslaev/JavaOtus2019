@@ -20,17 +20,9 @@ public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //First check if we have session, if no - then go to "login page".
-        if (isSessionAlive(request)) {
-            response.setContentType("text/html;charset=utf-8");
-            response.getWriter().println(templateProcessor.getPage(ADMIN_PAGE_TEMPLATE, Collections.emptyMap()));
-            response.setStatus(HttpServletResponse.SC_OK);
-
-        } else {
-            response.sendRedirect("/login");
-        }
-
-
+        response.setContentType("text/html;charset=utf-8");
+        response.getWriter().println(templateProcessor.getPage(ADMIN_PAGE_TEMPLATE, Collections.emptyMap()));
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
@@ -38,7 +30,5 @@ public class AdminServlet extends HttpServlet {
 
     }
 
-    private boolean isSessionAlive(HttpServletRequest request) {
-        return request.getSession().getId() != null;
-    }
+
 }

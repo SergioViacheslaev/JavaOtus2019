@@ -1,6 +1,6 @@
 package ru.otus.webserver.servlets;
 
-import ru.otus.webserver.api.services.UserAthorizeService;
+import ru.otus.webserver.api.services.UserAuthenticationService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * @author Sergei Viacheslaev
@@ -20,12 +19,12 @@ public class LoginServlet extends HttpServlet {
     private static final String RESULT_VARIABLE_VALUE = "Authorization failed ! Check your login/password.";
 
 
-    private UserAthorizeService userAthorizeService;
+    private UserAuthenticationService userService;
     private TemplateProcessor templateProcessor;
 
 
-    public LoginServlet(UserAthorizeService userAthorizeService) throws IOException {
-        this.userAthorizeService = userAthorizeService;
+    public LoginServlet(UserAuthenticationService userAuthenticationService) throws IOException {
+        this.userService = userAuthenticationService;
         this.templateProcessor = new TemplateProcessor();
 
     }
@@ -47,27 +46,19 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         //if loging/password correct then open session(if not exist) and redirect to Admin page
-        if (userAthorizeService.authorizeUser(username, password)) {
-            authorizationSuccessful(request, response);
+        if (userService.isUserLoginPasswordCorrect(username, password)) {
+            request.getSession();
+            response.sendRedirect("/admin");
         } else {
-            authorizationFailed(response);
+            Map<String, Object> pageVariables = new HashMap<>();
+            pageVariables.put(RESULT_VARIABLE_NAME, RESULT_VARIABLE_VALUE);
+
+            response.setContentType("text/html;charset=utf-8");
+            response.getWriter().println(templateProcessor.getPage(LOGIN_PAGE_TEMPLATE, pageVariables));
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
     }
 
-
-    private void authorizationSuccessful(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getSession();
-        response.sendRedirect("/admin");
-    }
-
-    private void authorizationFailed(HttpServletResponse response) throws IOException {
-        Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put(RESULT_VARIABLE_NAME, RESULT_VARIABLE_VALUE);
-
-        response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println(templateProcessor.getPage(LOGIN_PAGE_TEMPLATE, pageVariables));
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    }
 
 }

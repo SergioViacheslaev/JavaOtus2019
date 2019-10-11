@@ -3,10 +3,12 @@ package ru.otus.webserver;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
-import ru.otus.webserver.api.services.UserAthorizeService;
+import ru.otus.webserver.api.services.UserAuthenticationService;
+import ru.otus.webserver.api.web.filters.AuthorizationFilter;
 import ru.otus.webserver.servlets.AdminServlet;
 import ru.otus.webserver.servlets.LoginServlet;
 
@@ -16,7 +18,7 @@ import ru.otus.webserver.servlets.LoginServlet;
 public class Main {
     private static final int PORT = 8080;
     private static final String STATIC = "/static";
-    private static final UserAthorizeService USER_SERVICE = new UserAthorizeService();
+    private static final UserAuthenticationService USER_SERVICE = new UserAuthenticationService();
 
     public static void main(String[] args) throws Exception {
 
@@ -33,6 +35,9 @@ public class Main {
 
         context.addServlet(new ServletHolder(new LoginServlet(USER_SERVICE)), "/login");
         context.addServlet(new ServletHolder(new AdminServlet()), "/admin");
+
+        //Cover admin page with session-check filter
+        context.addFilter(new FilterHolder(new AuthorizationFilter()), "/admin", null);
 
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, context));
