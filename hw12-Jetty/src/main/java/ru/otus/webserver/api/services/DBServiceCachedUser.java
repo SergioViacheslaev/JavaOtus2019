@@ -10,7 +10,6 @@ import java.util.Optional;
  * @author Sergei Viacheslaev
  */
 public class DBServiceCachedUser extends DbServiceUserImpl {
-    //    private static final Logger logger = LoggerFactory.getLogger(DBServiceCachedUser.class);
     private final MyCache<String, User> entityCache;
 
     public DBServiceCachedUser(UserDao userDao, MyCache<String, User> entityCache) {

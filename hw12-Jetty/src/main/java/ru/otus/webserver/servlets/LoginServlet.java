@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class LoginServlet extends HttpServlet {
     private static final String LOGIN_PAGE_TEMPLATE = "login.html";
-    private static final String RESULT_VARIABLE_NAME = "resultMssg";
-    private static final String RESULT_VARIABLE_VALUE = "Authorization failed ! Check your login/password.";
+    private static final String AUTH_RESULT_VARIABLE_NAME = "resultMssg";
+    private static final String AUTH_RESULT_VARIABLE_VALUE = "Authorization failed ! Check your login/password.";
 
 
     private UserAuthenticationService userService;
@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("resultMssg", "");
+        pageVariables.put(AUTH_RESULT_VARIABLE_NAME, "");
 
         response.setContentType("text/html;charset=utf-8");
         response.getWriter().println(templateProcessor.getPage(LOGIN_PAGE_TEMPLATE, pageVariables));
@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("/admin");
         } else {
             Map<String, Object> pageVariables = new HashMap<>();
-            pageVariables.put(RESULT_VARIABLE_NAME, RESULT_VARIABLE_VALUE);
+            pageVariables.put(AUTH_RESULT_VARIABLE_NAME, AUTH_RESULT_VARIABLE_VALUE);
 
             response.setContentType("text/html;charset=utf-8");
             response.getWriter().println(templateProcessor.getPage(LOGIN_PAGE_TEMPLATE, pageVariables));

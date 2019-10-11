@@ -20,7 +20,22 @@
     </p>
 
 </form>
+<p>${loadedUser}</p>
 
+
+<form action="/admin" method="post">
+    <p>
+        <input type="text" name="userName" placeholder="Введите имя" required/>
+    </p>
+
+    <p>
+        <input type="text" name="userAge" placeholder="Введите возраст" required/>
+    </p>
+
+    <input type="submit" value="Создать нового пользователя">
+    <input type="reset" value="Очистить">
+
+</form>
 
 </body>
 
