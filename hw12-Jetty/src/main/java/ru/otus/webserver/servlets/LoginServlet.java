@@ -18,19 +18,16 @@ public class LoginServlet extends HttpServlet {
     private static final String AUTH_RESULT_VARIABLE_NAME = "resultMssg";
     private static final String AUTH_RESULT_VARIABLE_VALUE = "Authorization failed ! Check your login/password.";
 
-
     private UserAuthenticationService userService;
     private TemplateProcessor templateProcessor;
-
 
     public LoginServlet(UserAuthenticationService userAuthenticationService) throws IOException {
         this.userService = userAuthenticationService;
         this.templateProcessor = new TemplateProcessor();
-
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put(AUTH_RESULT_VARIABLE_NAME, "");
 

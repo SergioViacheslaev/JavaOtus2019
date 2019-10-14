@@ -62,7 +62,6 @@ public class Main {
         server.start();
         server.join();
 
-
     }
 
     private void startHibernate() {
@@ -77,7 +76,6 @@ public class Main {
 
         dbServiceCachedUser = new DBServiceCachedUser(userDao, cacheUser);
 
-
         //Creating User
         User user = new User("Sergei", 22);
         AddressDataSet address = new AddressDataSet("Galernaya 42");
@@ -91,7 +89,6 @@ public class Main {
 
         //Save user
         dbServiceCachedUser.saveUser(user);
-
 
     }
 

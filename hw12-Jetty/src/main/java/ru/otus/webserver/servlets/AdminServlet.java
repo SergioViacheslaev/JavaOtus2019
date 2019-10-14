@@ -28,11 +28,10 @@ public class AdminServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put(USERS_LIST_VAR_NAME, Collections.emptyList());
         pageVariables.put(CREATED_USER_VAR_NAME, Collections.emptyList());
-
 
         response.setContentType("text/html;charset=utf-8");
         response.getWriter().println(templateProcessor.getPage(ADMIN_PAGE_TEMPLATE, pageVariables));
@@ -40,7 +39,7 @@ public class AdminServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //Если в запросе была нажата кнопка "Создать нового пользователя"
         if (request.getParameter("createUser") != null) {
             String userName = request.getParameter("userName");
@@ -58,7 +57,6 @@ public class AdminServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);
 
         } else if (request.getParameter("getUsersList") != null) {
-
             Map<String, Object> pageVariables = new HashMap<>();
             pageVariables.put(CREATED_USER_VAR_NAME, Collections.emptyList());
             pageVariables.put(USERS_LIST_VAR_NAME, serviceUser.getUsersList());
