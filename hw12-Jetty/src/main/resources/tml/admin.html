@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+</head>
+
+<body>
+<p>
+    <img src="logo.png">
+</p>
+<h3>
+    Admin panel
+</h3>
+
+
+<form action="/admin" method="post">
+    <p>
+        <input type="submit" name="getUsersList" value="Показать список пользователей">
+    </p>
+
+</form>
+
+<#list usersList as user>
+ name:${user.name}  age:${user.age} <br>
+</#list>
+
+<hr>
+<br>
+<form action="/admin" method="post">
+
+    <input type="submit" name="createUser" value="Создать нового пользователя">
+  
+    <p>
+        <input type="text" name="userName" placeholder="Введите имя" required/>
+    </p>
+
+    <p>
+        <input type="number" name="userAge" placeholder="Введите возраст" required/>
+    </p>
+
+    <input type="reset" value="Очистить">
+
+</form>
+<p>
+        <#list createdUser as createdUser>
+        Created User: name '${createdUser.name}' -  age '${createdUser.age}' <br>
+       </#list>
+       
+</p>
+
+<br>
+<br>
+
+<form action="/admin" method="post">
+  
+    <input type="submit" name="exitAdminPanel" value="Выход">
+    
+
+</form>
+
+
+
+
+
+</body>
+
+</html>

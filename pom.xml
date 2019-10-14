@@ -21,6 +21,7 @@
         <module>hw09-Jdbc</module>
         <module>hw10-hibernate</module>
         <module>hw11-Cache</module>
+        <module>hw12-Jetty</module>
     </modules>
 
 
@@ -36,6 +37,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>12</java.version>
+        <!--endregion-->
+
+        <!--region WEB -->
+        <jetty.version>9.4.9.v20180320</jetty.version>
+        <freemarker.version>2.3.28</freemarker.version>
         <!--endregion-->
 
         <!--region Libs-->
@@ -62,6 +68,23 @@
     <!--Подключаем библиотеки в родительском POM через dependencyManagement -->
     <dependencyManagement>
         <dependencies>
+            <!--region WEB -->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <!--endregion-->
 
             <!--region Logging -->
             <dependency>
