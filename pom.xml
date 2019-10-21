@@ -22,6 +22,7 @@
         <module>hw10-hibernate</module>
         <module>hw11-Cache</module>
         <module>hw12-Jetty</module>
+        <module>hw13-springMvcWebApp</module>
     </modules>
 
 
