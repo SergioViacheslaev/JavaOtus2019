@@ -73,7 +73,7 @@ public class UserDaoHibernate implements UserDao {
     public List<User> getAllUsers() {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            return currentSession.getHibernateSession().createQuery("from User order by name", User.class).getResultList();
+            return currentSession.getHibernateSession().createQuery("from User order by lastName", User.class).getResultList();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

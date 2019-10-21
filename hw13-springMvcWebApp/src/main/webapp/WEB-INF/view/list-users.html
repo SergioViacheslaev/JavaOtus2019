@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="ru">
+<head>
+    <title>List Users</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <!-- reference our style sheet -->
+    <link type="text/css"
+          rel="stylesheet"
+          href="/resources/css/style.css"/>
+</head>
+
+<body>
+
+<div id="wrapper">
+    <div id="header">
+        <h2>USER LIST WEB PAGE</h2>
+    </div>
+</div>
+
+<div id="container">
+
+    <div id="content">
+
+        <!--  add Add button-->
+        <input type="button" value="Add Customer"
+               onclick="window.location.href='showFormForAdd'; return false;"
+               class="add-button"
+        />
+
+
+        <!--  add our html table here -->
+
+        <h3>Users:</h3>
+
+        <table class="users">
+            <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Возраст</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.userName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.age}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
