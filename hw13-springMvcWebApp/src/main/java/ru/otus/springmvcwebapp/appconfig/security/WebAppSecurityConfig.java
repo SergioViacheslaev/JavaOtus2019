@@ -37,6 +37,8 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
+                .loginPage("/showLoginPage")
+                .loginProcessingUrl("/authenticateTheUser")
                 .permitAll();
 
         http.formLogin().defaultSuccessUrl("/users/list", true);
