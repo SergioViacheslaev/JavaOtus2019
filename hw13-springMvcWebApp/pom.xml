@@ -130,6 +130,13 @@
       <version>3.0.11.RELEASE</version>
     </dependency>
 
+    <!-- Tomcat JDBC Connection Pooling-->
+<!--    <dependency>-->
+<!--      <groupId>org.apache.tomcat</groupId>-->
+<!--      <artifactId>tomcat-dbcp</artifactId>-->
+<!--      <version>9.0.1</version>-->
+<!--    </dependency>-->
+
 
   </dependencies>
 
