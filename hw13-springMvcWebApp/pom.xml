@@ -16,6 +16,7 @@
 
   <properties>
     <springframework.version>5.1.5.RELEASE</springframework.version>
+    <springsecurity.version>5.1.0.RELEASE</springsecurity.version>
     <logback-classic.version>1.2.3</logback-classic.version>
     <hibernate.version>5.4.1.Final</hibernate.version>
     <jackson.version>2.9.5</jackson.version>
@@ -29,7 +30,6 @@
   <dependencies>
 
       <!-- Add Spring MVC and REST support -->
-
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
@@ -45,6 +45,21 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
       <version>${springframework.version}</version>
+    </dependency>
+
+    <!-- Spring Security -->
+    <!-- spring-security-web and spring-security-config -->
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>${springsecurity.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>${springsecurity.version}</version>
     </dependency>
 
     <!-- Add Jackson for JSON converters -->

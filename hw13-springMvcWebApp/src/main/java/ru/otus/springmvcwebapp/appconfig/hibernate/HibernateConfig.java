@@ -1,4 +1,4 @@
-package ru.otus.springmvcwebapp;
+package ru.otus.springmvcwebapp.appconfig.hibernate;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;

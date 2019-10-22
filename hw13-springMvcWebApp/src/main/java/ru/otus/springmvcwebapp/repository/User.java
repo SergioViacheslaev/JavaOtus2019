@@ -27,18 +27,10 @@ public class User {
     private String lastName;
     private int age;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    private AddressDataSet address;
-
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<PhoneDataSet> phones = new ArrayList<>();
-
-
     public User(String firstName, String lastName, int age) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
     }
-
 
 }

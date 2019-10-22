@@ -9,17 +9,17 @@
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-	<title>Save User</title>
+	<title>User Registration</title>
 </head>
 
 <body>
 
 <div class="container">
 
-	<h3>User registration</h3>
+	<h3>Регистрация нового пользователя</h3>
+
 	<hr>
 
-	<p class="h4 mb-4">Save User</p>
 
 	<form action="#" th:action="@{/users/save}"
 		  th:object="${user}" method="POST" accept-charset="UTF-8">
@@ -33,12 +33,12 @@
 		<input type="text" th:field="*{age}"
 			   class="form-control mb-4 col-4" placeholder="Возраст">
 
-		<button type="submit" class="btn btn-info col-2">Save</button>
+		<button type="submit" class="btn btn-info col-2">Создать</button>
 
 	</form>
 
 	<hr>
-	<a th:href="@{/users/list}">Back to Users List</a>
+	<a th:href="@{/users/list}">Вернуться к списку пользователей</a>
 
 </div>
 </body>
