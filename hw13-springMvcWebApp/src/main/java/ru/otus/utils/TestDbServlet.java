@@ -1,4 +1,4 @@
-package ru.otus.springmvcwebapp;
+package ru.otus.utils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

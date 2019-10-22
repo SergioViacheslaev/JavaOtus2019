@@ -17,7 +17,7 @@
 <img src="resources/img/tomcat_logo.png" width="300" height="150" alt="tomcat_logo"/>
 
 <h2>Привет Мир!</h2>
-<a href="/api/users">Список пользователей</a>
+<a href="/users/list">Список пользователей</a>
 </body>
 
 </html>

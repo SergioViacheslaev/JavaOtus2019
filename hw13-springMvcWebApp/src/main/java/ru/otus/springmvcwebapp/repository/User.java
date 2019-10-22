@@ -7,8 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Entity - User
@@ -25,7 +23,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String userName;
+    private String firstName;
     private String lastName;
     private int age;
 
@@ -36,8 +34,8 @@ public class User {
 //    private List<PhoneDataSet> phones = new ArrayList<>();
 
 
-    public User(String userName, String lastName, int age) {
-        this.userName = userName;
+    public User(String firstName, String lastName, int age) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
     }
