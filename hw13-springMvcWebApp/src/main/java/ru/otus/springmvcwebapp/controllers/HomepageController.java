@@ -14,5 +14,4 @@ public class HomepageController {
         return "home-page";
     }
 
-
 }

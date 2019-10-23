@@ -17,8 +17,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // add our users for in memory authentication

@@ -49,8 +49,6 @@ public class AdminPanelController {
 
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") User user, HttpServletRequest request) {
-//        String contextUrl = request.getContextPath();
-
         serviceUser.saveUser(user);
 
         return "redirect:list";
