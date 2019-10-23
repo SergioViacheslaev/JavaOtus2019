@@ -7,6 +7,7 @@ import ru.otus.springmvcwebapp.api.services.DBServiceCachedUser;
 import ru.otus.springmvcwebapp.repository.User;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Sergei Viacheslaev
@@ -23,7 +24,7 @@ public class AdminPanelController {
         serviceUser.saveUser(new User("Vasya", "Pupkin", 22));
         serviceUser.saveUser(new User("Tom", "Hanks", 65));
         serviceUser.saveUser(new User("Bill", "Gates", 51));
-        serviceUser.saveUser(new User("Александр", "Пушкин", 35));
+        serviceUser.saveUser(new User("Maulder", "Fox", 35));
     }
 
     public AdminPanelController(DBServiceCachedUser serviceUser) {
@@ -47,11 +48,12 @@ public class AdminPanelController {
     }
 
     @PostMapping("/save")
-    public String saveUser(@ModelAttribute("user") User user) {
+    public String saveUser(@ModelAttribute("user") User user, HttpServletRequest request) {
+//        String contextUrl = request.getContextPath();
 
         serviceUser.saveUser(user);
 
-        return "redirect: /users/list";
+        return "redirect:list";
     }
 
 }

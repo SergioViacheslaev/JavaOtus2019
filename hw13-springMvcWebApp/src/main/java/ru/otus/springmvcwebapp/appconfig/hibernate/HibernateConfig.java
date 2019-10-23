@@ -33,10 +33,10 @@ public class HibernateConfig {
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-//        dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
-        dataSource.setUrl("jdbc:h2:tcp://localhost/~/test");
-        dataSource.setUsername("ss");
-        dataSource.setPassword("");
+        dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
+//        dataSource.setUrl("jdbc:h2:tcp://localhost/~/test");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("sa");
 
         return dataSource;
     }
@@ -55,6 +55,9 @@ public class HibernateConfig {
                 "hibernate.hbm2ddl.auto", "create-drop");
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.charset_name", "UTF-8");
+        hibernateProperties.setProperty("hibernate.connection.characterEncoding", "UTF-8");
+        hibernateProperties.setProperty("hibernate.connection.useUnicode", "UTF-8");
 
         return hibernateProperties;
     }
