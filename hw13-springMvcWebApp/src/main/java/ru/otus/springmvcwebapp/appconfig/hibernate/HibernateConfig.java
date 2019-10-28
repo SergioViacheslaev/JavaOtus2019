@@ -1,8 +1,13 @@
 package ru.otus.springmvcwebapp.appconfig.hibernate;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.lang.NonNull;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -16,7 +21,22 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement
+@PropertySources(value = {@PropertySource("classpath:application.properties")})
+
 public class HibernateConfig {
+
+    @Value("${hibernate.connection.driver_class}")
+    private String hibernateConnectionDriver;
+
+    @Value("${hibernate.connection.url}")
+    private String hibernateConnectionUrl;
+
+    @Value("${hibernate.connection.username}")
+    private String hibernateConnectionUsername;
+
+    @Value("${hibernate.connection.password}")
+    private String hibernateConnectionPassword;
+
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
@@ -32,11 +52,14 @@ public class HibernateConfig {
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
-//        dataSource.setUrl("jdbc:h2:tcp://localhost/~/test");
-        dataSource.setUsername("sa");
-        dataSource.setPassword("sa");
+
+        // See: application.properties
+        dataSource.setDriverClassName(hibernateConnectionDriver);
+        dataSource.setUrl(hibernateConnectionUrl);
+        dataSource.setUsername(hibernateConnectionUsername);
+        dataSource.setPassword(hibernateConnectionPassword);
+
+
 
         return dataSource;
     }
@@ -51,6 +74,7 @@ public class HibernateConfig {
 
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
+
         hibernateProperties.setProperty(
                 "hibernate.hbm2ddl.auto", "create-drop");
         hibernateProperties.setProperty(
@@ -59,6 +83,15 @@ public class HibernateConfig {
         hibernateProperties.setProperty("hibernate.connection.characterEncoding", "UTF-8");
         hibernateProperties.setProperty("hibernate.connection.useUnicode", "UTF-8");
 
+        hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans", "false");
+        hibernateProperties.setProperty("hibernate.show_sql", "true");
+
         return hibernateProperties;
+    }
+
+    //To resolve ${} in @Value
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 }
