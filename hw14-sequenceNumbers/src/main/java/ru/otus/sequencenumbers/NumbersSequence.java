@@ -12,7 +12,8 @@ public class NumbersSequence {
     private AtomicInteger counter1 = new AtomicInteger(1);
     private AtomicInteger counter2 = new AtomicInteger(1);
 
-    private volatile boolean decrementFlag = false;
+    //Отвечает за направление счета, если true - считаем назад
+    private boolean decrementFlag = false;
 
     public NumbersSequence() {
         this.thread1 = new Thread(() -> {
@@ -43,34 +44,32 @@ public class NumbersSequence {
 
     public synchronized void action(AtomicInteger counter) {
         while (true) {
-            int currentCounter = counter.get();
 
-            if (currentCounter == 1) {
-                decrementFlag = false;
-            }
-
-            if (decrementFlag == true) {
-                System.out.printf(" %d",counter.getAndDecrement());
-
-            } else {
-                System.out.printf(" %d",counter.getAndIncrement());
-            }
-
-
-            if (counter1.get() == 11 && counter2.get() == 11) {
+            //Если вышли за пределы значения '10',
+            if (checkCountersValuesOutOfRange()) {
                 counter1.set(9);
                 counter2.set(9);
                 decrementFlag = true;
             }
 
-//            System.out.println("counter1 = " + counter1.get());
-//            System.out.println("counter2 = " + counter2.get());
+            //Если дошли до '1', то начинаем считать снова вверх
+            if (counter.get() == 1) {
+                decrementFlag = false;
+            }
+
+
+            if (decrementFlag) {
+                System.out.printf(" %d", counter.getAndDecrement());
+
+            } else {
+                System.out.printf(" %d", counter.getAndIncrement());
+            }
 
 
             sleep(500);
 
-
-            if (thread1.getState().equals(Thread.State.WAITING) || thread2.getState().equals(Thread.State.WAITING)) {
+            //Если кто-то ждет, то будем потоки
+            if (isThreadsStateWAITING()) {
                 notifyAll();
             }
 
@@ -92,5 +91,14 @@ public class NumbersSequence {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private boolean checkCountersValuesOutOfRange() {
+        return counter1.get() == 11 && counter2.get() == 11;
+    }
+
+    private boolean isThreadsStateWAITING() {
+        return thread1.getState().equals(Thread.State.WAITING) || thread2.getState().equals(Thread.State.WAITING);
     }
 }
