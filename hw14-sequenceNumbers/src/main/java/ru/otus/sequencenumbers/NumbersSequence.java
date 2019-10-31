@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Sergei Viacheslaev
  */
 public class NumbersSequence {
+    private final int DECREMENT_START_VALUE = 9;
+
     private final Thread thread1;
     private final Thread thread2;
 
@@ -15,25 +17,13 @@ public class NumbersSequence {
     //Отвечает за направление счета, если true - считаем назад
     private boolean decrementFlag = false;
 
+
     public NumbersSequence() {
-        this.thread1 = new Thread(() -> {
-            action(counter1);
+        this.thread1 = new Thread(() -> action(counter1));
+        this.thread2 = new Thread(() -> action(counter2));
 
-        });
-
-        this.thread2 = new Thread(() -> {
-            action(counter2);
-
-        });
-    }
-
-    public static void main(String[] args) {
-
-        NumbersSequence numbersSequence = new NumbersSequence();
-
-        numbersSequence.startSequenceThreads();
-
-
+        this.thread1.setName("Поток #1");
+        this.thread2.setName("Поток #2");
     }
 
     public void startSequenceThreads() {
@@ -42,13 +32,13 @@ public class NumbersSequence {
     }
 
 
-    public synchronized void action(AtomicInteger counter) {
+    private synchronized void action(AtomicInteger counter) {
         while (true) {
 
             //Если вышли за пределы значения '10',
             if (checkCountersValuesOutOfRange()) {
-                counter1.set(9);
-                counter2.set(9);
+                counter1.set(DECREMENT_START_VALUE);
+                counter2.set(DECREMENT_START_VALUE);
                 decrementFlag = true;
             }
 
@@ -58,12 +48,8 @@ public class NumbersSequence {
             }
 
 
-            if (decrementFlag) {
-                System.out.printf(" %d", counter.getAndDecrement());
-
-            } else {
-                System.out.printf(" %d", counter.getAndIncrement());
-            }
+            System.out.printf("%s %d%n", Thread.currentThread().getName(),
+                    decrementFlag ? counter.getAndDecrement() : counter.getAndIncrement());
 
 
             sleep(500);
