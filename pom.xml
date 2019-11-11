@@ -24,6 +24,7 @@
         <module>hw12-Jetty</module>
         <module>hw13-springMvcWebApp</module>
         <module>hw14-sequenceNumbers</module>
+        <module>hw15-MessageSystem</module>
     </modules>
 
 

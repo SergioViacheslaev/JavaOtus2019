@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+	<title>User Registration</title>
+</head>
+
+<body>
+
+<div class="container">
+
+	<h3>Регистрация нового пользователя</h3>
+
+	<hr>
+
+
+	<form action="#" th:action="@{/users/save}"
+		  th:object="${user}" method="POST" accept-charset="UTF-8">
+
+		<input id="holder-input" type="text" th:field="*{firstName}"
+			   class="form-control mb-4 col-4" placeholder="Имя">
+
+		<input type="text" th:field="*{lastName}"
+			   class="form-control mb-4 col-4" placeholder="Фамилия">
+
+		<input type="text" th:field="*{age}"
+			   class="form-control mb-4 col-4" placeholder="Возраст">
+
+		<button type="submit" class="btn btn-info col-2">Создать</button>
+
+	</form>
+
+	<hr>
+	<a th:href="@{/users/list}">Вернуться к списку пользователей</a>
+
+</div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
