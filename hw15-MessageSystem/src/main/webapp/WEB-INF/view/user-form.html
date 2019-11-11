@@ -2,43 +2,65 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<!-- Required meta tags -->
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-	<title>User Registration</title>
+    <title>User Registration</title>
 </head>
 
 <body>
 
 <div class="container">
 
-	<h3>Регистрация нового пользователя</h3>
+    <h3>Регистрация нового пользователя</h3>
 
-	<hr>
+    <hr>
 
+    <form action="#" th:action="@{/users/save}"
+          th:object="${user}" method="POST" accept-charset="UTF-8">
 
-	<form action="#" th:action="@{/users/save}"
-		  th:object="${user}" method="POST" accept-charset="UTF-8">
+        <input id="holder-input" type="text" th:field="*{firstName}"
+               class="form-control mb-4 col-4" placeholder="Имя">
 
-		<input id="holder-input" type="text" th:field="*{firstName}"
-			   class="form-control mb-4 col-4" placeholder="Имя">
+        <input type="text" th:field="*{lastName}"
+               class="form-control mb-4 col-4" placeholder="Фамилия">
 
-		<input type="text" th:field="*{lastName}"
-			   class="form-control mb-4 col-4" placeholder="Фамилия">
+        <input type="text" th:field="*{age}"
+               class="form-control mb-4 col-4" placeholder="Возраст">
 
-		<input type="text" th:field="*{age}"
-			   class="form-control mb-4 col-4" placeholder="Возраст">
+        <button type="submit" class="btn btn-info col-2">Создать</button>
 
-		<button type="submit" class="btn btn-info col-2">Создать</button>
+    </form>
 
-	</form>
+    <hr>
 
-	<hr>
-	<a th:href="@{/users/list}">Вернуться к списку пользователей</a>
+    <h3>Список новых добавленных пользователей</h3>
+
+	<table class="table table-bordered table-striped">
+		<thead class="thead-dark">
+		<tr>
+			<th>Имя</th>
+			<th>Фамилия</th>
+			<th>Возраст</th>
+		</tr>
+		</thead>
+
+		<tbody>
+		<tr th:each="user : ${users}">
+			<td th:text="${user.firstName}"></td>
+			<td th:text="${user.lastName}"></td>
+			<td th:text="${user.age}"></td>
+		</tr>
+		</tbody>
+	</table>
+
+    <a th:href="@{/users/list}">Вернуться к полному списку пользователей</a>
+
 
 </div>
 </body>
