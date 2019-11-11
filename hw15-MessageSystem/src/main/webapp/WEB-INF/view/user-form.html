@@ -2,18 +2,27 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+    <title>User Registration</title>
     <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-    <title>User Registration</title>
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+    <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+    <script th:src="@{/resources/static/app.js}"></script>
+
+
 </head>
 
 <body>
+
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
 
 <div class="container">
 
@@ -33,7 +42,7 @@
         <input type="text" th:field="*{age}"
                class="form-control mb-4 col-4" placeholder="Возраст">
 
-        <button type="submit" class="btn btn-info col-2">Создать</button>
+        <button type="submit" id="saveUserButton" class="btn btn-info col-2">Создать</button>
 
     </form>
 

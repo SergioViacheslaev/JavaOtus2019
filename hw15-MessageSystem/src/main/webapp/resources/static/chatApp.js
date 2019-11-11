@@ -52,7 +52,7 @@ const showGreeting = messageStr =>
 $("#chatLine").append(`<tr><td>${messageStr}</td></tr>`);
 
 $(() => {
-
+    $("form").on('submit', event => event.preventDefault());
 $("#connect").click(connect);
 $("#disconnect").click(disconnect);
 $("#send").click(sendName);
