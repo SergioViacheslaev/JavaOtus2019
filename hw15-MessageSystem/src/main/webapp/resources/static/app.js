@@ -1,15 +1,14 @@
 var stompClient = null;
 
 function setConnected(connected) {
-    $("#connect").prop("disabled", connected);
-    $("#disconnect").prop("disabled", !connected);
+    // $("#connect").prop("disabled", connected);
+    // $("#disconnect").prop("disabled", !connected);
     if (connected) {
-        $("#conversation").show();
+        $("#usersListTable").show();
+    } else {
+        $("#usersListTable").hide();
     }
-    else {
-        $("#conversation").hide();
-    }
-    $("#greetings").html("");
+    // $("#greetings").html("");
 }
 
 
@@ -21,18 +20,15 @@ const connect = () => {
     stompClient = Stomp.over(new SockJS(url));
     stompClient.connect({}, frame => {
 
-       setConnected(true);
+        setConnected(true);
 
-    console.log(`Connected: ${frame}`);
+        console.log(`Connected: ${frame}`);
 
-    stompClient.subscribe('/topic/chatMessages', greeting =>
-    showGreeting(JSON.parse(greeting.body).messageStr));
-
-    stompClient.subscribe('/topic/info', greeting =>
-    showGreeting(JSON.parse(greeting.body).messageStr));
+        stompClient.subscribe('/topic/DBServiceResponse', DBServiceMessage =>
+            showUsersList(JSON.parse(DBServiceMessage.body).messageStr));
 
 
-});
+    });
 };
 
 const disconnect = () => {
@@ -43,17 +39,40 @@ const disconnect = () => {
     console.log("Disconnected");
 };
 
-const sendName = () => stompClient.send(
-    "/app/message",
-    {},
-    JSON.stringify({'messageStr': $("#message").val()}));
+const sendName = () => {
+    /*   let formdata = $("#saveNewUserForm").serializeArray();
+       let data = {};
+       $(formdata).each(function (index, obj) {
+           data[obj.name] = obj.value;
+       });*/
 
-const showGreeting = messageStr =>
-$("#chatLine").append(`<tr><td>${messageStr}</td></tr>`);
+    let newUser = {
+        firstName: $("#firstName").val(),
+        lastName: $("#lastName").val(),
+        age: parseInt($("#age").val())
+
+    };
+
+
+    stompClient.send(
+        "/app/createUserMessage",
+        {},
+        JSON.stringify({
+            'messageStr': newUser
+        }));
+
+
+};
+
+
+const showUsersList = messageStr =>
+    $("#usersListTable").append(`<tr><td>${messageStr}</td></tr>`);
+
+$(document).ready(connect());
 
 $(() => {
-
-$("#connect").click(connect);
-$("#disconnect").click(disconnect);
-$("#send").click(sendName);
+    $("form").on('submit', event => event.preventDefault());
+    $("#connect").click(connect);
+    $("#disconnect").click(disconnect);
+    $("#saveUserButton").click(sendName);
 });
