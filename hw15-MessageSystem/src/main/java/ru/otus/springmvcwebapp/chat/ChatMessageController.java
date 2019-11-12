@@ -6,14 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
 
 @Controller
-public class MessageController {
+public class ChatMessageController {
 
 
     @MessageMapping("/message")
     @SendTo("/topic/chatMessages")
-    public Message showMessage(Message message) throws Exception {
+    public ChatMessage showMessage(ChatMessage message) throws Exception {
 //        Thread.sleep(1000); // simulated delay
-        return new Message(HtmlUtils.htmlEscape(message.getMessageStr()));
+        return new ChatMessage(HtmlUtils.htmlEscape(message.getMessageStr()));
     }
 
 }

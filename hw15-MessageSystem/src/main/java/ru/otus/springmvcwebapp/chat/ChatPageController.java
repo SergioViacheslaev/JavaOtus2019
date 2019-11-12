@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author Sergei Viacheslaev
  */
 @Controller
-public class ChatController {
+public class ChatPageController {
 
     @GetMapping("/chat")
     public String showChat() {
