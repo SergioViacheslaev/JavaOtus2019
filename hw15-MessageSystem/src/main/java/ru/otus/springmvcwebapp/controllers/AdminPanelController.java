@@ -30,6 +30,7 @@ public class AdminPanelController {
     private List<User> newAddedUsers = new ArrayList<>();
 
     private Gson gson = new Gson();
+    private JsonParser jsonParser = new JsonParser();
 
     //Начальная инициализация базы и кэша.
     @PostConstruct
@@ -66,7 +67,7 @@ public class AdminPanelController {
         log.info("Получен запрос от фронта: {}", message);
 
 
-        JsonObject jsonObject = new JsonParser().parse(message).getAsJsonObject();
+        JsonObject jsonObject = jsonParser.parse(message).getAsJsonObject();
         System.out.println(jsonObject);
 
         JsonObject messageStr = jsonObject.getAsJsonObject("messageStr");
@@ -74,7 +75,6 @@ public class AdminPanelController {
 
         String jsonString = messageStr.toString();
 
-//        String jsonString = "{\"firstName\":\"aa\",\"lastName\":\"bb\",\"age\":123}";
         User newUser = gson.fromJson(jsonString, User.class);
 
 

@@ -1,4 +1,4 @@
-package ru.otus.springmvcwebapp.hello;
+package ru.otus.springmvcwebapp.chat;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;

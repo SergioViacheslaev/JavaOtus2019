@@ -1,4 +1,4 @@
-package ru.otus.springmvcwebapp.hello;
+package ru.otus.springmvcwebapp.chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
