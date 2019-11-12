@@ -1,20 +1,18 @@
 package ru.otus.springmvcwebapp.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.HtmlUtils;
 import ru.otus.springmvcwebapp.api.services.DBServiceCachedUser;
-import ru.otus.springmvcwebapp.hello.Message;
-import ru.otus.springmvcwebapp.messagesystem.CreateUserMessage;
 import ru.otus.springmvcwebapp.repository.User;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class AdminPanelController {
     //Список новых добавленных пользователей
     private List<User> newAddedUsers = new ArrayList<>();
 
-    private Gson gson;
+    private Gson gson = new Gson();
 
     //Начальная инициализация базы и кэша.
     @PostConstruct
@@ -64,25 +62,27 @@ public class AdminPanelController {
 
     @MessageMapping("/createUserMessage")
     @SendTo("/topic/DBServiceResponse")
-    public CreateUserMessage saveUser(CreateUserMessage message) {
-        Object gsonObject = message.getMessageStr();
-
-        log.info("Получен запрос от фронта: {}", gsonObject);
-
-       String jsonString =  gson.toJson(gsonObject);
-
-       log.info("JSON STRING = {}",jsonString);
-
-//        User newUser = gson.fromJson(gsonString, User.class);
+    public String saveUser(String message) {
+        log.info("Получен запрос от фронта: {}", message);
 
 
-//        serviceUser.saveUser(newUser);
+        JsonObject jsonObject = new JsonParser().parse(message).getAsJsonObject();
+        System.out.println(jsonObject);
+
+        JsonObject messageStr = jsonObject.getAsJsonObject("messageStr");
+        System.out.println(messageStr);
+
+        String jsonString = "{\"firstName\":\"aa\",\"lastName\":\"bb\",\"age\":123}";
+        User newUser = gson.fromJson(jsonString, User.class);
 
 
-        return new CreateUserMessage(HtmlUtils.htmlEscape("test"));
+        serviceUser.saveUser(newUser);
 
 
-        //return "redirect:list";
+        return message;
+
+
+
     }
 
 
