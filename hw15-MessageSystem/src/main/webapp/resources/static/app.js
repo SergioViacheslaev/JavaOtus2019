@@ -25,7 +25,7 @@ const connect = () => {
         console.log(`Connected: ${frame}`);
 
         stompClient.subscribe('/topic/DBServiceResponse', DBServiceMessage =>
-            showUsersList(JSON.parse(DBServiceMessage.body).messageStr));
+            showUsersList(JSON.parse(DBServiceMessage.body)));
 
 
     });
@@ -65,8 +65,19 @@ const sendName = () => {
 };
 
 
-const showUsersList = messageStr =>
-    $("#usersListTable").append(`<tr><td>${messageStr}</td></tr>`);
+const showUsersList = (jsonUser) => {
+    let user_data = '';
+
+    user_data += '<tr>';
+    user_data += '<td>' + jsonUser.firstName + '</td>';
+    user_data += '<td>' + jsonUser.lastName + '</td>';
+    user_data += '<td>' + jsonUser.age + '</td>';
+    user_data += '</tr>';
+
+
+    $("#usersListTable").append(user_data);
+};
+// $("#usersListTable").append(`<tr><td>${userObject.firstName}</td></tr>`);
 
 $(document).ready(connect());
 
@@ -76,3 +87,5 @@ $(() => {
     $("#disconnect").click(disconnect);
     $("#saveUserButton").click(sendName);
 });
+
+// $("#usersListTable").append(`<tr><td>${jsonObject.firstName}</td><td>${jsonObject.lastName}</td><td>${jsonObject.age};</td></tr>};

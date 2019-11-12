@@ -72,15 +72,16 @@ public class AdminPanelController {
         JsonObject messageStr = jsonObject.getAsJsonObject("messageStr");
         System.out.println(messageStr);
 
-        String jsonString = "{\"firstName\":\"aa\",\"lastName\":\"bb\",\"age\":123}";
+        String jsonString = messageStr.toString();
+
+//        String jsonString = "{\"firstName\":\"aa\",\"lastName\":\"bb\",\"age\":123}";
         User newUser = gson.fromJson(jsonString, User.class);
 
 
         serviceUser.saveUser(newUser);
 
 
-        return message;
-
+        return jsonString;
 
 
     }
