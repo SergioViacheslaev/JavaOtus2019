@@ -1,14 +1,11 @@
 var stompClient = null;
 
 function setConnected(connected) {
-    // $("#connect").prop("disabled", connected);
-    // $("#disconnect").prop("disabled", !connected);
     if (connected) {
         $("#usersListTable").show();
     } else {
         $("#usersListTable").hide();
     }
-    // $("#greetings").html("");
 }
 
 
@@ -39,20 +36,12 @@ const disconnect = () => {
     console.log("Disconnected");
 };
 
-const sendName = () => {
-    /*   let formdata = $("#saveNewUserForm").serializeArray();
-       let data = {};
-       $(formdata).each(function (index, obj) {
-           data[obj.name] = obj.value;
-       });*/
-
+const sendMessage = () => {
     let newUser = {
         firstName: $("#firstName").val(),
         lastName: $("#lastName").val(),
         age: parseInt($("#age").val())
-
     };
-
 
     stompClient.send(
         "/app/createUserMessage",
@@ -61,9 +50,7 @@ const sendName = () => {
             'messageStr': newUser
         }));
 
-
 };
-
 
 const showUsersList = (jsonUser) => {
     let user_data = '';
@@ -78,7 +65,6 @@ const showUsersList = (jsonUser) => {
 
     $("#usersListTable").append(user_data);
 };
-// $("#usersListTable").append(`<tr><td>${userObject.firstName}</td></tr>`);
 
 $(document).ready(connect());
 
@@ -86,7 +72,5 @@ $(() => {
     $("form").on('submit', event => event.preventDefault());
     $("#connect").click(connect);
     $("#disconnect").click(disconnect);
-    $("#saveUserButton").click(sendName);
+    $("#saveUserButton").click(sendMessage);
 });
-
-// $("#usersListTable").append(`<tr><td>${jsonObject.firstName}</td><td>${jsonObject.lastName}</td><td>${jsonObject.age};</td></tr>};
