@@ -1,4 +1,4 @@
-package ru.otus.springmvcwebapp.common;
+package ru.otus.springmvcwebapp.messagesystem.common;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

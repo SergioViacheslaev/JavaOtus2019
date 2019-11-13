@@ -3,7 +3,7 @@ package ru.otus.springmvcwebapp.front.handlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ru.otus.springmvcwebapp.common.Serializers;
+import ru.otus.springmvcwebapp.messagesystem.common.Serializers;
 import ru.otus.springmvcwebapp.front.FrontendService;
 import ru.otus.springmvcwebapp.messagesystem.Message;
 import ru.otus.springmvcwebapp.messagesystem.RequestHandler;

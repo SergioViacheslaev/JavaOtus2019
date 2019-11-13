@@ -20,7 +20,6 @@ import ru.otus.springmvcwebapp.front.FrontendServiceImpl;
 import ru.otus.springmvcwebapp.front.handlers.GetUserDataResponseHandler;
 import ru.otus.springmvcwebapp.hibernate.handlers.GetUserDataRequestHandler;
 import ru.otus.springmvcwebapp.messagesystem.*;
-import ru.otus.springmvcwebapp.repository.User;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -110,8 +109,6 @@ public class WebAppConfig implements WebMvcConfigurer {
             e.printStackTrace();
         }
     }
-
-
 
 
     @Override

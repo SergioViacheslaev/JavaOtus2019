@@ -2,13 +2,11 @@ package ru.otus.springmvcwebapp.messagesystem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import ru.otus.springmvcwebapp.common.Serializers;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-
+import ru.otus.springmvcwebapp.messagesystem.common.Serializers;
 
 
 public class MsClientImpl implements MsClient {

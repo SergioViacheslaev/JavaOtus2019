@@ -82,6 +82,7 @@ public class AdminPanelController {
         });
     }
 
+    //Служит для отправки ответного сообщения в WebSocket из DBService
     private void sendFrontMessage(String frontMessage) {
         messageSender.convertAndSend("/topic/DBServiceResponse", frontMessage);
     }

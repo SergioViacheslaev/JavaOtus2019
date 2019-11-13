@@ -5,11 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import ru.otus.springmvcwebapp.messagesystem.Message;
 import ru.otus.springmvcwebapp.messagesystem.MessageType;
 import ru.otus.springmvcwebapp.messagesystem.MsClient;
-
 
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +41,6 @@ public class FrontendServiceImpl implements FrontendService {
         System.out.println(messageStr);
 
         String jsonUserData = messageStr.toString();
-
 
         //Формируем Message
         Message outMsg = msClient.produceMessage(databaseServiceClientName, jsonUserData, MessageType.USER_DATA);

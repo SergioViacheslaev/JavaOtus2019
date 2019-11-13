@@ -2,13 +2,7 @@ package ru.otus.springmvcwebapp.messagesystem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.otus.springmvcwebapp.api.services.DBServiceCachedUser;
-import ru.otus.springmvcwebapp.front.handlers.GetUserDataResponseHandler;
-import ru.otus.springmvcwebapp.hibernate.handlers.GetUserDataRequestHandler;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,8 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public final class MessageSystemImpl implements MessageSystem {
     private static final Logger logger = LoggerFactory.getLogger(MessageSystemImpl.class);
-    private static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
-    private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
     private static final int MESSAGE_QUEUE_SIZE = 1_000;
     private static final int MSG_HANDLER_THREAD_LIMIT = 2;
 
@@ -25,22 +17,6 @@ public final class MessageSystemImpl implements MessageSystem {
 
     private final Map<String, MsClient> clientMap = new ConcurrentHashMap<>();
     private final BlockingQueue<Message> messageQueue = new ArrayBlockingQueue<>(MESSAGE_QUEUE_SIZE);
-
-/*    @Autowired
-    private GetUserDataRequestHandler getUserDataRequestHandler;
-
-    @Autowired
-    private GetUserDataResponseHandler getUserDataResponseHandler;
-
-    @PostConstruct
-    private void postConstruct() {
-        MsClient databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, this);
-        MsClient frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, this);
-        databaseMsClient.addHandler(MessageType.USER_DATA, getUserDataRequestHandler);
-        frontendMsClient.addHandler(MessageType.USER_DATA, getUserDataResponseHandler);
-        addClient(databaseMsClient);
-        addClient(frontendMsClient);
-    }*/
 
     private final ExecutorService msgProcessor = Executors.newSingleThreadExecutor(runnable -> {
         Thread thread = new Thread(runnable);
