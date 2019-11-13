@@ -3,7 +3,6 @@ package ru.otus.springmvcwebapp.front.handlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.stereotype.Component;
 import ru.otus.springmvcwebapp.common.Serializers;
 import ru.otus.springmvcwebapp.front.FrontendService;
 import ru.otus.springmvcwebapp.messagesystem.Message;
@@ -18,6 +17,7 @@ public class GetUserDataResponseHandler implements RequestHandler {
 
   private final FrontendService frontendService;
 
+
   public GetUserDataResponseHandler(FrontendService frontendService) {
     this.frontendService = frontendService;
   }
@@ -26,9 +26,10 @@ public class GetUserDataResponseHandler implements RequestHandler {
   public Optional<Message> handle(Message msg) {
     logger.info("new message:{}", msg);
     try {
-      String userData = Serializers.deserialize(msg.getPayload(), String.class);
+      String userJsonData = Serializers.deserialize(msg.getPayload(), String.class);
       UUID sourceMessageId = msg.getSourceMessageId().orElseThrow(() -> new RuntimeException("Not found sourceMsg for message:" + msg.getId()));
-      frontendService.takeConsumer(sourceMessageId, String.class).ifPresent(consumer -> consumer.accept(userData));
+
+      frontendService.takeConsumer(sourceMessageId, String.class).ifPresent(consumer -> consumer.accept(userJsonData));
 
     } catch (Exception ex) {
       logger.error("msg:" + msg, ex);

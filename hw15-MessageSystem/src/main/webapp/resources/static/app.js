@@ -69,6 +69,7 @@ const showUsersList = (jsonUser) => {
     let user_data = '';
 
     user_data += '<tr>';
+    user_data += '<td>' + jsonUser.id + '</td>';
     user_data += '<td>' + jsonUser.firstName + '</td>';
     user_data += '<td>' + jsonUser.lastName + '</td>';
     user_data += '<td>' + jsonUser.age + '</td>';

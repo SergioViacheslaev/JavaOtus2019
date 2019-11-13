@@ -5,8 +5,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.core.AbstractDestinationResolvingMessagingTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,25 +30,32 @@ public class AdminPanelController {
 
     private DBServiceCachedUser serviceUser;
 
-    @Autowired
     private FrontendService frontendService;
 
-    //Список новых добавленных пользователей
-    private List<User> newAddedUsers = new ArrayList<>();
-
-    private Gson gson = new Gson();
-    private JsonParser jsonParser = new JsonParser();
-
-
+    private SimpMessagingTemplate messageSender;
 
     public AdminPanelController(DBServiceCachedUser serviceUser) {
         this.serviceUser = serviceUser;
     }
 
- /*   @Autowired
+    @PostConstruct
+    private void init() {
+        //cache and DB
+        serviceUser.saveUser(new User("Vasya", "Pupkin", 22));
+        serviceUser.saveUser(new User("Tom", "Hanks", 65));
+        serviceUser.saveUser(new User("Bill", "Gates", 51));
+        serviceUser.saveUser(new User("Maulder", "Fox", 35));
+    }
+
+    @Autowired
     public void setFrontendService(FrontendService frontendService) {
         this.frontendService = frontendService;
-    }*/
+    }
+
+    @Autowired
+    public void setMessageSender(SimpMessagingTemplate messageSender) {
+        this.messageSender = messageSender;
+    }
 
     @GetMapping("/list")
     public String listUsers(Model model) {
@@ -64,30 +73,17 @@ public class AdminPanelController {
     }
 
     @MessageMapping("/createUserMessage")
-    @SendTo("/topic/DBServiceResponse")
-    public String saveUser(String message) {
-        log.info("Получен запрос от фронта: {}", message);
+    public void saveUser(String frontMessage) {
+        log.info("Получено сообщение от фронта: {}", frontMessage);
 
+        frontendService.saveUser(frontMessage, userData -> {
+            log.info("DBService ответил сообщением: {}", userData);
+            sendFrontMessage(userData);
+        });
+    }
 
-        JsonObject jsonObject = jsonParser.parse(message).getAsJsonObject();
-        System.out.println(jsonObject);
-
-        JsonObject messageStr = jsonObject.getAsJsonObject("messageStr");
-        System.out.println(messageStr);
-
-        String jsonString = messageStr.toString();
-
-        User newUser = gson.fromJson(jsonString, User.class);
-
-
-        serviceUser.saveUser(newUser);
-
-//        frontendService.getUserData(3L,null);
-
-
-        return jsonString;
-
-
+    private void sendFrontMessage(String frontMessage) {
+        messageSender.convertAndSend("/topic/DBServiceResponse", frontMessage);
     }
 
 

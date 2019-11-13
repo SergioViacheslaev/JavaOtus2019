@@ -23,7 +23,7 @@ import javax.persistence.Id;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Expose
+    @Expose(deserialize = false)
     private long id;
 
     private String firstName;

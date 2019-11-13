@@ -23,6 +23,7 @@ import ru.otus.springmvcwebapp.messagesystem.*;
 import ru.otus.springmvcwebapp.repository.User;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 @EnableWebMvc
 @Configuration
@@ -99,11 +100,15 @@ public class WebAppConfig implements WebMvcConfigurer {
         messageSystem().addClient(frontendMsClient());
         messageSystem().addClient(databaseMsClient());
 
-        //Init cache and DB
-        dbServiceCachedUser.saveUser(new User("Vasya", "Pupkin", 22));
-        dbServiceCachedUser.saveUser(new User("Tom", "Hanks", 65));
-        dbServiceCachedUser.saveUser(new User("Bill", "Gates", 51));
-        dbServiceCachedUser.saveUser(new User("Maulder", "Fox", 35));
+    }
+
+    @PreDestroy
+    private void preDestroy() {
+        try {
+            messageSystem().dispose();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
