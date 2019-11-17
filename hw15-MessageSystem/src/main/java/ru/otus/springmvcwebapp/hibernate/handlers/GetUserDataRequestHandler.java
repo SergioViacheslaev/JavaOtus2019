@@ -2,11 +2,12 @@ package ru.otus.springmvcwebapp.hibernate.handlers;
 
 import com.google.gson.Gson;
 import ru.otus.springmvcwebapp.api.services.DBServiceCachedUser;
-import ru.otus.springmvcwebapp.messagesystem.common.Serializers;
 import ru.otus.springmvcwebapp.messagesystem.Message;
 import ru.otus.springmvcwebapp.messagesystem.MessageType;
 import ru.otus.springmvcwebapp.messagesystem.RequestHandler;
+import ru.otus.springmvcwebapp.messagesystem.common.Serializers;
 import ru.otus.springmvcwebapp.repository.User;
+
 import java.util.Optional;
 
 public class GetUserDataRequestHandler implements RequestHandler {

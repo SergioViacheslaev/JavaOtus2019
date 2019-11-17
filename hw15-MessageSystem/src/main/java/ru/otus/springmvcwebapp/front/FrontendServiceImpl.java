@@ -1,6 +1,5 @@
 package ru.otus.springmvcwebapp.front;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
@@ -18,9 +17,7 @@ import java.util.function.Consumer;
 
 public class FrontendServiceImpl implements FrontendService {
     private static final Logger logger = LoggerFactory.getLogger(FrontendServiceImpl.class);
-    private final Gson gson = new Gson();
     private final JsonParser jsonParser = new JsonParser();
-
 
     private final Map<UUID, Consumer<?>> consumerMap = new ConcurrentHashMap<>();
     private final MsClient msClient;
@@ -35,10 +32,10 @@ public class FrontendServiceImpl implements FrontendService {
     public void saveUser(String frontMessage, Consumer<String> dataConsumer) {
         //Извлекаем JSON объект с данными пользователя из сообщения
         JsonObject jsonObject = jsonParser.parse(frontMessage).getAsJsonObject();
-        System.out.println(jsonObject);
+        logger.info("jsonObject: {}", jsonObject);
 
         JsonObject messageStr = jsonObject.getAsJsonObject("messageStr");
-        System.out.println(messageStr);
+        logger.info("messageStr: {}", messageStr);
 
         String jsonUserData = messageStr.toString();
 

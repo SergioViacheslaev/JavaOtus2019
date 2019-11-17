@@ -3,10 +3,11 @@ package ru.otus.springmvcwebapp.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.otus.springmvcwebapp.api.dao.UserDao;
+import ru.otus.springmvcwebapp.api.hibernatedao.UserDao;
 import ru.otus.springmvcwebapp.cache.impl.MyCache;
 import ru.otus.springmvcwebapp.repository.User;
 
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 /**
@@ -15,6 +16,15 @@ import java.util.Optional;
 @Component
 public class DBServiceCachedUser extends DbServiceUserImpl {
     private final MyCache<String, User> entityCache;
+
+    @PostConstruct
+    private void init() {
+        //cache and DB
+        saveUser(new User("Vasya", "Pupkin", 22));
+        saveUser(new User("Tom", "Hanks", 65));
+        saveUser(new User("Bill", "Gates", 51));
+        saveUser(new User("Maulder", "Fox", 35));
+    }
 
     @Autowired
     public DBServiceCachedUser(UserDao userDao, MyCache<String, User> entityCache) {

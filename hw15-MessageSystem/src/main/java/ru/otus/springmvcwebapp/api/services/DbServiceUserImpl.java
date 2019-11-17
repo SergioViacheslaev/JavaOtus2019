@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.otus.springmvcwebapp.api.dao.UserDao;
+import ru.otus.springmvcwebapp.api.hibernatedao.UserDao;
 import ru.otus.springmvcwebapp.api.sessionmanager.SessionManager;
 import ru.otus.springmvcwebapp.repository.User;
 

@@ -1,4 +1,4 @@
-package ru.otus.springmvcwebapp.api.dao;
+package ru.otus.springmvcwebapp.api.hibernatedao;
 
 
 import ru.otus.springmvcwebapp.api.sessionmanager.SessionManager;
