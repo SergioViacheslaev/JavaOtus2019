@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>User Registration</title>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+    <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+    <script th:src="@{/resources/static/javascript/messagesApp.js}"></script>
+
+
+</head>
+
+<body>
+
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+<div class="container">
+
+    <h3>Регистрация нового пользователя</h3>
+
+    <hr>
+
+    <form action="#" accept-charset="UTF-8">
+
+        <input id="firstName" type="text"
+               class="form-control mb-4 col-4" placeholder="Имя">
+
+        <input id="lastName" type="text"
+               class="form-control mb-4 col-4" placeholder="Фамилия">
+
+        <input id="age" type="number"
+               class="form-control mb-4 col-4" placeholder="Возраст">
+
+        <button type="submit" id="saveUserButton" class="btn btn-info col-2">Создать</button>
+
+    </form>
+
+    <hr>
+
+    <h3>Список новых добавленных пользователей</h3>
+
+    <table class="table table-bordered table-striped" id="usersListTable">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Возраст</th>
+        </tr>
+        </thead>
+
+    </table>
+
+    <a th:href="@{/users/list}">Вернуться к полному списку пользователей</a>
+
+
+</div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
