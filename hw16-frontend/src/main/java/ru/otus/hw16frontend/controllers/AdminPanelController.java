@@ -20,6 +20,8 @@ import java.util.List;
 @RequestMapping("/users")
 public class AdminPanelController {
 
+//    private FrontendService frontendService;
+
 
     private SimpMessagingTemplate messageSender;
 
@@ -50,8 +52,8 @@ public class AdminPanelController {
     @MessageMapping("/createUserMessage")
     public void saveUser(String frontMessage) {
         log.info("Получено сообщение от фронта: {}", frontMessage);
-
-   /*     frontendService.saveUser(frontMessage, userData -> {
+        sendFrontMessage("fooobar");
+     /*   frontendService.saveUser(frontMessage, userData -> {
             log.info("DBService ответил сообщением: {}", userData);
             sendFrontMessage(userData);
         });*/
@@ -59,6 +61,7 @@ public class AdminPanelController {
 
     //Служит для отправки ответного сообщения в WebSocket из DBService
     private void sendFrontMessage(String frontMessage) {
+        frontMessage = "{\"firstName\":\"fe\",\"lastName\":\"fefe\",\"age\":33}";
         messageSender.convertAndSend("/topic/DBServiceResponse", frontMessage);
     }
 
