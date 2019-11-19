@@ -1,6 +1,7 @@
 package ru.otus.hw16frontend.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.otus.hw16frontend.repository.User;
+import ru.otus.hw16frontend.utils.SocketClientHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +24,17 @@ public class AdminPanelController {
 
 //    private FrontendService frontendService;
 
+    private SocketClientHelper socketClient;
 
     private SimpMessagingTemplate messageSender;
 
     public AdminPanelController(SimpMessagingTemplate messageSender) {
         this.messageSender = messageSender;
+    }
+
+    @Autowired
+    public void setSocketClient(SocketClientHelper socketClient) {
+        this.socketClient = socketClient;
     }
 
     @GetMapping("/list")
@@ -53,6 +61,8 @@ public class AdminPanelController {
     public void saveUser(String frontMessage) {
         log.info("Получено сообщение от фронта: {}", frontMessage);
         sendFrontMessage("fooobar");
+        socketClient.go();
+
      /*   frontendService.saveUser(frontMessage, userData -> {
             log.info("DBService ответил сообщением: {}", userData);
             sendFrontMessage(userData);
