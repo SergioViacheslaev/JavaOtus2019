@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.otus.hw16frontend.repository.User;
-import ru.otus.hw16frontend.utils.SocketClientHelper;
+import ru.otus.hw16frontend.utils.SocketClientMessageSystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class AdminPanelController {
 
 //    private FrontendService frontendService;
 
-    private SocketClientHelper socketClient;
+    private SocketClientMessageSystem socketClient;
 
     private SimpMessagingTemplate messageSender;
 
@@ -33,7 +33,7 @@ public class AdminPanelController {
     }
 
     @Autowired
-    public void setSocketClient(SocketClientHelper socketClient) {
+    public void setSocketClient(SocketClientMessageSystem socketClient) {
         this.socketClient = socketClient;
     }
 
