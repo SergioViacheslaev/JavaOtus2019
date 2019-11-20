@@ -1,11 +1,10 @@
-package ru.otus.hw16messageserver.server;
+package ru.otus.hw16dbserver.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -13,21 +12,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 @Component
-public class MessageServer {
-    private static Logger logger = LoggerFactory.getLogger(MessageServer.class);
+public class DBServer {
+    private static Logger logger = LoggerFactory.getLogger(DBServer.class);
 
-    @Value("${messageServer.port}")
-    private int messageServerPort;
+    @Value("${dbServer.port}")
+    private int dbServerPort;
 
-
-    @PostConstruct
-    private void startMessageServer() {
-        logger.info("Starting MessageServer on port: {}", messageServerPort);
-        go();
-    }
 
     public void go() {
-        try (ServerSocket serverSocket = new ServerSocket(messageServerPort)) {
+        try (ServerSocket serverSocket = new ServerSocket(dbServerPort)) {
+            logger.info("Starting DBServer on port: {}", dbServerPort);
+
             while (!Thread.currentThread().isInterrupted()) {
                 logger.info("Waiting for client connection...");
                 try (Socket clientSocket = serverSocket.accept()) {
