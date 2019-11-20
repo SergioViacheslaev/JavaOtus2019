@@ -21,9 +21,8 @@ public class Hw16DbserverApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         serviceCachedUser.getUsersList().forEach(System.out::println);
-
         dbServer.go();
     }
 }

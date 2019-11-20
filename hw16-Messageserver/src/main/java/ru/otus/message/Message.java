@@ -1,11 +1,13 @@
-package ru.otus.hw16messageserver.messagesystem;
+package ru.otus.message;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Message {
-  static final Message VOID_MESSAGE = new Message();
+public class Message implements Serializable {
+  private static final long serialVersionUID = 1L;
+  public static final Message VOID_MESSAGE = new Message();
 
   private final UUID id = UUID.randomUUID();
   private final String from;

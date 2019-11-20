@@ -1,6 +1,8 @@
 package ru.otus.hw16messageserver.messagesystem;
 
 
+import ru.otus.message.Message;
+
 import java.util.Optional;
 
 public interface RequestHandler {

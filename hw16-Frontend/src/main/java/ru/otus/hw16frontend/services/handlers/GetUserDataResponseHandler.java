@@ -2,10 +2,10 @@ package ru.otus.hw16frontend.services.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw16frontend.messagesystem.Message;
 import ru.otus.hw16frontend.messagesystem.RequestHandler;
 import ru.otus.hw16frontend.messagesystem.common.Serializers;
 import ru.otus.hw16frontend.services.frontendservice.FrontendService;
+import ru.otus.message.Message;
 
 import java.util.Optional;
 import java.util.UUID;

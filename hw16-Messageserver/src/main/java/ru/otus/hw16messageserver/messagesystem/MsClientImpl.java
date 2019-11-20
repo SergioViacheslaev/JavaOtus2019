@@ -3,6 +3,7 @@ package ru.otus.hw16messageserver.messagesystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw16messageserver.messagesystem.common.Serializers;
+import ru.otus.message.Message;
 
 import java.util.Map;
 import java.util.Objects;

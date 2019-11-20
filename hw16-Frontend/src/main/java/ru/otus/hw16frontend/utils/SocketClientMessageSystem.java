@@ -4,10 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.otus.message.Message;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
@@ -21,22 +20,24 @@ public class SocketClientMessageSystem {
     private String messageServerHost;
 
 
-    public void go() {
+    public void sendMessage(Message message) {
         try {
-            try (Socket clientSocket = new Socket(messageServerHost, messageServerPort)) {
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            try (Socket clientSocket = new Socket(messageServerHost, messageServerPort);
+                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                 ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                 ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
 
-                for (int idx = 0; idx < 3; idx++) {
-                    logger.info("sending to server");
-                    out.println("testData:" + idx);
-                    String resp = in.readLine();
-                    logger.info("server response: {}", resp);
-                    sleep();
-                }
+
+                oos.writeObject(message);
+                logger.info("Message is send to MessageServer");
+
+                sleep();
 
                 logger.info("stop communication");
                 out.println("stop");
+
+
             }
 
         } catch (Exception ex) {

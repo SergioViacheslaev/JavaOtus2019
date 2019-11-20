@@ -1,5 +1,7 @@
 package ru.otus.hw16frontend.messagesystem;
 
+import ru.otus.message.Message;
+
 public interface MsClient {
 
   void addHandler(MessageType type, RequestHandler requestHandler);

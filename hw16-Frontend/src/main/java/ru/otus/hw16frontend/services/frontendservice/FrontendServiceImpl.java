@@ -4,9 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw16frontend.messagesystem.Message;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import ru.otus.hw16frontend.messagesystem.MessageType;
 import ru.otus.hw16frontend.messagesystem.MsClient;
+import ru.otus.message.Message;
 
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-
+@Component
 public class FrontendServiceImpl implements FrontendService {
     private static final Logger logger = LoggerFactory.getLogger(FrontendServiceImpl.class);
     private final JsonParser jsonParser = new JsonParser();
@@ -23,7 +25,7 @@ public class FrontendServiceImpl implements FrontendService {
     private final MsClient msClient;
     private final String databaseServiceClientName;
 
-    public FrontendServiceImpl(MsClient msClient, String databaseServiceClientName) {
+    public FrontendServiceImpl(MsClient msClient,@Value("${databaseServiceClientName}") String databaseServiceClientName) {
         this.msClient = msClient;
         this.databaseServiceClientName = databaseServiceClientName;
     }
