@@ -46,7 +46,7 @@ public class MessageServer {
 
             Message receivedMessage = (Message) ois.readObject();
 
-            logger.info("from client: {} ", receivedMessage);
+            logger.info("Received from client: message ID[{}] ", receivedMessage.getId());
 
             String userData = Serializers.deserialize(receivedMessage.getPayload(), String.class);
 

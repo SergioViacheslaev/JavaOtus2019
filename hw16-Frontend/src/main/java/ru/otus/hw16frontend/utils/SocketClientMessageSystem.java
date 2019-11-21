@@ -30,11 +30,11 @@ public class SocketClientMessageSystem {
 
 
                 oos.writeObject(message);
-                logger.info("Message is send to MessageServer");
+                logger.info("Message with ID [{}] is send to MessageServer", message.getId());
 
                 sleep();
 
-                logger.info("stop communication");
+                logger.info("Stop communication");
                 out.println("stop");
 
 
