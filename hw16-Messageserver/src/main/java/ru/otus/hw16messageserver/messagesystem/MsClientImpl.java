@@ -3,6 +3,7 @@ package ru.otus.hw16messageserver.messagesystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw16messageserver.messagesystem.common.Serializers;
+import ru.otus.hw16messageserver.utils.SocketClientMessageSystem;
 import ru.otus.message.Message;
 
 import java.util.Map;
@@ -19,6 +20,8 @@ public class MsClientImpl implements MsClient {
     private final String name;
     private final MessageSystem messageSystem;
 
+    private SocketClientMessageSystem socketClient;
+
 //    private final Map<String, RequestHandler> handlers = new ConcurrentHashMap<>();
 
     private final Map<String, SendMessageHandler> handlers = new ConcurrentHashMap<>();
@@ -26,6 +29,7 @@ public class MsClientImpl implements MsClient {
     public MsClientImpl(String name, MessageSystem messageSystem) {
         this.name = name;
         this.messageSystem = messageSystem;
+        this.socketClient = new SocketClientMessageSystem();
     }
 
     @Override
@@ -50,16 +54,8 @@ public class MsClientImpl implements MsClient {
     @Override
     public void handle(Message msg) {
         logger.info("new message:{}", msg);
-        try {
-            SendMessageHandler sendMessageHandler = handlers.get(msg.getType());
-            if (sendMessageHandler != null) {
-                sendMessageHandler.handle(msg, clientHost, clientPort);
-            } else {
-                logger.error("handler not found for the message type:{}", msg.getType());
-            }
-        } catch (Exception ex) {
-            logger.error("msg:" + msg, ex);
-        }
+        socketClient.sendMessage(msg, clientHost, clientPort);
+
     }
 
     @Override

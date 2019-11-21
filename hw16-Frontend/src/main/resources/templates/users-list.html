@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+    <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+    <script th:src="@{/javascript/userslistMessagesApp.js}"></script>
+
     <title>Users</title>
 </head>
 
@@ -28,23 +33,23 @@
     </a>
 
 
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped" id="allUsersListTable">
         <thead class="thead-dark">
         <tr>
+            <th>ID</th>
             <th>Имя</th>
             <th>Фамилия</th>
             <th>Возраст</th>
         </tr>
         </thead>
 
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.firstName}"></td>
-            <td th:text="${user.lastName}"></td>
-            <td th:text="${user.age}"></td>
-        </tr>
-        </tbody>
     </table>
+
+    <!-- Add a button -->
+    <form action="#" accept-charset="UTF-8">
+        <button type="submit" id="getUsersList" class="btn btn-info col-2">Отправить данные в таблицу</button>
+
+    </form>
 
     <!-- Exit button -->
     <form action="#" th:action="@{/logout}"

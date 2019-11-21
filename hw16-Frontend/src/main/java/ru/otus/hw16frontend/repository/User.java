@@ -4,11 +4,6 @@ package ru.otus.hw16frontend.repository;
 import com.google.gson.annotations.Expose;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 /**
  * Entity - User
  *
@@ -19,10 +14,8 @@ import javax.persistence.Id;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Expose(deserialize = false)
     private long id;
 

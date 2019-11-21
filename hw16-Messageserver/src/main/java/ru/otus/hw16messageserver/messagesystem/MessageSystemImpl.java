@@ -22,7 +22,7 @@ public final class MessageSystemImpl implements MessageSystem {
 
     private final ExecutorService msgProcessor = Executors.newSingleThreadExecutor(runnable -> {
         Thread thread = new Thread(runnable);
-        thread.setName("msg-processor-thread");
+        thread.setName("msgprocessor-thread");
         return thread;
     });
 
@@ -33,7 +33,7 @@ public final class MessageSystemImpl implements MessageSystem {
         @Override
         public Thread newThread(Runnable runnable) {
             Thread thread = new Thread(runnable);
-            thread.setName("msg-handler-thread-" + threadNameSeq.incrementAndGet());
+            thread.setName("msghandler-thread-" + threadNameSeq.incrementAndGet());
             return thread;
         }
     });

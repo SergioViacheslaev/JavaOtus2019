@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.otus.hw16frontend.messagesystem.MessageType;
 import ru.otus.hw16frontend.messagesystem.MsClient;
+import ru.otus.hw16frontend.messagesystem.common.Serializers;
 import ru.otus.message.Message;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ public class FrontendServiceImpl implements FrontendService {
     private final MsClient msClient;
     private final String databaseServiceClientName;
 
-    public FrontendServiceImpl(MsClient msClient,@Value("${databaseServiceClientName}") String databaseServiceClientName) {
+    public FrontendServiceImpl(MsClient msClient, @Value("${databaseServiceClientName}") String databaseServiceClientName) {
         this.msClient = msClient;
         this.databaseServiceClientName = databaseServiceClientName;
     }
@@ -47,6 +48,9 @@ public class FrontendServiceImpl implements FrontendService {
         msClient.sendMessage(outMsg);
     }
 
+
+
+
     @Override
     public void getUserData(long userId, Consumer<String> dataConsumer) {
         Message outMsg = msClient.produceMessage(databaseServiceClientName, userId, MessageType.USER_DATA);
@@ -62,5 +66,23 @@ public class FrontendServiceImpl implements FrontendService {
             return Optional.empty();
         }
         return Optional.of(consumer);
+    }
+
+    @Override
+    public void sendFrontMessage(Message message) {
+        logger.info("new message:{}", message);
+        try {
+            String userJsonData = Serializers.deserialize(message.getPayload(), String.class);
+            UUID sourceMessageId = message.getSourceMessageId();
+            if (sourceMessageId == null) {
+                throw new RuntimeException("Not found sourceMsg for message:" + message.getId());
+            }
+
+            takeConsumer(sourceMessageId, String.class).ifPresent(consumer -> consumer.accept(userJsonData));
+
+        } catch (Exception ex) {
+            logger.error("msg:" + message, ex);
+        }
+
     }
 }

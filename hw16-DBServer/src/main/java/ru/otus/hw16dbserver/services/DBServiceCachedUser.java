@@ -1,7 +1,6 @@
 package ru.otus.hw16dbserver.services;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.otus.hw16dbserver.cache.impl.MyCache;
 import ru.otus.hw16dbserver.entity.User;
@@ -28,7 +27,7 @@ public class DBServiceCachedUser {
         saveUser(new User("Maulder", "Fox", 35));
     }
 
-    @Autowired
+
     public DBServiceCachedUser(DBServiceUser serviceUser, MyCache<String, User> entityCache) {
         this.dbServiceUser = serviceUser;
         this.entityCache = entityCache;

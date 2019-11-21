@@ -20,5 +20,6 @@ public class Hw16MessageserverApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         messageServer.go();
+
     }
 }

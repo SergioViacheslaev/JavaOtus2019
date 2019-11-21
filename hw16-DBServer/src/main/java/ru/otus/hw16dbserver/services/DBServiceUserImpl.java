@@ -30,15 +30,6 @@ public class DBServiceUserImpl implements DBServiceUser {
     public Optional<User> getUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
-  /*      User theUser = null;
-
-        if (optionalUser.isPresent()) {
-            theUser = optionalUser.get();
-        }
-        else {
-            throw new RuntimeException("Did not find User with id:" + id);
-        }*/
-
         return optionalUser;
     }
 

@@ -1,22 +1,26 @@
-package ru.otus.hw16messageserver.utils;
+package ru.otus.hw16dbserver.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 import ru.otus.message.Message;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
-@Component
-public class SocketClientMessageSystem {
-    private static Logger logger = LoggerFactory.getLogger(SocketClientMessageSystem.class);
 
+public class SocketClientDBServer {
+    private static Logger logger = LoggerFactory.getLogger(SocketClientDBServer.class);
 
-    public void sendMessage(Message message, String clientHost, int clientPort) {
+    @Value("${messageServer.host}")
+    private String messageServerHost;
+    @Value("${messageServer.port}")
+    private int messageServerPort;
 
-        try (Socket clientSocket = new Socket(clientHost, clientPort);
+    public void sendMessage(Message message) {
+
+        try (Socket clientSocket = new Socket(messageServerHost, messageServerPort);
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -24,7 +28,7 @@ public class SocketClientMessageSystem {
 
 
             oos.writeObject(message);
-            logger.info("Message with ID [{}] is send to {}", message.getId(), message.getTo());
+            logger.info("Message with ID [{}] is send to {} via MessageServer", message.getId(), message.getTo());
 
             sleep();
 
@@ -34,12 +38,14 @@ public class SocketClientMessageSystem {
 
         } catch (Exception ex) {
             logger.error("error", ex);
+
         }
+
     }
 
     private static void sleep() {
         try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+            Thread.sleep(TimeUnit.SECONDS.toMillis(1));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.otus.hw16messageserver.messagesystem.*;
-import ru.otus.hw16messageserver.messagesystem.handlers.SendMessageDBServerHandler;
+import ru.otus.hw16messageserver.messagesystem.MessageSystem;
+import ru.otus.hw16messageserver.messagesystem.MessageSystemImpl;
+import ru.otus.hw16messageserver.messagesystem.MsClient;
+import ru.otus.hw16messageserver.messagesystem.MsClientImpl;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -53,12 +55,8 @@ public class AppConfig {
 
     @PostConstruct
     private void postConstruct() {
-//        frontendMsClient().addHandler(MessageType.USER_DATA, new GetUserDataResponseHandler(frontendService()));
-        databaseMsClient().addHandler(MessageType.USER_DATA, new SendMessageDBServerHandler());
-
         messageSystem().addClient(frontendMsClient());
         messageSystem().addClient(databaseMsClient());
-
     }
 
     @PreDestroy

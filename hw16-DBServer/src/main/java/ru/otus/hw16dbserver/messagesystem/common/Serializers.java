@@ -1,4 +1,4 @@
-package ru.otus.hw16dbserver.common;
+package ru.otus.hw16dbserver.messagesystem.common;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

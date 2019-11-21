@@ -1,5 +1,6 @@
 package ru.otus.hw16frontend.controllers;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,6 +21,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class AdminPanelController {
+    //temp GSON
+    private Gson gson = new Gson();
 
     private FrontendService frontendService;
 
@@ -32,13 +35,8 @@ public class AdminPanelController {
     }
 
     @GetMapping("/list")
-    public String listUsers(Model model) {
-//        model.addAttribute("users", serviceUser.getUsersList());
-        List<User> users = new ArrayList<>();
-        users.add(new User("Alex", "Benjamin", 33));
-        users.add(new User("Maulder", "Fox", 45));
+    public String listUsers() {
 
-        model.addAttribute("users", users);
         return "users-list";
     }
 
@@ -62,9 +60,22 @@ public class AdminPanelController {
         });
     }
 
+    @MessageMapping("/getUsersList")
+    public void getUsersList() {
+        List<User> userList = new ArrayList<>();
+        userList.add(new User(1,"Vasya", "Pupkin", 22));
+        userList.add(new User(2,"Tom", "Hanks", 65));
+        userList.add(new User(3,"Bill", "Gates", 51));
+        userList.add(new User(4,"Maulder", "Fox", 35));
+
+//        User tmpUser = new User(1,"Foo", "Bar", 123);
+        String userJson = gson.toJson(userList);
+
+        sendFrontMessage(userJson);
+    }
+
     //Служит для отправки ответного сообщения в WebSocket из DBService
     private void sendFrontMessage(String frontMessage) {
-        frontMessage = "{\"firstName\":\"fe\",\"lastName\":\"fefe\",\"age\":33}";
         messageSender.convertAndSend("/topic/DBServiceResponse", frontMessage);
     }
 

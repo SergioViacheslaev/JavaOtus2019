@@ -8,7 +8,6 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
-;
 
 @Component
 public class MyCache<K, V> implements HwCache<K, V>, HwListener<K, V> {
