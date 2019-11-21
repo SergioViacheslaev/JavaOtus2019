@@ -4,7 +4,7 @@ import ru.otus.message.Message;
 
 public interface MsClient {
 
-  void addHandler(MessageType type, RequestHandler requestHandler);
+  void addHandler(MessageType type, SendMessageHandler sendMessageHandler);
 
   boolean sendMessage(Message msg);
 

@@ -18,7 +18,10 @@ public class MsClientImpl implements MsClient {
 
     private final String name;
     private final MessageSystem messageSystem;
-    private final Map<String, RequestHandler> handlers = new ConcurrentHashMap<>();
+
+//    private final Map<String, RequestHandler> handlers = new ConcurrentHashMap<>();
+
+    private final Map<String, SendMessageHandler> handlers = new ConcurrentHashMap<>();
 
     public MsClientImpl(String name, MessageSystem messageSystem) {
         this.name = name;
@@ -26,8 +29,8 @@ public class MsClientImpl implements MsClient {
     }
 
     @Override
-    public void addHandler(MessageType type, RequestHandler requestHandler) {
-        this.handlers.put(type.getValue(), requestHandler);
+    public void addHandler(MessageType type, SendMessageHandler sendMessageHandler) {
+        this.handlers.put(type.getValue(), sendMessageHandler);
     }
 
     @Override
@@ -48,9 +51,9 @@ public class MsClientImpl implements MsClient {
     public void handle(Message msg) {
         logger.info("new message:{}", msg);
         try {
-            RequestHandler requestHandler = handlers.get(msg.getType());
-            if (requestHandler != null) {
-                requestHandler.handle(msg).ifPresent(this::sendMessage);
+            SendMessageHandler sendMessageHandler = handlers.get(msg.getType());
+            if (sendMessageHandler != null) {
+                sendMessageHandler.handle(msg, clientHost, clientPort);
             } else {
                 logger.error("handler not found for the message type:{}", msg.getType());
             }
@@ -78,19 +81,19 @@ public class MsClientImpl implements MsClient {
         return Objects.hash(name);
     }
 
-  public String getClientHost() {
-    return clientHost;
-  }
+    public String getClientHost() {
+        return clientHost;
+    }
 
-  public void setClientHost(String clientHost) {
-    this.clientHost = clientHost;
-  }
+    public void setClientHost(String clientHost) {
+        this.clientHost = clientHost;
+    }
 
-  public int getClientPort() {
-    return clientPort;
-  }
+    public int getClientPort() {
+        return clientPort;
+    }
 
-  public void setClientPort(int clientPort) {
-    this.clientPort = clientPort;
-  }
+    public void setClientPort(int clientPort) {
+        this.clientPort = clientPort;
+    }
 }
