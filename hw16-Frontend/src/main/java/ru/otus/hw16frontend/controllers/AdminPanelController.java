@@ -1,6 +1,5 @@
 package ru.otus.hw16frontend.controllers;
 
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -11,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.otus.hw16frontend.repository.User;
 import ru.otus.hw16frontend.services.frontendservice.FrontendService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Sergei Viacheslaev
  */
@@ -21,8 +17,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class AdminPanelController {
-    //temp GSON
-    private Gson gson = new Gson();
 
     private FrontendService frontendService;
 
@@ -56,26 +50,23 @@ public class AdminPanelController {
 
         frontendService.saveUser(frontMessage, userData -> {
             log.info("DBService ответил сообщением: {}", userData);
-            sendFrontMessage(userData);
+            sendWebSocketMessage(userData);
         });
     }
 
     @MessageMapping("/getUsersList")
-    public void getUsersList() {
-        List<User> userList = new ArrayList<>();
-        userList.add(new User(1,"Vasya", "Pupkin", 22));
-        userList.add(new User(2,"Tom", "Hanks", 65));
-        userList.add(new User(3,"Bill", "Gates", 51));
-        userList.add(new User(4,"Maulder", "Fox", 35));
+    public void getUsersList(String frontMessage) {
+        log.info("Получено сообщение от фронта: {}", frontMessage);
 
-//        User tmpUser = new User(1,"Foo", "Bar", 123);
-        String userJson = gson.toJson(userList);
+        frontendService.getUsersList(frontMessage, usersListData -> {
+            log.info("DBService ответил сообщением: {}", usersListData);
+            sendWebSocketMessage(usersListData);
+        });
 
-        sendFrontMessage(userJson);
     }
 
     //Служит для отправки ответного сообщения в WebSocket из DBService
-    private void sendFrontMessage(String frontMessage) {
+    private void sendWebSocketMessage(String frontMessage) {
         messageSender.convertAndSend("/topic/DBServiceResponse", frontMessage);
     }
 

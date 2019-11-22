@@ -32,6 +32,15 @@ public class FrontendServiceImpl implements FrontendService {
     }
 
     @Override
+    public void getUsersList(String frontMessage, Consumer<String> dataConsumer) {
+        //Формируем Message
+        Message outMsg = msClient.produceMessage(databaseServiceClientName, "", MessageType.USERS_LIST);
+        consumerMap.put(outMsg.getId(), dataConsumer);
+        msClient.sendMessage(outMsg);
+    }
+
+
+    @Override
     public void saveUser(String frontMessage, Consumer<String> dataConsumer) {
         //Извлекаем JSON объект с данными пользователя из сообщения
         JsonObject jsonObject = jsonParser.parse(frontMessage).getAsJsonObject();
@@ -47,8 +56,6 @@ public class FrontendServiceImpl implements FrontendService {
         consumerMap.put(outMsg.getId(), dataConsumer);
         msClient.sendMessage(outMsg);
     }
-
-
 
 
     @Override

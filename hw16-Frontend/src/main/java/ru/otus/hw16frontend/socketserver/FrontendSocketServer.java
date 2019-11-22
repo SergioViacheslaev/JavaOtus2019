@@ -41,9 +41,7 @@ public class FrontendSocketServer {
     }
 
     private void clientHandler(Socket clientSocket) {
-        try (PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+        try (ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
              ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
 
             Message receivedMessage = (Message) ois.readObject();

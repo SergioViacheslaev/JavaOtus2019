@@ -33,8 +33,7 @@ const sendMessage = () => {
 
 
     stompClient.send(
-        "/app/getUsersList",
-        {}, "Hi"
+        "/app/getUsersList", {}, "getAllUsersLis"
     );
 
 };

@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.otus.hw16messageserver.messagesystem.MessageSystem;
-import ru.otus.hw16messageserver.messagesystem.common.Serializers;
 import ru.otus.message.Message;
 
-import java.io.*;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -39,35 +39,14 @@ public class MessageServer {
     }
 
     private void clientHandler(Socket clientSocket) {
-        try (PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+        try (ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
              ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
 
             Message receivedMessage = (Message) ois.readObject();
 
             logger.info("Received from {}: message ID[{}] ", receivedMessage.getFrom(), receivedMessage.getId());
 
-            String userData = Serializers.deserialize(receivedMessage.getPayload(), String.class);
-
-            logger.info("UserData: {} ", userData);
-
-
             messageSystem.newMessage(receivedMessage);
-
-
-
-         /*   String input = null;
-            while (!"stop".equals(input)) {
-
-                input = in.readLine();
-
-                if (input != null) {
-                    logger.info("from client: {} ", input);
-                    out.println("echo:" + input);
-                }
-            }*/
-
 
         } catch (Exception ex) {
             logger.error("error", ex);

@@ -1,7 +1,7 @@
 package ru.otus.hw16dbserver.messagesystem;
 
 public enum MessageType {
-  USER_DATA("UserData");
+  USER_DATA("UserData"), USERS_LIST("UsersList");
 
   private final String value;
 

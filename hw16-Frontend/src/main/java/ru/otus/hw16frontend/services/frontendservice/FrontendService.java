@@ -16,6 +16,8 @@ public interface FrontendService {
 
     void sendFrontMessage(Message message);
 
+    void getUsersList(String frontMessage, Consumer<String> dataConsumer);
+
 
 }
 
