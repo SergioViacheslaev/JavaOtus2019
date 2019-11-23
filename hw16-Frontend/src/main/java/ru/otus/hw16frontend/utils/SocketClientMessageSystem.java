@@ -47,7 +47,7 @@ public class SocketClientMessageSystem {
 
     private static void sleep() {
         try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+            Thread.sleep(TimeUnit.SECONDS.toMillis(1));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

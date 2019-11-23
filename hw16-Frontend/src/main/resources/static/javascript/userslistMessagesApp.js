@@ -56,22 +56,10 @@ const showUsersList = (jsonUser) => {
     }
 
 
-    /*    let user_data = '';
-
-        user_data += '<tr>';
-        user_data += '<td>' + jsonUser.id + '</td>';
-        user_data += '<td>' + jsonUser.firstName + '</td>';
-        user_data += '<td>' + jsonUser.lastName + '</td>';
-        user_data += '<td>' + jsonUser.age + '</td>';
-        user_data += '</tr>';
-
-
-        $("#allUsersListTable").append(user_data);*/
 };
 
 $(document).ready(connect());
 
 $(() => {
-    $("form").on('submit', event => event.preventDefault());
-    $("#getUsersList").click(sendMessage);
+      $("#getUsersList").click(sendMessage);
 });
