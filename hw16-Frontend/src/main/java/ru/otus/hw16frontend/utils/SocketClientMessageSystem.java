@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.otus.message.Message;
 
-import java.io.*;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
@@ -23,20 +23,12 @@ public class SocketClientMessageSystem {
     public void sendMessage(Message message) {
         try {
             try (Socket clientSocket = new Socket(messageServerHost, messageServerPort);
-                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                 ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-                 ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
-
+                 ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
                 oos.writeObject(message);
                 logger.info("Message with ID [{}] is send to MessageServer", message.getId());
 
                 sleep();
-
-                logger.info("Stop communication");
-                out.println("stop");
-
 
             }
 

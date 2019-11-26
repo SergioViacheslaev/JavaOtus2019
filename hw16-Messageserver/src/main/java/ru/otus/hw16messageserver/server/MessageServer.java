@@ -9,7 +9,6 @@ import ru.otus.hw16messageserver.messagesystem.MessageSystem;
 import ru.otus.message.Message;
 
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -39,8 +38,7 @@ public class MessageServer {
     }
 
     private void clientHandler(Socket clientSocket) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-             ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
+        try (ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
 
             Message receivedMessage = (Message) ois.readObject();
 

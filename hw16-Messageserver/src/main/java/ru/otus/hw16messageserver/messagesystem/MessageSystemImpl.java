@@ -2,14 +2,16 @@ package ru.otus.hw16messageserver.messagesystem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import ru.otus.message.Message;
 
+import javax.annotation.PreDestroy;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
+@Service
 public final class MessageSystemImpl implements MessageSystem {
     private static final Logger logger = LoggerFactory.getLogger(MessageSystemImpl.class);
     private static final int MESSAGE_QUEUE_SIZE = 1_000;
@@ -38,6 +40,19 @@ public final class MessageSystemImpl implements MessageSystem {
         }
     });
 
+
+    @PreDestroy
+    private void preDestroy() {
+        logger.info("Predestroy1");
+
+        try {
+            dispose();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        logger.info("Predestroy2");
+    }
 
 
     public MessageSystemImpl() {

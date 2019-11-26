@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.otus.hw16frontend.services.frontendservice.FrontendService;
 import ru.otus.message.Message;
 
-import java.io.*;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -41,8 +41,7 @@ public class FrontendSocketServer {
     }
 
     private void clientHandler(Socket clientSocket) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-             ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
+        try (ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
 
             Message receivedMessage = (Message) ois.readObject();
 

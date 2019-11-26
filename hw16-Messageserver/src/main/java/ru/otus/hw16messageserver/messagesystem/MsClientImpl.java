@@ -6,6 +6,7 @@ import ru.otus.hw16messageserver.messagesystem.common.Serializers;
 import ru.otus.hw16messageserver.utils.SocketClientMessageSystem;
 import ru.otus.message.Message;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,22 +15,30 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MsClientImpl implements MsClient {
     private static final Logger logger = LoggerFactory.getLogger(MsClientImpl.class);
 
-    private String clientHost;
-    private int clientPort;
+    private String name;
+    private String host;
+    private int port;
 
-    private final String name;
     private final MessageSystem messageSystem;
 
     private SocketClientMessageSystem socketClient;
 
-//    private final Map<String, RequestHandler> handlers = new ConcurrentHashMap<>();
-
     private final Map<String, SendMessageHandler> handlers = new ConcurrentHashMap<>();
 
-    public MsClientImpl(String name, MessageSystem messageSystem) {
-        this.name = name;
+    public MsClientImpl(MessageSystem messageSystem) {
         this.messageSystem = messageSystem;
         this.socketClient = new SocketClientMessageSystem();
+    }
+
+    @PostConstruct
+    private void postConstruct() {
+        messageSystem.addClient(this);
+    }
+
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -37,10 +46,6 @@ public class MsClientImpl implements MsClient {
         this.handlers.put(type.getValue(), sendMessageHandler);
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
     @Override
     public boolean sendMessage(Message msg) {
@@ -54,7 +59,7 @@ public class MsClientImpl implements MsClient {
     @Override
     public void handle(Message msg) {
         logger.info("new message:{}", msg);
-        socketClient.sendMessage(msg, clientHost, clientPort);
+        socketClient.sendMessage(msg, host, port);
 
     }
 
@@ -77,19 +82,25 @@ public class MsClientImpl implements MsClient {
         return Objects.hash(name);
     }
 
-    public String getClientHost() {
-        return clientHost;
+    public String getHost() {
+        return host;
     }
 
-    public void setClientHost(String clientHost) {
-        this.clientHost = clientHost;
+    public void setHost(String host) {
+        this.host = host;
     }
 
-    public int getClientPort() {
-        return clientPort;
+    public int getPort() {
+        return port;
     }
 
-    public void setClientPort(int clientPort) {
-        this.clientPort = clientPort;
+    public void setPort(int port) {
+        this.port = port;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
 }

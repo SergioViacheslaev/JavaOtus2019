@@ -14,4 +14,8 @@ public interface MsClient {
 
   <T> Message produceMessage(String to, T data, MessageType msgType);
 
+  String getHost();
+
+  int getPort();
+
 }
