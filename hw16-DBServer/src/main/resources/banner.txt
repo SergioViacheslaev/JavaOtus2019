@@ -1,0 +1,10 @@
+____________  _____
+|  _  \ ___ \/  ___|
+| | | | |_/ /\ `--.  ___ _ ____   _____ _ __
+| | | | ___ \ `--. \/ _ \ '__\ \ / / _ \ '__|
+| |/ /| |_/ //\__/ /  __/ |   \ V /  __/ |
+|___/ \____/ \____/ \___|_|    \_/ \___|_|
+
+${AnsiColor.GREEN}:: Spring Boot :: ${AnsiColor.CYAN} ${spring-boot.version}
+${application.title} ${application.formatted-version}
+${AnsiColor.DEFAULT}

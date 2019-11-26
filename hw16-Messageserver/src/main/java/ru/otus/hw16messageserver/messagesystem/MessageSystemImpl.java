@@ -43,15 +43,11 @@ public final class MessageSystemImpl implements MessageSystem {
 
     @PreDestroy
     private void preDestroy() {
-        logger.info("Predestroy1");
-
         try {
             dispose();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        logger.info("Predestroy2");
     }
 
 
