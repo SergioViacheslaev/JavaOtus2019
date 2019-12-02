@@ -24,7 +24,7 @@ public class TestingClass {
     @Before(order = 2)
     public void doBefore2() {
         System.out.println("Running before2 @test");
-        //throw new RuntimeException("Вылетел метод Before !!");
+//        throw new RuntimeException("Вылетел метод Before !!");
     }
 
 
@@ -60,7 +60,7 @@ public class TestingClass {
     @Test
     public void doTest3() {
         System.out.println("Test doTest3() is running...");
-        // throw new RuntimeException("Failure!");
+//         throw new RuntimeException("Failure!");
     }
 
 

@@ -6,10 +6,10 @@ import ru.otus.testFramework.annotations.After;
 import ru.otus.testFramework.annotations.Before;
 import ru.otus.testFramework.annotations.Test;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 
 
 public class MyTestFramework {
@@ -122,18 +122,20 @@ public class MyTestFramework {
             @Override
             public int compare(Method o1, Method o2) {
                 int order1 = o1.getAnnotation(Before.class).order();
-                int order2 = o1.getAnnotation(Before.class).order();
+                int order2 = o2.getAnnotation(Before.class).order();
 
                 return Integer.compare(order1, order2);
             }
         });
 
+
         afterMethods.sort((o1, o2) -> {
             int order1 = o1.getAnnotation(After.class).order();
-            int order2 = o1.getAnnotation(After.class).order();
+            int order2 = o2.getAnnotation(After.class).order();
 
             return Integer.compare(order1, order2);
         });
+
     }
 
 
