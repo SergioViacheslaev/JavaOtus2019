@@ -28,6 +28,7 @@
         <module>hw16-Frontend</module>
         <module>hw16-Messageserver</module>
         <module>hw16-DBServer</module>
+        <module>hw17-BonusIoC</module>
     </modules>
 
 
